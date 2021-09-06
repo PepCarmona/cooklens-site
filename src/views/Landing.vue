@@ -66,13 +66,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
-import { Recipe, FakeRecipes } from '@/api/recipe';
+import { computed, defineComponent, inject, ref } from 'vue';
+import { Recipe, FakeRecipes } from '@/api/recipes/recipe';
+import { AxiosResponse, AxiosStatic } from 'axios';
+import { URI } from '@/api/config/index';
 
 type View = 'add' | 'edit' | 'view' | 'search';
 
 export default defineComponent({
     setup() {
+        const axios: AxiosStatic | undefined = inject('axios');
+
         const selectedView = ref<View | null>(null);
         const searchResult = ref<Recipe[]>([]);
         const selectedIndex = ref<number | null>(null);
@@ -82,7 +86,7 @@ export default defineComponent({
             body: '',
         });
 
-        const recipes = ref<Recipe[]>(FakeRecipes);
+        const recipes = ref<Recipe[]>([]);
 
         const data = {
             selectedView,
@@ -107,8 +111,27 @@ export default defineComponent({
             };
         }
 
+        // function getAllRecipes(): Promise<AxiosResponse<Recipe[]>> | null {
+        //     if (!axios) {
+        //         return null;
+        //     }
+        //     return axios.get<Recipe[]>(URI.recipes.get);
+        // }
+
+        // function getRecipeById(id: string): Promise<Recipe | null> {
+        //     return axios.get(`${URI.recipes.get}?id=${id}`);
+        // }
+
         function showAllRecipes() {
             selectedView.value = selectedView.value === 'view' ? null : 'view';
+            if (axios) {
+                axios
+                    .get<Recipe[]>(URI.recipes.get)
+                    .then(
+                        (response: AxiosResponse<Recipe[]>) =>
+                            (recipes.value = response.data)
+                    );
+            }
         }
 
         function showSearchRecipe() {
