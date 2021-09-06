@@ -8,14 +8,16 @@
         <div v-if="selectedView === 'add'">
             <h3>New recipe</h3>
 
-            <label for="title">Title: </label>
-            <input type="text" id="title" />
+            <label for="titleInput">Title: </label>
+            <input v-model="newRecipe.title" type="text" id="titleInput" />
 
-            <label for="body">Description: </label>
-            <input type="text" id="body" />
+            <label for="bodyInput">Description: </label>
+            <input v-model="newRecipe.body" type="text" id="bodyInput" />
+
+            <button @click="addRecipe">Save</button>
         </div>
         <div v-if="selectedView === 'view'">
-            <h3>Total number of recipes: {{}}</h3>
+            <h3>Total number of recipes: {{ recipes.length }}</h3>
             <table>
                 <thead>
                     <tr>
@@ -24,9 +26,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
+                    <tr v-for="(recipe, index) in recipes" :key="recipe._id">
+                        <td>{{ recipe.title }}</td>
+                        <td>{{ recipe.body }}</td>
+                        <td>
+                            <button @click="showEditRecipe(index)">Edit</button>
+                            <button @click="deleteRecipe(index)">Delete</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -34,32 +40,71 @@
         <div v-if="selectedView === 'search'">
             <h3>Search by title</h3>
 
-            <input type="text" id="search" />
-            <button>Search</button>
+            <input
+                type="text"
+                id="search"
+                @input="searchRecipeByTitle($event.target.value)"
+            />
 
-            <div>
-                <div>Title2</div>
-                <div>Description</div>
+            <div v-for="recipe in searchResult" :key="recipe._id">
+                <div>{{ recipe.title }}</div>
+                <div>{{ recipe.body }}</div>
             </div>
+        </div>
+        <div v-if="selectedView === 'edit'">
+            <h3>Edit recipe nº {{ selectedIndex + 1 }}</h3>
+
+            <label for="titleInput">Title: </label>
+            <input v-model="newRecipe.title" type="text" id="titleInput" />
+
+            <label for="bodyInput">Description: </label>
+            <input v-model="newRecipe.body" type="text" id="bodyInput" />
+
+            <button @click="editRecipe(selectedIndex)">Save</button>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
+import { Recipe, FakeRecipes } from '@/api/recipe';
 
-type View = 'add' | 'view' | 'search';
+type View = 'add' | 'edit' | 'view' | 'search';
 
 export default defineComponent({
     setup() {
         const selectedView = ref<View | null>(null);
+        const searchResult = ref<Recipe[]>([]);
+        const selectedIndex = ref<number | null>(null);
+
+        const newRecipe = ref<Recipe>({
+            title: '',
+            body: '',
+        });
+
+        const recipes = ref<Recipe[]>(FakeRecipes);
 
         const data = {
             selectedView,
+            recipes,
+            searchResult,
+            newRecipe,
+            selectedIndex,
         };
+
+        const selectedRecipe = computed<Recipe | null>(() => {
+            if (selectedIndex.value === null) {
+                return null;
+            }
+            return recipes.value[selectedIndex.value];
+        });
 
         function showAddRecipe() {
             selectedView.value = selectedView.value === 'add' ? null : 'add';
+            newRecipe.value = {
+                title: '',
+                body: '',
+            };
         }
 
         function showAllRecipes() {
@@ -71,11 +116,44 @@ export default defineComponent({
                 selectedView.value === 'search' ? null : 'search';
         }
 
+        function searchRecipeByTitle(value: string) {
+            searchResult.value = recipes.value.filter(
+                (recipe) => recipe.title === value
+            );
+        }
+
+        function addRecipe() {
+            recipes.value.push(newRecipe.value);
+            selectedView.value = 'view';
+        }
+
+        function showEditRecipe(index: number) {
+            selectedView.value = 'edit';
+            selectedIndex.value = index;
+            if (selectedRecipe.value !== null) {
+                newRecipe.value = selectedRecipe.value;
+            }
+        }
+
+        function editRecipe(index: number) {
+            recipes.value.splice(index, 1, newRecipe.value);
+            selectedView.value = 'view';
+        }
+
+        function deleteRecipe(index: number) {
+            recipes.value.splice(index, 1);
+        }
+
         return {
             ...data,
             showAddRecipe,
             showAllRecipes,
             showSearchRecipe,
+            searchRecipeByTitle,
+            addRecipe,
+            showEditRecipe,
+            editRecipe,
+            deleteRecipe,
         };
     },
 });
