@@ -3,7 +3,7 @@ import Home from '../views/Home.vue';
 
 const routes: Array<RouteRecordRaw> = [
     {
-        path: '/',
+        path: '/home',
         name: 'Home',
         component: Home,
     },
@@ -15,6 +15,12 @@ const routes: Array<RouteRecordRaw> = [
         // which is lazy-loaded when the route is visited.
         component: () =>
             import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    },
+    {
+        path: '/',
+        name: 'Landing',
+        component: () =>
+            import(/* webpackChunkName: "recipes" */ '../views/Landing.vue'),
     },
 ];
 
