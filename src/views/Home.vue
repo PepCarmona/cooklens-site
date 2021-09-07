@@ -12,8 +12,12 @@
             <label for="titleInput">Title: </label>
             <input v-model="newRecipe.title" type="text" id="titleInput" />
 
-            <label for="bodyInput">Description: </label>
-            <input v-model="newRecipe.body" type="text" id="bodyInput" />
+            <label for="descriptionInput">Description: </label>
+            <input
+                v-model="newRecipe.description"
+                type="text"
+                id="descriptionInput"
+            />
 
             <button @click="addRecipe">Save</button>
         </div>
@@ -24,6 +28,11 @@
                     <tr>
                         <th>Title</th>
                         <th>Description</th>
+                        <th>Time</th>
+                        <th>Servings</th>
+                        <th>Ingredients</th>
+                        <th>Instructions</th>
+                        <th>Tags</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,7 +42,45 @@
                         :key="recipe._id"
                     >
                         <td>{{ recipe.title }}</td>
-                        <td>{{ recipe.body }}</td>
+                        <td>{{ recipe.description }}</td>
+                        <td>
+                            <ul>
+                                <li v-if="recipe.time.preparation">
+                                    Preparation: {{ recipe.time.preparation }}
+                                </li>
+                                <li>Cooking: {{ recipe.time.cooking }}</li>
+                            </ul>
+                        </td>
+                        <td>{{ recipe.servings }}</td>
+                        <td>
+                            <ul>
+                                <li
+                                    v-for="ingredient in recipe.ingredients"
+                                    :key="ingredient._id"
+                                >
+                                    {{ ingredient.quantity }}
+                                    {{ ingredient.units }}
+                                    {{ ingredient.name }}
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li
+                                    v-for="step in recipe.instructions"
+                                    :key="step._id"
+                                >
+                                    Step{{ step.position }} - {{ step.content }}
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li v-for="tag in recipe.tags" :key="tag">
+                                    {{ tag }}
+                                </li>
+                            </ul>
+                        </td>
                         <td>
                             <button @click.stop="showEditRecipe(index)">
                                 Edit
@@ -57,7 +104,7 @@
 
             <div v-for="recipe in searchResult" :key="recipe._id">
                 <div>{{ recipe.title }}</div>
-                <div>{{ recipe.body }}</div>
+                <div>{{ recipe.description }}</div>
             </div>
         </div>
         <div v-if="selectedView === 'edit'">
@@ -66,8 +113,12 @@
             <label for="titleInput">Title: </label>
             <input v-model="selectedRecipe.title" type="text" id="titleInput" />
 
-            <label for="bodyInput">Description: </label>
-            <input v-model="selectedRecipe.body" type="text" id="bodyInput" />
+            <label for="descriptionInput">Description: </label>
+            <input
+                v-model="selectedRecipe.description"
+                type="text"
+                id="descriptionInput"
+            />
 
             <button @click="editRecipe">Save</button>
         </div>
@@ -76,7 +127,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
-import { Recipe } from '@/api/recipes/recipe';
+import { Recipe, RecipeClass } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import { useRouter } from 'vue-router';
@@ -96,10 +147,7 @@ export default defineComponent({
 
         const recipes = ref<Recipe[]>([]);
 
-        const newRecipe = ref<Recipe>({
-            title: '',
-            body: '',
-        });
+        const newRecipe = ref<Recipe>(new RecipeClass());
 
         const isSearching = ref(false);
 
@@ -123,10 +171,7 @@ export default defineComponent({
 
         function showAddRecipe() {
             selectedView.value = selectedView.value === 'add' ? null : 'add';
-            newRecipe.value = {
-                title: '',
-                body: '',
-            };
+            newRecipe.value = new RecipeClass();
         }
 
         function addRecipe() {
