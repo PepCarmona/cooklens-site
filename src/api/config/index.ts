@@ -3,7 +3,8 @@ const backend = {
     production: 'https://cooklens.herokuapp.com',
 };
 
-const proxy = backend.local;
+const proxy =
+    process.env.API === 'production' ? backend.production : backend.local;
 
 export const URI = {
     recipes: {
