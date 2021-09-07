@@ -19,6 +19,66 @@
                 id="descriptionInput"
             />
 
+            <div>
+                <label for="prepTimeInput">Preparation Time: </label>
+                <input
+                    v-model="newRecipe.time.preparation"
+                    type="number"
+                    min="0"
+                    id="prepTimeInput"
+                />
+
+                <label for="cookTimeInput">Cooking Time: </label>
+                <input
+                    v-model="newRecipe.time.cooking"
+                    type="number"
+                    min="0"
+                    id="cookTimeInput"
+                />
+            </div>
+
+            <label for="servingsInput">Servings: </label>
+            <input
+                v-model="newRecipe.servings"
+                type="number"
+                min="0"
+                id="servingsInput"
+            />
+
+            <div>
+                Ingredients:
+                <div
+                    v-for="ingredient in newRecipe.ingredients"
+                    :key="ingredient._id"
+                >
+                    <input
+                        v-model="ingredient.quantity"
+                        type="number"
+                        min="0"
+                    />
+                    <input v-model="ingredient.units" type="text" />
+                    <input v-model="ingredient.name" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
+            <div>
+                Instructions:
+                <div v-for="step in newRecipe.instructions" :key="step._id">
+                    Step {{ step.position }} -
+                    <input v-model="step.content" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
+            <div>
+                Tags:
+                <div v-for="tag in newRecipe.tags" :key="tag">
+                    <input v-model="tag.value" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
             <button @click="addRecipe">Save</button>
         </div>
         <div v-if="selectedView === 'view' && !isSearching">
@@ -120,6 +180,69 @@
                 id="descriptionInput"
             />
 
+            <div>
+                <label for="prepTimeInput">Preparation Time: </label>
+                <input
+                    v-model="selectedRecipe.time.preparation"
+                    type="number"
+                    min="0"
+                    id="prepTimeInput"
+                />
+
+                <label for="cookTimeInput">Cooking Time: </label>
+                <input
+                    v-model="selectedRecipe.time.cooking"
+                    type="number"
+                    min="0"
+                    id="cookTimeInput"
+                />
+            </div>
+
+            <label for="servingsInput">Servings: </label>
+            <input
+                v-model="selectedRecipe.servings"
+                type="number"
+                min="0"
+                id="servingsInput"
+            />
+
+            <div>
+                Ingredients:
+                <div
+                    v-for="ingredient in selectedRecipe.ingredients"
+                    :key="ingredient._id"
+                >
+                    <input
+                        v-model="ingredient.quantity"
+                        type="number"
+                        min="0"
+                    />
+                    <input v-model="ingredient.units" type="text" />
+                    <input v-model="ingredient.name" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
+            <div>
+                Instructions:
+                <div
+                    v-for="step in selectedRecipe.instructions"
+                    :key="step._id"
+                >
+                    Step {{ step.position }} -
+                    <input v-model="step.content" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
+            <div>
+                Tags:
+                <div v-for="tag in selectedRecipe.tags" :key="tag">
+                    <input v-model="tag.value" type="text" />
+                </div>
+                <button>Add</button>
+            </div>
+
             <button @click="editRecipe">Save</button>
         </div>
     </div>
@@ -175,6 +298,22 @@ export default defineComponent({
         }
 
         function addRecipe() {
+            if (newRecipe.value.title === '') {
+                window.alert('Cannot save recipes with empty title');
+                return;
+            }
+
+            if (
+                newRecipe.value.ingredients.length === 0 ||
+                newRecipe.value.instructions.length === 0
+            ) {
+                const confirm = window.confirm(
+                    'Ingredients and/or instructions are empty. Do you stil want to save this recipe?'
+                );
+                if (!confirm) {
+                    return;
+                }
+            }
             axios
                 ?.post(URI.recipes.add, newRecipe.value)
                 .then(() => {
