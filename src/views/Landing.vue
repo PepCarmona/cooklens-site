@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, ref } from 'vue';
+import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 import { Recipe, FakeRecipes } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
@@ -75,6 +75,8 @@ type View = 'add' | 'edit' | 'view' | 'search';
 
 export default defineComponent({
     setup() {
+        onMounted(() => showAllRecipes());
+
         const axios: AxiosStatic | undefined = inject('axios');
 
         const selectedView = ref<View | null>(null);
@@ -144,8 +146,6 @@ export default defineComponent({
             let params = url.searchParams;
             params.append('id', id);
 
-            console.log(url.toString());
-
             if (axios) {
                 axios
                     .get<Recipe[]>(url.toString())
@@ -169,8 +169,15 @@ export default defineComponent({
         }
 
         function addRecipe() {
-            recipes.value.push(newRecipe.value);
-            selectedView.value = 'view';
+            if (axios) {
+                axios
+                    .post(URI.recipes.add, newRecipe.value)
+                    .then(() => {
+                        recipes.value.push(newRecipe.value);
+                        selectedView.value = 'view';
+                    })
+                    .catch((err) => console.error(err));
+            }
         }
 
         function showEditRecipe(index: number) {
