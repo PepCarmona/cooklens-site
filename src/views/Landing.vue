@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
-import { Recipe, FakeRecipes } from '@/api/recipes/recipe';
+import { Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 
@@ -143,9 +143,8 @@ export default defineComponent({
         }
 
         function showRecipeDetails(id: string) {
-            let url = new URL(URI.recipes.get);
-            let params = url.searchParams;
-            params.append('id', id);
+            const url = new URL(URI.recipes.get);
+            url.searchParams.append('id', id);
 
             if (axios) {
                 axios
@@ -181,8 +180,7 @@ export default defineComponent({
             }
 
             const url = new URL(URI.recipes.update);
-            const params = url.searchParams;
-            params.append('id', selectedRecipe.value._id!);
+            url.searchParams.append('id', selectedRecipe.value._id!);
 
             if (axios) {
                 axios
@@ -200,7 +198,22 @@ export default defineComponent({
         }
 
         function deleteRecipe(index: number) {
-            recipes.value.splice(index, 1);
+            selectedIndex.value = index;
+
+            if (selectedIndex.value === null || selectedRecipe.value === null) {
+                console.error('No selected recipe');
+                return;
+            }
+
+            const url = new URL(URI.recipes.delete);
+            url.searchParams.append('id', selectedRecipe.value._id!);
+
+            if (axios) {
+                axios
+                    .delete(url.toString())
+                    .then(() => recipes.value.splice(index, 1))
+                    .catch((err) => console.error(err));
+            }
         }
 
         return {
