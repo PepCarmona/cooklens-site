@@ -3,7 +3,34 @@
         <div v-if="isLoading">Loading...</div>
         <div v-else>
             <h1>{{ recipe.title }}</h1>
-            <div>{{ recipe.body }}</div>
+            <div>{{ recipe.description }}</div>
+            <ul>
+                <li v-if="recipe.time.preparation">
+                    Preparation: {{ recipe.time.preparation }}
+                </li>
+                <li>Cooking: {{ recipe.time.cooking }}</li>
+            </ul>
+            <div>{{ recipe.servings }}</div>
+            <ul>
+                <li
+                    v-for="ingredient in recipe.ingredients"
+                    :key="ingredient._id"
+                >
+                    {{ ingredient.quantity }}
+                    {{ ingredient.units }}
+                    {{ ingredient.name }}
+                </li>
+            </ul>
+            <ul>
+                <li v-for="step in recipe.instructions" :key="step._id">
+                    Step{{ step.position }} - {{ step.content }}
+                </li>
+            </ul>
+            <ul>
+                <li v-for="tag in recipe.tags" :key="tag">
+                    {{ tag }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
