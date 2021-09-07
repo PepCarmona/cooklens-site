@@ -164,7 +164,10 @@ export default defineComponent({
 
         function searchRecipeByTitle(value: string) {
             searchResult.value = recipes.value.filter(
-                (recipe) => recipe.title === value
+                (recipe) =>
+                    value.length > 0 &&
+                    recipe.title.substr(0, value.length).toLowerCase() ===
+                        value.toLowerCase()
             );
         }
 
