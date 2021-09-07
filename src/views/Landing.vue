@@ -55,12 +55,12 @@
             <h3>Edit recipe nº {{ selectedIndex + 1 }}</h3>
 
             <label for="titleInput">Title: </label>
-            <input v-model="newRecipe.title" type="text" id="titleInput" />
+            <input v-model="selectedRecipe.title" type="text" id="titleInput" />
 
             <label for="bodyInput">Description: </label>
-            <input v-model="newRecipe.body" type="text" id="bodyInput" />
+            <input v-model="selectedRecipe.body" type="text" id="bodyInput" />
 
-            <button @click="editRecipe(selectedIndex)">Save</button>
+            <button @click="editRecipe">Save</button>
         </div>
     </div>
 </template>
@@ -113,23 +113,24 @@ export default defineComponent({
             };
         }
 
-        // function getAllRecipes(): Promise<AxiosResponse<Recipe[]>> | null {
-        //     if (!axios) {
-        //         return null;
-        //     }
-        //     return axios.get<Recipe[]>(URI.recipes.get);
-        // }
-
-        // function getRecipeById(id: string): Promise<Recipe | null> {
-        //     return axios.get(`${URI.recipes.get}?id=${id}`);
-        // }
+        function addRecipe() {
+            if (axios) {
+                axios
+                    .post(URI.recipes.add, newRecipe.value)
+                    .then(() => {
+                        recipes.value.push(newRecipe.value);
+                        selectedView.value = 'view';
+                    })
+                    .catch((err) => console.error(err));
+            }
+        }
 
         function showAllRecipes() {
             if (selectedView.value === 'view') {
                 selectedView.value = null;
                 return;
             }
-            selectedView.value = 'view';
+            setTimeout(() => (selectedView.value = 'view'), 100);
             if (axios) {
                 axios
                     .get<Recipe[]>(URI.recipes.get)
@@ -148,10 +149,10 @@ export default defineComponent({
 
             if (axios) {
                 axios
-                    .get<Recipe[]>(url.toString())
+                    .get<Recipe>(url.toString())
                     .then(
-                        (response: AxiosResponse<Recipe[]>) =>
-                            (recipes.value = response.data)
+                        (response: AxiosResponse<Recipe>) =>
+                            (recipes.value = [response.data])
                     )
                     .catch((err) => console.error(err));
             }
@@ -168,29 +169,34 @@ export default defineComponent({
             );
         }
 
-        function addRecipe() {
+        function showEditRecipe(index: number) {
+            selectedView.value = 'edit';
+            selectedIndex.value = index;
+        }
+
+        function editRecipe() {
+            if (selectedIndex.value === null || selectedRecipe.value === null) {
+                console.error('No selected recipe');
+                return;
+            }
+
+            const url = new URL(URI.recipes.update);
+            const params = url.searchParams;
+            params.append('id', selectedRecipe.value._id!);
+
             if (axios) {
                 axios
-                    .post(URI.recipes.add, newRecipe.value)
+                    .put(url.toString(), selectedRecipe.value)
                     .then(() => {
-                        recipes.value.push(newRecipe.value);
+                        recipes.value.splice(
+                            selectedIndex.value!,
+                            1,
+                            selectedRecipe.value!
+                        );
                         selectedView.value = 'view';
                     })
                     .catch((err) => console.error(err));
             }
-        }
-
-        function showEditRecipe(index: number) {
-            selectedView.value = 'edit';
-            selectedIndex.value = index;
-            if (selectedRecipe.value !== null) {
-                newRecipe.value = selectedRecipe.value;
-            }
-        }
-
-        function editRecipe(index: number) {
-            recipes.value.splice(index, 1, newRecipe.value);
-            selectedView.value = 'view';
         }
 
         function deleteRecipe(index: number) {
@@ -207,6 +213,7 @@ export default defineComponent({
             showEditRecipe,
             editRecipe,
             deleteRecipe,
+            selectedRecipe,
         };
     },
 });
