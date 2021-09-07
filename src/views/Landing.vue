@@ -123,14 +123,37 @@ export default defineComponent({
         // }
 
         function showAllRecipes() {
-            selectedView.value = selectedView.value === 'view' ? null : 'view';
+            if (selectedView.value === 'view') {
+                selectedView.value = null;
+                return;
+            }
+            selectedView.value = 'view';
             if (axios) {
                 axios
                     .get<Recipe[]>(URI.recipes.get)
                     .then(
                         (response: AxiosResponse<Recipe[]>) =>
                             (recipes.value = response.data)
-                    );
+                    )
+                    .catch((err) => console.error(err));
+            }
+        }
+
+        function showRecipeDetails(id: string) {
+            let url = new URL(URI.recipes.get);
+            let params = url.searchParams;
+            params.append('id', id);
+
+            console.log(url.toString());
+
+            if (axios) {
+                axios
+                    .get<Recipe[]>(url.toString())
+                    .then(
+                        (response: AxiosResponse<Recipe[]>) =>
+                            (recipes.value = response.data)
+                    )
+                    .catch((err) => console.error(err));
             }
         }
 

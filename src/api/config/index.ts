@@ -1,5 +1,5 @@
 const backend = {
-    local: '//localhost:4000',
+    local: 'http://localhost:4000',
     production: 'https://cooklens.herokuapp.com',
 };
 
