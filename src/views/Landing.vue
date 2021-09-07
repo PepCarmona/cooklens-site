@@ -5,6 +5,7 @@
             <button @click="showAllRecipes">View all recipes</button>
             <button @click="showSearchRecipe">Search recipe</button>
         </div>
+        <div v-if="isSearching">Loading</div>
         <div v-if="selectedView === 'add'">
             <h3>New recipe</h3>
 
@@ -16,7 +17,7 @@
 
             <button @click="addRecipe">Save</button>
         </div>
-        <div v-if="selectedView === 'view'">
+        <div v-if="selectedView === 'view' && !isSearching">
             <h3>Total number of recipes: {{ recipes.length }}</h3>
             <table>
                 <thead>
@@ -75,28 +76,31 @@ type View = 'add' | 'edit' | 'view' | 'search';
 
 export default defineComponent({
     setup() {
-        onMounted(() => showAllRecipes());
-
         const axios: AxiosStatic | undefined = inject('axios');
 
         const selectedView = ref<View | null>(null);
         const searchResult = ref<Recipe[]>([]);
         const selectedIndex = ref<number | null>(null);
 
+        const recipes = ref<Recipe[]>([]);
+
         const newRecipe = ref<Recipe>({
             title: '',
             body: '',
         });
 
-        const recipes = ref<Recipe[]>([]);
+        const isSearching = ref(false);
 
         const data = {
             selectedView,
-            recipes,
-            searchResult,
-            newRecipe,
             selectedIndex,
+            searchResult,
+            recipes,
+            newRecipe,
+            isSearching,
         };
+
+        onMounted(() => showAllRecipes());
 
         const selectedRecipe = computed<Recipe | null>(() => {
             if (selectedIndex.value === null) {
@@ -130,30 +134,35 @@ export default defineComponent({
                 selectedView.value = null;
                 return;
             }
+
+            isSearching.value = true;
+
             setTimeout(() => (selectedView.value = 'view'), 100);
             if (axios) {
                 axios
                     .get<Recipe[]>(URI.recipes.get)
-                    .then(
-                        (response: AxiosResponse<Recipe[]>) =>
-                            (recipes.value = response.data)
-                    )
-                    .catch((err) => console.error(err));
+                    .then((response: AxiosResponse<Recipe[]>) => {
+                        recipes.value = response.data;
+                    })
+                    .catch((err) => console.error(err))
+                    .finally(() => (isSearching.value = false));
             }
         }
 
         function showRecipeDetails(id: string) {
+            isSearching.value = true;
+
             const url = new URL(URI.recipes.get);
             url.searchParams.append('id', id);
 
             if (axios) {
                 axios
                     .get<Recipe>(url.toString())
-                    .then(
-                        (response: AxiosResponse<Recipe>) =>
-                            (recipes.value = [response.data])
-                    )
-                    .catch((err) => console.error(err));
+                    .then((response: AxiosResponse<Recipe>) => {
+                        recipes.value = [response.data];
+                    })
+                    .catch((err) => console.error(err))
+                    .finally(() => (isSearching.value = false));
             }
         }
 
