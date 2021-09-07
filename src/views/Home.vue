@@ -130,15 +130,13 @@ export default defineComponent({
         }
 
         function addRecipe() {
-            if (axios) {
-                axios
-                    .post(URI.recipes.add, newRecipe.value)
-                    .then(() => {
-                        recipes.value.push(newRecipe.value);
-                        selectedView.value = 'view';
-                    })
-                    .catch((err) => console.error(err));
-            }
+            axios
+                ?.post(URI.recipes.add, newRecipe.value)
+                .then(() => {
+                    recipes.value.push(newRecipe.value);
+                    selectedView.value = 'view';
+                })
+                .catch((err) => console.error(err));
         }
 
         function showAllRecipes() {
@@ -150,15 +148,13 @@ export default defineComponent({
             isSearching.value = true;
 
             setTimeout(() => (selectedView.value = 'view'), 100);
-            if (axios) {
-                axios
-                    .get<Recipe[]>(URI.recipes.get)
-                    .then((response: AxiosResponse<Recipe[]>) => {
-                        recipes.value = response.data;
-                    })
-                    .catch((err) => console.error(err))
-                    .finally(() => (isSearching.value = false));
-            }
+            axios
+                ?.get<Recipe[]>(URI.recipes.get)
+                .then((response: AxiosResponse<Recipe[]>) => {
+                    recipes.value = response.data;
+                })
+                .catch((err) => console.error(err))
+                .finally(() => (isSearching.value = false));
         }
 
         function showSearchRecipe() {
@@ -186,19 +182,17 @@ export default defineComponent({
             const url = new URL(URI.recipes.update);
             url.searchParams.append('id', selectedRecipe.value._id!);
 
-            if (axios) {
-                axios
-                    .put(url.toString(), selectedRecipe.value)
-                    .then(() => {
-                        recipes.value.splice(
-                            selectedIndex.value!,
-                            1,
-                            selectedRecipe.value!
-                        );
-                        selectedView.value = 'view';
-                    })
-                    .catch((err) => console.error(err));
-            }
+            axios
+                ?.put(url.toString(), selectedRecipe.value)
+                .then(() => {
+                    recipes.value.splice(
+                        selectedIndex.value!,
+                        1,
+                        selectedRecipe.value!
+                    );
+                    selectedView.value = 'view';
+                })
+                .catch((err) => console.error(err));
         }
 
         function deleteRecipe(index: number) {
@@ -212,12 +206,10 @@ export default defineComponent({
             const url = new URL(URI.recipes.delete);
             url.searchParams.append('id', selectedRecipe.value._id!);
 
-            if (axios) {
-                axios
-                    .delete(url.toString())
-                    .then(() => recipes.value.splice(index, 1))
-                    .catch((err) => console.error(err));
-            }
+            axios
+                ?.delete(url.toString())
+                .then(() => recipes.value.splice(index, 1))
+                .catch((err) => console.error(err));
         }
 
         function openRecipeDetails(index: number) {
