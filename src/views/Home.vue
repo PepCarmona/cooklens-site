@@ -138,8 +138,8 @@
                         </td>
                         <td>
                             <ul>
-                                <li v-for="tag in recipe.tags" :key="tag">
-                                    {{ tag }}
+                                <li v-for="tag in recipe.tags" :key="tag._id">
+                                    {{ tag.value }}
                                 </li>
                             </ul>
                         </td>
@@ -310,20 +310,35 @@ export default defineComponent({
             return recipes.value[selectedIndex.value];
         });
 
+        const sanitizedRecipe = computed<Recipe>(() => {
+            const sanitized = selectedRecipe.value ?? newRecipe.value;
+            sanitized.ingredients = sanitized.ingredients.filter(
+                (ingredient) => !!ingredient.quantity || !!ingredient.name
+            );
+            sanitized.instructions = sanitized.instructions.filter(
+                (step) => !!step.content
+            );
+            sanitized.instructions.map(
+                (step, index) => (step.position = index + 1)
+            );
+            sanitized.tags = sanitized.tags.filter((tag) => !!tag.value);
+            return sanitized;
+        });
+
         function showAddRecipe() {
             selectedView.value = selectedView.value === 'add' ? null : 'add';
             newRecipe.value = new RecipeClass();
         }
 
         function addRecipe() {
-            if (newRecipe.value.title === '') {
+            if (sanitizedRecipe.value.title === '') {
                 window.alert('Cannot save recipes with empty title');
                 return;
             }
 
             if (
-                newRecipe.value.ingredients.length === 0 ||
-                newRecipe.value.instructions.length === 0
+                sanitizedRecipe.value.ingredients.length === 0 ||
+                sanitizedRecipe.value.instructions.length === 0
             ) {
                 const confirm = window.confirm(
                     'Ingredients and/or instructions are empty. Do you stil want to save this recipe?'
@@ -332,8 +347,9 @@ export default defineComponent({
                     return;
                 }
             }
+
             axios
-                ?.post(URI.recipes.add, newRecipe.value)
+                ?.post(URI.recipes.add, sanitizedRecipe.value)
                 .then(() => {
                     showAllRecipes();
                 })
@@ -387,14 +403,9 @@ export default defineComponent({
             url.searchParams.append('id', selectedRecipe.value._id!);
 
             axios
-                ?.put(url.toString(), selectedRecipe.value)
+                ?.put(url.toString(), sanitizedRecipe.value)
                 .then(() => {
-                    recipes.value.splice(
-                        selectedIndex.value!,
-                        1,
-                        selectedRecipe.value!
-                    );
-                    selectedView.value = 'view';
+                    showAllRecipes();
                 })
                 .catch((err) => console.error(err));
         }
