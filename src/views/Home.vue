@@ -335,8 +335,7 @@ export default defineComponent({
             axios
                 ?.post(URI.recipes.add, newRecipe.value)
                 .then(() => {
-                    recipes.value.push(newRecipe.value);
-                    selectedView.value = 'view';
+                    showAllRecipes();
                 })
                 .catch((err) => console.error(err));
         }
@@ -401,6 +400,14 @@ export default defineComponent({
         }
 
         function deleteRecipe(index: number) {
+            const confirm = window.confirm(
+                'Are you sure you want to delete this recipe?'
+            );
+
+            if (!confirm) {
+                return;
+            }
+
             selectedIndex.value = index;
 
             if (selectedIndex.value === null || selectedRecipe.value === null) {
