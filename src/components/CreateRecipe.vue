@@ -69,6 +69,7 @@
 
     <button v-if="recipe" @click="editRecipe">Save</button>
     <button v-else @click="addRecipe">Save</button>
+    <button @click="cancel">Cancel</button>
 </template>
 
 <script lang="ts">
@@ -98,7 +99,7 @@ export default defineComponent({
         index: Number,
     },
 
-    emits: ['show-all-recipes'],
+    emits: ['saved', 'cancel'],
 
     setup(props, { emit }) {
         const axios: AxiosStatic | undefined = inject('axios');
@@ -174,7 +175,7 @@ export default defineComponent({
             axios
                 ?.post(URI.recipes.add, sanitizedRecipe.value)
                 .then(() => {
-                    emit('show-all-recipes');
+                    emit('saved');
                 })
                 .catch((err) => console.error(err));
         }
@@ -186,9 +187,13 @@ export default defineComponent({
             axios
                 ?.put(url.toString(), sanitizedRecipe.value)
                 .then(() => {
-                    emit('show-all-recipes');
+                    emit('saved');
                 })
                 .catch((err) => console.error(err));
+        }
+
+        function cancel() {
+            emit('cancel');
         }
 
         return {
@@ -201,6 +206,7 @@ export default defineComponent({
             deleteTag,
             addRecipe,
             editRecipe,
+            cancel,
         };
     },
 });
