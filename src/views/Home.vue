@@ -13,11 +13,7 @@
             <input v-model="newRecipe.title" type="text" id="titleInput" />
 
             <label for="descriptionInput">Description: </label>
-            <input
-                v-model="newRecipe.description"
-                type="text"
-                id="descriptionInput"
-            />
+            <textarea v-model="newRecipe.description" id="descriptionInput" />
 
             <div>
                 <label for="prepTimeInput">Preparation Time: </label>
@@ -59,16 +55,16 @@
                     <input v-model="ingredient.units" type="text" />
                     <input v-model="ingredient.name" type="text" />
                 </div>
-                <button>Add</button>
+                <button @click="addIngredient">Add</button>
             </div>
 
             <div>
                 Instructions:
                 <div v-for="step in newRecipe.instructions" :key="step._id">
                     Step {{ step.position }} -
-                    <input v-model="step.content" type="text" />
+                    <textarea v-model="step.content" />
                 </div>
-                <button>Add</button>
+                <button @click="addStep">Add</button>
             </div>
 
             <div>
@@ -76,7 +72,7 @@
                 <div v-for="tag in newRecipe.tags" :key="tag">
                     <input v-model="tag.value" type="text" />
                 </div>
-                <button>Add</button>
+                <button @click="addTag">Add</button>
             </div>
 
             <button @click="addRecipe">Save</button>
@@ -250,7 +246,13 @@
 
 <script lang="ts">
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
-import { Recipe, RecipeClass } from '@/api/recipes/recipe';
+import {
+    IngredientClass,
+    Recipe,
+    RecipeClass,
+    StepClass,
+    TagClass,
+} from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import { useRouter } from 'vue-router';
@@ -418,6 +420,27 @@ export default defineComponent({
             });
         }
 
+        function addIngredient(event: Event, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            recipe.ingredients.push(new IngredientClass());
+        }
+
+        function addStep(event: Event, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            const newStep = new StepClass();
+            newStep.position = recipe.instructions.length + 1;
+
+            recipe.instructions.push(newStep);
+        }
+
+        function addTag(event: Event, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            recipe.tags.push(new TagClass());
+        }
+
         return {
             ...data,
             showAddRecipe,
@@ -430,6 +453,9 @@ export default defineComponent({
             deleteRecipe,
             selectedRecipe,
             openRecipeDetails,
+            addIngredient,
+            addStep,
+            addTag,
         };
     },
 });

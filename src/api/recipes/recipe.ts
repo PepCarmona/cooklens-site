@@ -3,17 +3,22 @@ interface RecipeTime {
     cooking: number;
 }
 
-interface Ingredient {
+export interface Ingredient {
     _id?: string;
     quantity: number;
-    units: string;
+    units?: string;
     name: string;
 }
 
-interface Step {
+export interface Step {
     _id?: string;
     position: number;
     content: string;
+}
+
+export interface Tag {
+    _id?: string;
+    value: string;
 }
 export interface Recipe {
     _id?: string;
@@ -23,7 +28,34 @@ export interface Recipe {
     servings: number;
     ingredients: Ingredient[];
     instructions: Step[];
-    tags: string[];
+    tags: Tag[];
+}
+
+export class IngredientClass implements Ingredient {
+    quantity: number;
+    units: string;
+    name: string;
+    constructor() {
+        this.quantity = 0;
+        this.units = '';
+        this.name = '';
+    }
+}
+
+export class StepClass implements Step {
+    position: number;
+    content: string;
+    constructor() {
+        this.position = 0;
+        this.content = '';
+    }
+}
+
+export class TagClass implements Tag {
+    value: string;
+    constructor() {
+        this.value = '';
+    }
 }
 
 export class RecipeClass implements Recipe {
@@ -33,7 +65,7 @@ export class RecipeClass implements Recipe {
     servings: number;
     ingredients: Ingredient[];
     instructions: Step[];
-    tags: string[];
+    tags: Tag[];
     constructor() {
         this.title = '';
         this.description = '';
