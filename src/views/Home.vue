@@ -20,18 +20,7 @@
             />
         </div>
         <div v-if="selectedView === 'search'">
-            <h3>Search by title</h3>
-
-            <input
-                type="text"
-                id="search"
-                @input="searchRecipeByTitle($event.target.value)"
-            />
-
-            <div v-for="recipe in searchResult" :key="recipe._id">
-                <div>{{ recipe.title }}</div>
-                <div>{{ recipe.description }}</div>
-            </div>
+            <SearchRecipe :recipes="recipes" />
         </div>
     </div>
 </template>
@@ -43,6 +32,7 @@ import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import CreateRecipe from '@/components/CreateRecipe.vue';
 import RecipeList from '@/components/RecipeList.vue';
+import SearchRecipe from '@/components/SearchRecipe.vue';
 
 type View = 'add' | 'edit' | 'view' | 'search';
 
@@ -52,13 +42,13 @@ export default defineComponent({
     components: {
         CreateRecipe,
         RecipeList,
+        SearchRecipe,
     },
 
     setup() {
         const axios: AxiosStatic | undefined = inject('axios');
 
         const selectedView = ref<View | null>(null);
-        const searchResult = ref<Recipe[]>([]);
 
         const recipes = ref<Recipe[]>([]);
 
@@ -66,7 +56,6 @@ export default defineComponent({
 
         const data = {
             selectedView,
-            searchResult,
             recipes,
             isSearching,
         };
@@ -105,22 +94,12 @@ export default defineComponent({
                 selectedView.value === 'search' ? null : 'search';
         }
 
-        function searchRecipeByTitle(value: string) {
-            searchResult.value = recipes.value.filter(
-                (recipe) =>
-                    value.length > 0 &&
-                    recipe.title.substr(0, value.length).toLowerCase() ===
-                        value.toLowerCase()
-            );
-        }
-
         return {
             ...data,
             showAddRecipe,
             showAllRecipes,
             getAllRecipes,
             showSearchRecipe,
-            searchRecipeByTitle,
         };
     },
 });
