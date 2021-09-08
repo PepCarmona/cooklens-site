@@ -4,13 +4,18 @@
         <div v-else>
             <h1>{{ recipe.title }}</h1>
             <div>{{ recipe.description }}</div>
+            <h3>Cooking Time:</h3>
             <ul>
                 <li v-if="recipe.time.preparation">
                     Preparation: {{ recipe.time.preparation }}
                 </li>
                 <li>Cooking: {{ recipe.time.cooking }}</li>
             </ul>
-            <div>{{ recipe.servings }}</div>
+            <div>
+                <h4>Servings:</h4>
+                {{ recipe.servings }}
+            </div>
+            <h3>Ingredients:</h3>
             <ul>
                 <li
                     v-for="ingredient in recipe.ingredients"
@@ -21,14 +26,16 @@
                     {{ ingredient.name }}
                 </li>
             </ul>
+            <h3>Instructions:</h3>
             <ul>
                 <li v-for="step in recipe.instructions" :key="step._id">
                     Step{{ step.position }} - {{ step.content }}
                 </li>
             </ul>
+            <h3 v-if="recipe.tags.length > 0">Tags:</h3>
             <ul>
-                <li v-for="tag in recipe.tags" :key="tag">
-                    {{ tag }}
+                <li v-for="tag in recipe.tags" :key="tag._id">
+                    {{ tag.value }}
                 </li>
             </ul>
         </div>

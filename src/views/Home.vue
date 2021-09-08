@@ -44,7 +44,7 @@
             <div>
                 Ingredients:
                 <div
-                    v-for="ingredient in newRecipe.ingredients"
+                    v-for="(ingredient, index) in newRecipe.ingredients"
                     :key="ingredient._id"
                 >
                     <input
@@ -54,23 +54,29 @@
                     />
                     <input v-model="ingredient.units" type="text" />
                     <input v-model="ingredient.name" type="text" />
+                    <button @click="deleteIngredient(index)">Delete</button>
                 </div>
                 <button @click="addIngredient">Add</button>
             </div>
 
             <div>
                 Instructions:
-                <div v-for="step in newRecipe.instructions" :key="step._id">
+                <div
+                    v-for="(step, index) in newRecipe.instructions"
+                    :key="step._id"
+                >
                     Step {{ step.position }} -
                     <textarea v-model="step.content" />
+                    <button @click="deleteStep(index)">Delete</button>
                 </div>
                 <button @click="addStep">Add</button>
             </div>
 
             <div>
                 Tags:
-                <div v-for="tag in newRecipe.tags" :key="tag">
+                <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
                     <input v-model="tag.value" type="text" />
+                    <button @click="deleteTag(index)">Delete</button>
                 </div>
                 <button @click="addTag">Add</button>
             </div>
@@ -170,9 +176,8 @@
             <input v-model="selectedRecipe.title" type="text" id="titleInput" />
 
             <label for="descriptionInput">Description: </label>
-            <input
+            <textarea
                 v-model="selectedRecipe.description"
-                type="text"
                 id="descriptionInput"
             />
 
@@ -205,7 +210,7 @@
             <div>
                 Ingredients:
                 <div
-                    v-for="ingredient in selectedRecipe.ingredients"
+                    v-for="(ingredient, index) in selectedRecipe.ingredients"
                     :key="ingredient._id"
                 >
                     <input
@@ -215,28 +220,39 @@
                     />
                     <input v-model="ingredient.units" type="text" />
                     <input v-model="ingredient.name" type="text" />
+                    <button @click="deleteIngredient(index, selectedRecipe)">
+                        Delete
+                    </button>
                 </div>
-                <button>Add</button>
+                <button @click="addIngredient($event, selectedRecipe)">
+                    Add
+                </button>
             </div>
 
             <div>
                 Instructions:
                 <div
-                    v-for="step in selectedRecipe.instructions"
+                    v-for="(step, index) in selectedRecipe.instructions"
                     :key="step._id"
                 >
                     Step {{ step.position }} -
-                    <input v-model="step.content" type="text" />
+                    <textarea v-model="step.content" />
+                    <button @click="deleteStep(index, selectedRecipe)">
+                        Delete
+                    </button>
                 </div>
-                <button>Add</button>
+                <button @click="addStep($event, selectedRecipe)">Add</button>
             </div>
 
             <div>
                 Tags:
-                <div v-for="tag in selectedRecipe.tags" :key="tag">
+                <div v-for="(tag, index) in selectedRecipe.tags" :key="tag">
                     <input v-model="tag.value" type="text" />
+                    <button @click="deleteTag(index, selectedRecipe)">
+                        Delete
+                    </button>
                 </div>
-                <button>Add</button>
+                <button @click="addTag($event, selectedRecipe)">Add</button>
             </div>
 
             <button @click="editRecipe">Save</button>
@@ -441,6 +457,24 @@ export default defineComponent({
             recipe.tags.push(new TagClass());
         }
 
+        function deleteIngredient(index: number, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            recipe.ingredients.splice(index, 1);
+        }
+
+        function deleteStep(index: number, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            recipe.instructions.splice(index, 1);
+        }
+
+        function deleteTag(index: number, modifyingRecipe?: Recipe) {
+            let recipe = modifyingRecipe ?? newRecipe.value;
+
+            recipe.tags.splice(index, 1);
+        }
+
         return {
             ...data,
             showAddRecipe,
@@ -456,6 +490,9 @@ export default defineComponent({
             addIngredient,
             addStep,
             addTag,
+            deleteIngredient,
+            deleteStep,
+            deleteTag,
         };
     },
 });
