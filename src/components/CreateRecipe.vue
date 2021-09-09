@@ -8,6 +8,7 @@
         v-model="newRecipe.title"
         type="text"
         id="titleInput"
+        required
     />
 
     <label for="descriptionInput">Description: </label>
@@ -26,7 +27,7 @@
         <input
             v-model="newRecipe.time.cooking"
             type="number"
-            min="0"
+            min="5"
             id="cookTimeInput"
         />
     </div>
@@ -35,8 +36,9 @@
     <input
         v-model="newRecipe.servings"
         type="number"
-        min="0"
+        min="1"
         id="servingsInput"
+        required
     />
 
     <div>
@@ -50,7 +52,7 @@
                 ref="ingredientInput"
                 v-model="ingredient.quantity"
                 type="number"
-                min="0"
+                min="1"
             />
             <input v-else v-model="ingredient.quantity" type="number" min="0" />
             <input v-model="ingredient.units" type="text" />
@@ -153,6 +155,11 @@ export default defineComponent({
                 (step, index) => (step.position = index + 1)
             );
             sanitized.tags = sanitized.tags.filter((tag) => !!tag.value);
+
+            if (sanitized.time.preparation === 0) {
+                sanitized.time.preparation = undefined;
+            }
+
             return sanitized;
         });
 
@@ -190,9 +197,22 @@ export default defineComponent({
         }
 
         function addRecipe() {
-            if (sanitizedRecipe.value.title === '') {
-                window.alert('Cannot save recipes with empty title');
+            if (!isValidRecipe()) {
                 return;
+            }
+
+            axios
+                ?.post(URI.recipes.add, sanitizedRecipe.value)
+                .then(() => {
+                    emit('saved');
+                })
+                .catch((err) => console.error(err));
+        }
+
+        function isValidRecipe(): boolean {
+            if (sanitizedRecipe.value.title === '') {
+                alert('Cannot save recipes with empty title');
+                return false;
             }
 
             if (
@@ -202,17 +222,10 @@ export default defineComponent({
                 const confirm = window.confirm(
                     'Ingredients and/or instructions are empty. Do you stil want to save this recipe?'
                 );
-                if (!confirm) {
-                    return;
-                }
+                return confirm;
             }
 
-            axios
-                ?.post(URI.recipes.add, sanitizedRecipe.value)
-                .then(() => {
-                    emit('saved');
-                })
-                .catch((err) => console.error(err));
+            return true;
         }
 
         function editRecipe() {

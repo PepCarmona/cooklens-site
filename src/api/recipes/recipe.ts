@@ -36,7 +36,7 @@ export class IngredientClass implements Ingredient {
     units: string;
     name: string;
     constructor() {
-        this.quantity = 0;
+        this.quantity = 1;
         this.units = '';
         this.name = '';
     }
@@ -70,7 +70,7 @@ export class RecipeClass implements Recipe {
         this.title = '';
         this.description = '';
         this.time = {
-            cooking: 0,
+            cooking: 5,
         };
         this.servings = 4;
         this.ingredients = [];
