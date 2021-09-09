@@ -4,7 +4,7 @@ const backend = {
 };
 
 const proxy =
-    process.env.API === 'production' ? backend.production : backend.local;
+    process.env.VUE_APP_API === 'local' ? backend.local : backend.production;
 
 export const URI = {
     recipes: {
