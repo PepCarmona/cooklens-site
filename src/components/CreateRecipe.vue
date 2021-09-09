@@ -3,7 +3,12 @@
     <h3 v-else>New recipe</h3>
 
     <label for="titleInput">Title: </label>
-    <input v-model="newRecipe.title" type="text" id="titleInput" />
+    <input
+        ref="titleInput"
+        v-model="newRecipe.title"
+        type="text"
+        id="titleInput"
+    />
 
     <label for="descriptionInput">Description: </label>
     <textarea v-model="newRecipe.description" id="descriptionInput" />
@@ -40,7 +45,14 @@
             v-for="(ingredient, index) in newRecipe.ingredients"
             :key="ingredient._id"
         >
-            <input v-model="ingredient.quantity" type="number" min="0" />
+            <input
+                v-if="index === newRecipe.ingredients.length - 1"
+                ref="ingredientInput"
+                v-model="ingredient.quantity"
+                type="number"
+                min="0"
+            />
+            <input v-else v-model="ingredient.quantity" type="number" min="0" />
             <input v-model="ingredient.units" type="text" />
             <input v-model="ingredient.name" type="text" />
             <button @click="deleteIngredient(index)">Delete</button>
@@ -52,7 +64,12 @@
         Instructions:
         <div v-for="(step, index) in newRecipe.instructions" :key="step._id">
             Step {{ step.position }} -
-            <textarea v-model="step.content" />
+            <textarea
+                v-if="index === newRecipe.instructions.length - 1"
+                ref="stepInput"
+                v-model="step.content"
+            />
+            <textarea v-else v-model="step.content" />
             <button @click="deleteStep(index)">Delete</button>
         </div>
         <button @click="addStep">Add</button>
@@ -61,7 +78,13 @@
     <div>
         Tags:
         <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
-            <input v-model="tag.value" type="text" />
+            <input
+                v-if="index === newRecipe.tags.length - 1"
+                ref="tagInput"
+                v-model="tag.value"
+                type="text"
+            />
+            <input v-else v-model="tag.value" type="text" />
             <button @click="deleteTag(index)">Delete</button>
         </div>
         <button @click="addTag">Add</button>
@@ -106,10 +129,16 @@ export default defineComponent({
 
         const newRecipe = ref<Recipe>(new RecipeClass());
 
+        const titleInput = ref<HTMLInputElement>();
+        const ingredientInput = ref<HTMLElement>();
+        const stepInput = ref<HTMLInputElement>();
+        const tagInput = ref<HTMLInputElement>();
+
         onMounted(() => {
             if (props.recipe) {
                 newRecipe.value = props.recipe;
             }
+            titleInput.value?.focus();
         });
 
         const sanitizedRecipe = computed<Recipe>(() => {
@@ -129,6 +158,8 @@ export default defineComponent({
 
         function addIngredient() {
             newRecipe.value.ingredients.push(new IngredientClass());
+
+            setTimeout(() => ingredientInput.value?.focus(), 50);
         }
 
         function addStep() {
@@ -136,10 +167,14 @@ export default defineComponent({
             newStep.position = newRecipe.value.instructions.length + 1;
 
             newRecipe.value.instructions.push(newStep);
+
+            setTimeout(() => stepInput.value?.focus(), 50);
         }
 
         function addTag() {
             newRecipe.value.tags.push(new TagClass());
+
+            setTimeout(() => tagInput.value?.focus(), 50);
         }
 
         function deleteIngredient(index: number) {
@@ -207,6 +242,10 @@ export default defineComponent({
             addRecipe,
             editRecipe,
             cancel,
+            titleInput,
+            ingredientInput,
+            stepInput,
+            tagInput,
         };
     },
 });
