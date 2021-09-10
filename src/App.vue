@@ -27,10 +27,14 @@ export default defineComponent({
 </script>
 
 <style>
+@import './assets/styles/basic.css';
 body,
 html {
     margin: 0;
     padding: 0;
+}
+body > * {
+    box-sizing: border-box;
 }
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
