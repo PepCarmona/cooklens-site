@@ -2,7 +2,9 @@
     <footer>
         <div id="mobile-sticky-footer">
             <div>
-                <HomeIcon size="xl" />
+                <router-link to="/">
+                    <HomeIcon size="xl" />
+                </router-link>
             </div>
             <div>
                 <FavIcon size="xl" />

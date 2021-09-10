@@ -55,14 +55,13 @@ header {
 #title {
     font-size: 1.3rem;
     font-weight: 600;
-    text-align: left;
-    width: 80%;
+    text-align: center;
+    width: 100%;
+    position: absolute;
 }
 
 #menu {
-    width: 20%;
-    text-align: right;
-    padding-right: 1rem;
+    display: none;
 }
 @media only screen and (min-width: 768px) {
     header {
@@ -70,10 +69,15 @@ header {
     }
     #title {
         font-size: 1.5rem;
+        text-align: left;
         width: 40%;
+        position: relative;
     }
     #menu {
+        display: block;
         width: 60%;
+        text-align: right;
+        padding-right: 1rem;
     }
 }
 </style>
