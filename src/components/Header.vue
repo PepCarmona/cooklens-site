@@ -3,7 +3,7 @@
         <div id="logo">
             <img :src="logoUrl" alt="logo" />
         </div>
-        <div id="title">Cooklens {{ width }}</div>
+        <div id="title">Cooklens</div>
         <div id="menu">Menu</div>
     </header>
 </template>

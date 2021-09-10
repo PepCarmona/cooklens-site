@@ -6,15 +6,18 @@
         <router-link to="/recipe/random?random=true">Random</router-link>
     </div>
     <router-view />
+    <Footer />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 
 export default defineComponent({
     components: {
         Header,
+        Footer,
     },
 
     setup() {
@@ -35,6 +38,7 @@ html {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
+    padding-bottom: 80px;
 }
 
 #nav {
