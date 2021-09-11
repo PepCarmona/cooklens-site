@@ -25,6 +25,14 @@ const routes: Array<RouteRecordRaw> = [
             ),
         props: (route) => ({ id: route.query.id, random: route.query.random }),
     },
+    {
+        path: '/recipe/add',
+        name: 'CreateRecipe',
+        component: () =>
+            import(
+                /* webpackChunkName: "createRecipe" */ '../components/CreateRecipe.vue'
+            ),
+    },
 ];
 
 const router = createRouter({

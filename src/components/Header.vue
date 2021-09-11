@@ -34,14 +34,12 @@
                                     to="/recipe/random?random=true"
                                     >Random</router-link
                                 >
-                                <button
-                                    @click="
-                                        showMenu = false;
-                                        showAddRecipe;
-                                    "
+
+                                <router-link
+                                    @click="showMenu = false"
+                                    to="/recipe/add"
+                                    >Add recipe</router-link
                                 >
-                                    Add recipe
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -52,7 +50,7 @@
             <router-link to="/">Home</router-link>
             <router-link to="/about">About</router-link>
             <router-link to="/recipe/random?random=true">Random</router-link>
-            <button @click="showAddRecipe">Add recipe</button>
+            <router-link to="/recipe/add">Add recipe</router-link>
         </div>
     </header>
 </template>
