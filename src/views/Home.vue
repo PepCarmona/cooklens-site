@@ -1,10 +1,5 @@
 <template>
     <div>
-        <div>
-            <button @click="showAddRecipe">Add recipe</button>
-            <button @click="showAllRecipes">View all recipes</button>
-            <button @click="showSearchRecipe">Search recipe</button>
-        </div>
         <div v-if="selectedView === 'add'">
             <CreateRecipe
                 @saved="showAllRecipes"
@@ -12,7 +7,7 @@
             />
         </div>
         <div
-            class="card-container d-flex m-auto justify-around"
+            class="card-container d-flex mt-1 m-auto justify-around"
             v-if="selectedView === 'view'"
         >
             <div v-if="isSearching">Loading...</div>

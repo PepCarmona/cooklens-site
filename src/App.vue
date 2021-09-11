@@ -1,10 +1,5 @@
 <template>
     <Header />
-    <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> |
-        <router-link to="/recipe/random?random=true">Random</router-link>
-    </div>
     <router-view />
     <Footer />
 </template>
@@ -43,17 +38,5 @@ body > * {
     text-align: center;
     color: #2c3e50;
     padding-bottom: 80px;
-}
-
-#nav {
-    padding: 30px;
-}
-
-#nav a {
-    font-weight: bold;
-    color: #2c3e50;
-}
-#nav a.router-link-exact-active {
-    color: #42b983;
 }
 </style>
