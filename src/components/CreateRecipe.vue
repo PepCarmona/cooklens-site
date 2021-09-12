@@ -1,100 +1,197 @@
 <template>
-    <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
-    <h3 v-else>New recipe</h3>
+    <div class="container">
+        <div class="row justify-between mt-0">
+            <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
+            <h3 v-else>New recipe</h3>
 
-    <label for="titleInput">Title: </label>
-    <input
-        ref="titleInput"
-        v-model="newRecipe.title"
-        type="text"
-        id="titleInput"
-        required
-    />
+            <div>
+                <button class="p-1" v-if="recipe" @click="editRecipe">
+                    <SaveIcon size="l" />
+                </button>
+                <button class="p-1" v-else @click="addRecipe">
+                    <SaveIcon size="l" />
+                </button>
+                <button class="cancel p-1" @click="cancel">
+                    <CloseIcon size="l" />
+                </button>
+            </div>
+        </div>
 
-    <label for="descriptionInput">Description: </label>
-    <textarea v-model="newRecipe.description" id="descriptionInput" />
-
-    <div>
-        <label for="prepTimeInput">Preparation Time: </label>
-        <input
-            v-model="newRecipe.time.preparation"
-            type="number"
-            min="0"
-            id="prepTimeInput"
-        />
-
-        <label for="cookTimeInput">Cooking Time: </label>
-        <input
-            v-model="newRecipe.time.cooking"
-            type="number"
-            min="5"
-            id="cookTimeInput"
-        />
-    </div>
-
-    <label for="servingsInput">Servings: </label>
-    <input
-        v-model="newRecipe.servings"
-        type="number"
-        min="1"
-        id="servingsInput"
-        required
-    />
-
-    <div>
-        Ingredients:
-        <div
-            v-for="(ingredient, index) in newRecipe.ingredients"
-            :key="ingredient._id"
-        >
+        <div class="row">
             <input
-                v-if="index === newRecipe.ingredients.length - 1"
-                ref="ingredientInput"
-                v-model="ingredient.quantity"
+                class="w-100"
+                placeholder="Title"
+                ref="titleInput"
+                v-model="newRecipe.title"
+                type="text"
+                id="titleInput"
+                required
+            />
+        </div>
+
+        <div class="row">
+            <textarea
+                class="w-100"
+                placeholder="Description"
+                v-model="newRecipe.description"
+                id="descriptionInput"
+            />
+        </div>
+
+        <div class="row recipeTime">
+            <span for="prepTimeInput" class="w-60 text-left"
+                >Preparation Time:
+            </span>
+            <div class="d-flex w-40">
+                <ArrowLeftIcon />
+                <input
+                    v-model="newRecipe.time.preparation"
+                    type="text"
+                    maxlength="3"
+                    pattern="([0-9]|[0-9]|[0-9])"
+                    min="0"
+                    id="prepTimeInput"
+                />
+                <label for="prepTimeInput">min</label>
+                <ArrowRightIcon />
+            </div>
+
+            <label for="cookTimeInput" class="w-60 text-left"
+                >Cooking Time:
+            </label>
+            <div class="d-flex w-40">
+                <ArrowLeftIcon />
+                <input
+                    @input="min5"
+                    v-model="newRecipe.time.cooking"
+                    type="text"
+                    maxlength="3"
+                    pattern="([0-9]|[0-9]|[0-9])"
+                    min="5"
+                    id="cookTimeInput"
+                />
+                <label for="cookTimeInput">min</label>
+                <ArrowRightIcon />
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="w-60 text-left" for="servingsInput">Servings: </label>
+            <input
+                class="w-40"
+                v-model="newRecipe.servings"
                 type="number"
                 min="1"
+                id="servingsInput"
+                required
             />
-            <input v-else v-model="ingredient.quantity" type="number" min="0" />
-            <input v-model="ingredient.units" type="text" />
-            <input v-model="ingredient.name" type="text" />
-            <button @click="deleteIngredient(index)">Delete</button>
         </div>
-        <button @click="addIngredient">Add</button>
-    </div>
 
-    <div>
-        Instructions:
-        <div v-for="(step, index) in newRecipe.instructions" :key="step._id">
-            Step {{ step.position }} -
-            <textarea
-                v-if="index === newRecipe.instructions.length - 1"
-                ref="stepInput"
-                v-model="step.content"
-            />
-            <textarea v-else v-model="step.content" />
-            <button @click="deleteStep(index)">Delete</button>
+        <div class="row">
+            Ingredients:
+            <div
+                class="row"
+                v-for="(ingredient, index) in newRecipe.ingredients"
+                :key="ingredient._id"
+            >
+                <input
+                    class="w-10"
+                    v-if="index === newRecipe.ingredients.length - 1"
+                    ref="ingredientInput"
+                    v-model="ingredient.quantity"
+                    type="number"
+                    min="1"
+                />
+                <input
+                    class="w-10"
+                    v-else
+                    v-model="ingredient.quantity"
+                    type="number"
+                    min="1"
+                />
+                <input
+                    class="w-20"
+                    v-model="ingredient.units"
+                    type="text"
+                    placeholder="Units"
+                />
+                <input
+                    class="w-60"
+                    v-model="ingredient.name"
+                    type="text"
+                    placeholder="Ingredient"
+                />
+                <button class="w-10 close" @click="deleteIngredient(index)">
+                    <CloseIcon />
+                </button>
+            </div>
+            <div class="w-100">
+                <button class="add mt-1" @click="addIngredient">
+                    <AddCircleIcon size="l" />
+                </button>
+            </div>
         </div>
-        <button @click="addStep">Add</button>
-    </div>
 
-    <div>
-        Tags:
-        <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
-            <input
-                v-if="index === newRecipe.tags.length - 1"
-                ref="tagInput"
-                v-model="tag.value"
-                type="text"
-            />
-            <input v-else v-model="tag.value" type="text" />
-            <button @click="deleteTag(index)">Delete</button>
+        <div class="row">
+            Instructions:
+            <div
+                class="row"
+                v-for="(step, index) in newRecipe.instructions"
+                :key="step._id"
+            >
+                <div class="w-10">
+                    <div class="stepPosition">
+                        <span>{{ step.position }}</span>
+                    </div>
+                </div>
+                <textarea
+                    class="w-80"
+                    v-if="index === newRecipe.instructions.length - 1"
+                    ref="stepInput"
+                    v-model="step.content"
+                    placeholder="Instructions"
+                />
+                <textarea
+                    class="w-80"
+                    v-else
+                    v-model="step.content"
+                    placeholder="Instructions"
+                />
+                <button class="w-10 close" @click="deleteStep(index)">
+                    <CloseIcon />
+                </button>
+            </div>
+            <div class="w-100">
+                <button class="add mt-1" @click="addStep">
+                    <AddCircleIcon size="l" />
+                </button>
+            </div>
         </div>
-        <button @click="addTag">Add</button>
-    </div>
 
-    <button v-if="recipe" @click="editRecipe">Save</button>
-    <button v-else @click="addRecipe">Save</button>
-    <button @click="cancel">Cancel</button>
+        <div class="row align-center">
+            Tags:
+            <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
+                <div class="pill">
+                    <input
+                        @input="resize"
+                        v-if="index === newRecipe.tags.length - 1"
+                        ref="tagInput"
+                        v-model="tag.value"
+                        type="text"
+                    />
+                    <input v-else v-model="tag.value" type="text" />
+                    <button class="close" @click="deleteTag(index)">
+                        <CloseIcon color="white" />
+                    </button>
+                </div>
+            </div>
+            <button class="d-flex align-center add" @click="addTag">
+                <AddCircleIcon size="l" />
+            </button>
+        </div>
+
+        <div class="row"></div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -115,6 +212,13 @@ import {
     PropType,
     ref,
 } from 'vue';
+import {
+    EOS_CLOSE_OUTLINED as CloseIcon,
+    EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
+    EOS_SAVE_OUTLINED as SaveIcon,
+    EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
+    EOS_KEYBOARD_ARROW_LEFT_OUTLINED as ArrowLeftIcon,
+} from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -122,6 +226,14 @@ export default defineComponent({
     props: {
         recipe: Object as PropType<Recipe>,
         index: Number,
+    },
+
+    components: {
+        CloseIcon,
+        AddCircleIcon,
+        SaveIcon,
+        ArrowRightIcon,
+        ArrowLeftIcon,
     },
 
     emits: ['saved', 'cancel'],
@@ -244,6 +356,20 @@ export default defineComponent({
             emit('cancel');
         }
 
+        function resize(event: Event) {
+            const input = event.target as HTMLInputElement;
+            //TODO - take into account m is bigger and i is smalloer
+            input.style.width = `${input.value.length + 1}ch`;
+        }
+
+        function min5(event: Event) {
+            const input = event.target as HTMLInputElement;
+
+            if (parseInt(input.value) < 5) {
+                input.value = '5';
+            }
+        }
+
         return {
             newRecipe,
             addIngredient,
@@ -259,7 +385,79 @@ export default defineComponent({
             ingredientInput,
             stepInput,
             tagInput,
+            resize,
+            min5,
         };
     },
 });
 </script>
+
+<style scoped>
+.container {
+    position: relative;
+    /* width: 90%; */
+    margin-left: 5vw;
+    margin-right: 5vw;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.recipeTime input {
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: right;
+    width: 4ch;
+    font-size: 1rem;
+    max-width: 80px;
+}
+.recipeTime input:focus {
+    border-bottom: 1px solid black;
+}
+.recipeTime label {
+    text-align: left;
+}
+
+.stepPosition {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    width: 25px;
+    background-color: grey;
+    border-radius: 50px;
+    color: white;
+}
+.stepPosition span {
+    line-height: 0;
+}
+
+button.close {
+    display: flex;
+    align-items: flex-start;
+}
+button.cancel {
+    margin-right: -5vw;
+}
+
+.row {
+    margin-top: 1rem;
+}
+
+.pill {
+    display: flex;
+    background-color: grey;
+    border-radius: 50px;
+    padding: 0.5rem;
+}
+.pill input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    width: 1ch;
+}
+.pill input:focus {
+    border-bottom: 1px solid white;
+}
+</style>

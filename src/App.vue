@@ -28,7 +28,7 @@ html {
     margin: 0;
     padding: 0;
 }
-body > * {
+body * {
     box-sizing: border-box;
 }
 #app {

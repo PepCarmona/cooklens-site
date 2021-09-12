@@ -1,5 +1,6 @@
 .row {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
 }
 
@@ -258,4 +259,10 @@
 }
 .align-end {
     align-items: flex-end;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    outline: none;
 }

@@ -70,6 +70,7 @@ export class RecipeClass implements Recipe {
         this.title = '';
         this.description = '';
         this.time = {
+            preparation: 0,
             cooking: 5,
         };
         this.servings = 4;
