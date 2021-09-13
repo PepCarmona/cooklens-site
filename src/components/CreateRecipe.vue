@@ -19,6 +19,7 @@
 
         <div class="row">
             <input
+                @input="capitalizeFirstLetter"
                 class="w-100"
                 placeholder="Title"
                 ref="titleInput"
@@ -31,6 +32,7 @@
 
         <div class="row">
             <textarea
+                @input="capitalizeFirstLetter"
                 class="w-100"
                 placeholder="Description"
                 v-model="newRecipe.description"
@@ -132,6 +134,7 @@
                         </div>
                     </div>
                     <textarea
+                        @input="capitalizeFirstLetter"
                         class="w-80"
                         v-model="step.content"
                         placeholder="Instructions"
@@ -369,11 +372,15 @@ export default defineComponent({
             input.style.width = `${input.value.length + 1}ch`;
         }
 
-        function min5(event: Event) {
-            const input = event.target as HTMLInputElement;
+        function capitalizeFirstLetter(event: Event) {
+            const input = event.target as
+                | HTMLInputElement
+                | HTMLTextAreaElement;
 
-            if (parseInt(input.value) < 5) {
-                input.value = '5';
+            const firstLetter = input.value.charAt(0);
+
+            if (firstLetter === firstLetter.toLowerCase()) {
+                input.value = firstLetter.toUpperCase() + input.value.slice(1);
             }
         }
 
@@ -393,7 +400,7 @@ export default defineComponent({
             stepInput,
             tagInput,
             resize,
-            min5,
+            capitalizeFirstLetter,
         };
     },
 });
