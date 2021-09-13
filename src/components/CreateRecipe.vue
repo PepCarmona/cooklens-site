@@ -4,7 +4,7 @@
             <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
             <h3 v-else>New recipe</h3>
 
-            <div>
+            <div class="d-flex">
                 <button class="p-1" v-if="recipe" @click="editRecipe">
                     <SaveIcon size="l" />
                 </button>
@@ -109,13 +109,17 @@
                     type="text"
                     placeholder="Ingredient"
                 />
-                <button class="w-10 close" @click="deleteIngredient(index)">
-                    <CloseIcon />
-                </button>
+                <div class="w-10 d-flex-center">
+                    <button class="close" @click="deleteIngredient(index)">
+                        <CloseIcon class="default" />
+                        <CloseIcon class="hover" color="red" />
+                    </button>
+                </div>
             </div>
-            <div class="w-100">
-                <button class="add mt-1" @click="addIngredient">
-                    <AddCircleIcon size="l" />
+            <div class="row d-flex-center">
+                <button class="add" @click="addIngredient">
+                    <AddCircleIcon class="default" size="l" />
+                    <AddCircleFilledIcon class="hover" size="l" />
                 </button>
             </div>
         </div>
@@ -145,13 +149,17 @@
                     v-model="step.content"
                     placeholder="Instructions"
                 />
-                <button class="w-10 close" @click="deleteStep(index)">
-                    <CloseIcon />
-                </button>
+                <div class="w-10 d-flex-center">
+                    <button class="close" @click="deleteStep(index)">
+                        <CloseIcon class="default" />
+                        <CloseIcon class="hover" color="red" />
+                    </button>
+                </div>
             </div>
-            <div class="w-100">
-                <button class="add mt-1" @click="addStep">
-                    <AddCircleIcon size="l" />
+            <div class="row d-flex-center">
+                <button class="add" @click="addStep">
+                    <AddCircleIcon class="default" size="l" />
+                    <AddCircleFilledIcon class="hover" size="l" />
                 </button>
             </div>
         </div>
@@ -159,7 +167,7 @@
         <div class="row align-center">
             Tags:
             <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
-                <div class="pill">
+                <div class="pill ml-05">
                     <input
                         @input="resize"
                         v-if="index === newRecipe.tags.length - 1"
@@ -169,13 +177,17 @@
                     />
                     <input v-else v-model="tag.value" type="text" />
                     <button class="close" @click="deleteTag(index)">
-                        <CloseIcon color="white" />
+                        <CloseIcon class="default" color="white" />
+                        <CloseIcon class="hover" color="red" />
                     </button>
                 </div>
             </div>
-            <button class="d-flex align-center add" @click="addTag">
-                <AddCircleIcon size="l" />
-            </button>
+            <div class="ml-05">
+                <button class="add" @click="addTag">
+                    <AddCircleIcon class="default" size="l" />
+                    <AddCircleFilledIcon class="hover" size="l" />
+                </button>
+            </div>
         </div>
 
         <div class="row"></div>
@@ -203,6 +215,7 @@ import {
 import {
     EOS_CLOSE_OUTLINED as CloseIcon,
     EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
+    EOS_ADD_CIRCLE_FILLED as AddCircleFilledIcon,
     EOS_SAVE_OUTLINED as SaveIcon,
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
@@ -218,6 +231,7 @@ export default defineComponent({
     components: {
         CloseIcon,
         AddCircleIcon,
+        AddCircleFilledIcon,
         SaveIcon,
         CustomNumberInput,
     },
@@ -405,9 +419,47 @@ export default defineComponent({
 button.close {
     display: flex;
     align-items: flex-start;
+    justify-content: left;
+    height: 100%;
+    margin-left: 0.5rem;
 }
+button.close:hover,
+button.close:focus {
+    background-color: transparent;
+}
+button.close > .hover {
+    display: none;
+}
+button.close:hover > .default,
+button.close:focus > .default {
+    display: none;
+}
+button.close:hover > .hover,
+button.close:focus > .hover {
+    display: flex;
+}
+
 button.cancel {
     margin-right: -5vw;
+}
+
+button.add {
+    border-radius: 50px;
+}
+button.add:hover,
+button.add:focus {
+    background-color: transparent;
+}
+button.add > .hover {
+    display: none;
+}
+button.add:hover > .default,
+button.add:focus > .default {
+    display: none;
+}
+button.add:hover > .hover,
+button.add:focus > .hover {
+    display: flex;
 }
 
 .row {

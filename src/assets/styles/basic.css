@@ -262,7 +262,16 @@
 }
 
 button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: transparent;
     border: none;
     outline: none;
+    padding: 0;
+    cursor: pointer;
+}
+button:focus,
+button:hover {
+    background-color: lightgrey;
 }
