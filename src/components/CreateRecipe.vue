@@ -77,45 +77,39 @@
 
         <div class="row">
             Ingredients:
-            <div
-                class="row"
-                v-for="(ingredient, index) in newRecipe.ingredients"
-                :key="ingredient._id"
-            >
-                <input
-                    class="w-10"
-                    v-if="index === newRecipe.ingredients.length - 1"
-                    ref="ingredientInput"
-                    v-model="ingredient.quantity"
-                    type="number"
-                    min="1"
-                />
-                <input
-                    class="w-10"
-                    v-else
-                    v-model="ingredient.quantity"
-                    type="number"
-                    min="1"
-                />
-                <input
-                    class="w-20"
-                    v-model="ingredient.units"
-                    type="text"
-                    placeholder="Units"
-                />
-                <input
-                    class="w-60"
-                    v-model="ingredient.name"
-                    type="text"
-                    placeholder="Ingredient"
-                />
-                <div class="w-10 d-flex-center">
-                    <button class="close" @click="deleteIngredient(index)">
-                        <CloseIcon class="default" />
-                        <CloseIcon class="hover" color="red" />
-                    </button>
+            <div class="row mt-0" ref="ingredientInput">
+                <div
+                    class="row"
+                    v-for="(ingredient, index) in newRecipe.ingredients"
+                    :key="ingredient._id"
+                >
+                    <input
+                        class="w-10"
+                        v-model="ingredient.quantity"
+                        type="number"
+                        min="1"
+                    />
+                    <input
+                        class="w-20"
+                        v-model="ingredient.units"
+                        type="text"
+                        placeholder="Units"
+                    />
+                    <input
+                        class="w-60"
+                        v-model="ingredient.name"
+                        type="text"
+                        placeholder="Ingredient"
+                    />
+                    <div class="w-10 d-flex-center">
+                        <button class="close" @click="deleteIngredient(index)">
+                            <CloseIcon class="default" />
+                            <CloseIcon class="hover" color="red" />
+                        </button>
+                    </div>
                 </div>
             </div>
+
             <div class="row d-flex-center">
                 <button class="add" @click="addIngredient">
                     <AddCircleIcon class="default" size="l" />
@@ -126,34 +120,28 @@
 
         <div class="row">
             Instructions:
-            <div
-                class="row"
-                v-for="(step, index) in newRecipe.instructions"
-                :key="step._id"
-            >
-                <div class="w-10">
-                    <div class="stepPosition">
-                        <span>{{ step.position }}</span>
+            <div class="row mt-0" ref="stepInput">
+                <div
+                    class="row"
+                    v-for="(step, index) in newRecipe.instructions"
+                    :key="step._id"
+                >
+                    <div class="w-10">
+                        <div class="stepPosition">
+                            <span>{{ step.position }}</span>
+                        </div>
                     </div>
-                </div>
-                <textarea
-                    class="w-80"
-                    v-if="index === newRecipe.instructions.length - 1"
-                    ref="stepInput"
-                    v-model="step.content"
-                    placeholder="Instructions"
-                />
-                <textarea
-                    class="w-80"
-                    v-else
-                    v-model="step.content"
-                    placeholder="Instructions"
-                />
-                <div class="w-10 d-flex-center">
-                    <button class="close" @click="deleteStep(index)">
-                        <CloseIcon class="default" />
-                        <CloseIcon class="hover" color="red" />
-                    </button>
+                    <textarea
+                        class="w-80"
+                        v-model="step.content"
+                        placeholder="Instructions"
+                    />
+                    <div class="w-10 d-flex-center">
+                        <button class="close" @click="deleteStep(index)">
+                            <CloseIcon class="default" />
+                            <CloseIcon class="hover" color="red" />
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="row d-flex-center">
@@ -166,16 +154,13 @@
 
         <div class="row align-center">
             Tags:
-            <div v-for="(tag, index) in newRecipe.tags" :key="tag._id">
-                <div class="pill ml-05">
-                    <input
-                        @input="resize"
-                        v-if="index === newRecipe.tags.length - 1"
-                        ref="tagInput"
-                        v-model="tag.value"
-                        type="text"
-                    />
-                    <input v-else v-model="tag.value" type="text" />
+            <div class="d-flex" ref="tagInput">
+                <div
+                    v-for="(tag, index) in newRecipe.tags"
+                    :key="tag._id"
+                    class="pill ml-05"
+                >
+                    <input @input="resize" v-model="tag.value" type="text" />
                     <button class="close" @click="deleteTag(index)">
                         <CloseIcon class="default" color="white" />
                         <CloseIcon class="hover" color="red" />
@@ -208,6 +193,7 @@ import {
     computed,
     defineComponent,
     inject,
+    nextTick,
     onMounted,
     PropType,
     ref,
@@ -246,7 +232,7 @@ export default defineComponent({
         const titleInput = ref<HTMLInputElement>();
         const ingredientInput = ref<HTMLElement>();
         const stepInput = ref<HTMLInputElement>();
-        const tagInput = ref<HTMLInputElement>();
+        const tagInput = ref<HTMLDivElement>();
 
         onMounted(() => {
             if (props.recipe) {
@@ -275,25 +261,46 @@ export default defineComponent({
             return sanitized;
         });
 
-        function addIngredient() {
+        async function addIngredient() {
             newRecipe.value.ingredients.push(new IngredientClass());
 
-            setTimeout(() => ingredientInput.value?.focus(), 50);
+            await nextTick();
+
+            const lastInput = ingredientInput.value?.lastElementChild
+                ?.firstElementChild as HTMLInputElement;
+
+            await nextTick();
+
+            lastInput.focus();
         }
 
-        function addStep() {
+        async function addStep() {
             const newStep = new StepClass();
             newStep.position = newRecipe.value.instructions.length + 1;
 
             newRecipe.value.instructions.push(newStep);
 
-            setTimeout(() => stepInput.value?.focus(), 50);
+            await nextTick();
+
+            const lastInput = stepInput.value?.lastElementChild
+                ?.children[1] as HTMLTextAreaElement;
+
+            await nextTick();
+
+            lastInput.focus();
         }
 
-        function addTag() {
+        async function addTag() {
             newRecipe.value.tags.push(new TagClass());
 
-            setTimeout(() => tagInput.value?.focus(), 50);
+            await nextTick();
+
+            const lastInput = tagInput.value?.lastElementChild
+                ?.firstElementChild as HTMLInputElement;
+
+            await nextTick();
+
+            lastInput.focus();
         }
 
         function deleteIngredient(index: number) {
