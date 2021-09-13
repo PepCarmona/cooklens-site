@@ -1,9 +1,9 @@
 <template>
-    <div class="container">
+    <div class="container" :class="{ slim }">
         <div class="arrow" :class="{ disabled: valueIsMin }">
             <ArrowLeftIcon @click="removeToValue" color="white" />
         </div>
-        <div class="container inner">
+        <div class="container inner" :class="{ slim }">
             <input
                 inputmode="numeric"
                 @change="handleInput"
@@ -13,8 +13,9 @@
                 pattern="([0-9]|[0-9]|[0-9])"
                 :id="id"
                 ref="input"
+                :class="{ 'text-center': !label }"
             />
-            <label :for="id">{{ label }}</label>
+            <label v-if="label" :for="id">{{ label }}</label>
         </div>
         <div class="arrow" :class="{ disabled: valueIsMax }">
             <ArrowRightIcon @click="addToValue" color="white" />
@@ -46,6 +47,7 @@ export default defineComponent({
             default: 1,
         },
         label: String,
+        slim: Boolean,
     },
 
     components: {
@@ -167,6 +169,9 @@ label {
     flex-wrap: nowrap !important;
     align-items: center;
     margin: 0 !important;
+}
+.container.slim {
+    height: 25px;
 }
 
 .arrow {

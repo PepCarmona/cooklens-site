@@ -90,12 +90,13 @@
                         v-for="(ingredient, index) in newRecipe.ingredients"
                         :key="ingredient._id"
                     >
-                        <input
-                            class="w-10"
-                            v-model="ingredient.quantity"
-                            type="number"
-                            min="1"
-                        />
+                        <div>
+                            <CustomNumberInput
+                                v-model="ingredient.quantity"
+                                :min="1"
+                                slim
+                            />
+                        </div>
                         <input
                             class="w-20"
                             v-model="ingredient.units"
