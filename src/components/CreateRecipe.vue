@@ -39,52 +39,40 @@
         </div>
 
         <div class="row recipeTime">
-            <span for="prepTimeInput" class="w-60 text-left"
-                >Preparation Time:
-            </span>
-            <div class="d-flex w-40">
-                <ArrowLeftIcon />
-                <input
-                    v-model="newRecipe.time.preparation"
-                    type="text"
-                    maxlength="3"
-                    pattern="([0-9]|[0-9]|[0-9])"
-                    min="0"
-                    id="prepTimeInput"
-                />
-                <label for="prepTimeInput">min</label>
-                <ArrowRightIcon />
+            <div class="row">
+                <span class="w-60 text-left">Preparation Time: </span>
+                <div class="d-flex w-40 justify-center">
+                    <CustomNumberInput
+                        :id="'prepTimeInput'"
+                        :label="'min'"
+                        v-model="newRecipe.time.preparation"
+                        :min="0"
+                    />
+                </div>
             </div>
 
-            <label for="cookTimeInput" class="w-60 text-left"
-                >Cooking Time:
-            </label>
-            <div class="d-flex w-40">
-                <ArrowLeftIcon />
-                <input
-                    @input="min5"
-                    v-model="newRecipe.time.cooking"
-                    type="text"
-                    maxlength="3"
-                    pattern="([0-9]|[0-9]|[0-9])"
-                    min="5"
-                    id="cookTimeInput"
-                />
-                <label for="cookTimeInput">min</label>
-                <ArrowRightIcon />
+            <div class="row">
+                <span class="w-60 text-left">Cooking Time: </span>
+                <div class="d-flex w-40 justify-center">
+                    <CustomNumberInput
+                        :id="'cookTimeInput'"
+                        :label="'min'"
+                        v-model="newRecipe.time.cooking"
+                        :min="5"
+                    />
+                </div>
             </div>
         </div>
 
         <div class="row">
-            <label class="w-60 text-left" for="servingsInput">Servings: </label>
-            <input
-                class="w-40"
-                v-model="newRecipe.servings"
-                type="number"
-                min="1"
-                id="servingsInput"
-                required
-            />
+            <span class="w-60 text-left">Servings: </span>
+            <div class="d-flex w-40 justify-center">
+                <CustomNumberInput
+                    :id="'servingsInput'"
+                    v-model="newRecipe.servings"
+                    :min="1"
+                />
+            </div>
         </div>
 
         <div class="row">
@@ -216,9 +204,8 @@ import {
     EOS_CLOSE_OUTLINED as CloseIcon,
     EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
     EOS_SAVE_OUTLINED as SaveIcon,
-    EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
-    EOS_KEYBOARD_ARROW_LEFT_OUTLINED as ArrowLeftIcon,
 } from 'eos-icons-vue3';
+import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -232,8 +219,7 @@ export default defineComponent({
         CloseIcon,
         AddCircleIcon,
         SaveIcon,
-        ArrowRightIcon,
-        ArrowLeftIcon,
+        CustomNumberInput,
     },
 
     emits: ['saved', 'cancel'],
@@ -400,22 +386,6 @@ export default defineComponent({
     margin-right: 5vw;
     display: flex;
     flex-wrap: wrap;
-}
-
-.recipeTime input {
-    background: transparent;
-    border: none;
-    outline: none;
-    text-align: right;
-    width: 4ch;
-    font-size: 1rem;
-    max-width: 80px;
-}
-.recipeTime input:focus {
-    border-bottom: 1px solid black;
-}
-.recipeTime label {
-    text-align: left;
 }
 
 .stepPosition {
