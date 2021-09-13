@@ -126,9 +126,9 @@
                     v-for="(step, index) in newRecipe.instructions"
                     :key="step._id"
                 >
-                    <div class="w-10">
+                    <div class="w-10 d-flex justify-center">
                         <div class="stepPosition">
-                            <span>{{ step.position }}</span>
+                            {{ step.position }}
                         </div>
                     </div>
                     <textarea
@@ -413,14 +413,13 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 25px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
     background-color: grey;
     border-radius: 50px;
     color: white;
-}
-.stepPosition span {
-    line-height: 0;
+    font-size: 0.8rem;
 }
 
 button.close {

@@ -46,7 +46,7 @@ export class StepClass implements Step {
     position: number;
     content: string;
     constructor() {
-        this.position = 0;
+        this.position = 1;
         this.content = '';
     }
 }
@@ -74,8 +74,8 @@ export class RecipeClass implements Recipe {
             cooking: 5,
         };
         this.servings = 4;
-        this.ingredients = [];
-        this.instructions = [];
+        this.ingredients = [new IngredientClass()];
+        this.instructions = [new StepClass()];
         this.tags = [];
     }
 }

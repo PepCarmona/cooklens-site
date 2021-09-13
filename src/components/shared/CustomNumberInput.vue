@@ -5,6 +5,7 @@
         </div>
         <div class="container inner">
             <input
+                inputmode="numeric"
                 @change="handleInput"
                 :value="value"
                 type="text"
