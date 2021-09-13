@@ -161,7 +161,7 @@ label {
 
 .container {
     background-color: lightgrey;
-    height: 30px;
+    height: 40px;
     width: 100%;
     display: flex;
     flex-wrap: nowrap !important;

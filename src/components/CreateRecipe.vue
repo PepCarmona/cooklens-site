@@ -33,6 +33,8 @@
         <div class="row">
             <textarea
                 @input="capitalizeFirstLetter"
+                @keyup="resizeTextArea"
+                @keypress="resizeTextArea"
                 class="w-100"
                 placeholder="Description"
                 v-model="newRecipe.description"
@@ -135,6 +137,8 @@
                     </div>
                     <textarea
                         @input="capitalizeFirstLetter"
+                        @keyup="resizeTextArea"
+                        @keypress="resizeTextArea"
                         class="w-80"
                         v-model="step.content"
                         placeholder="Instructions"
@@ -163,7 +167,11 @@
                     :key="tag._id"
                     class="pill ml-05"
                 >
-                    <input @input="resize" v-model="tag.value" type="text" />
+                    <input
+                        @input="resizeInput"
+                        v-model="tag.value"
+                        type="text"
+                    />
                     <button class="close" @click="deleteTag(index)">
                         <CloseIcon class="default" color="white" />
                         <CloseIcon class="hover" color="red" />
@@ -366,10 +374,17 @@ export default defineComponent({
             emit('cancel');
         }
 
-        function resize(event: Event) {
+        function resizeInput(event: Event) {
             const input = event.target as HTMLInputElement;
             //TODO - take into account m is bigger and i is smalloer
             input.style.width = `${input.value.length + 1}ch`;
+        }
+
+        function resizeTextArea(event: Event) {
+            const textArea = event.target as HTMLTextAreaElement;
+
+            textArea.style.height = '0';
+            textArea.style.height = `${textArea.scrollHeight + 5}px`;
         }
 
         function capitalizeFirstLetter(event: Event) {
@@ -399,7 +414,8 @@ export default defineComponent({
             ingredientInput,
             stepInput,
             tagInput,
-            resize,
+            resizeInput,
+            resizeTextArea,
             capitalizeFirstLetter,
         };
     },
