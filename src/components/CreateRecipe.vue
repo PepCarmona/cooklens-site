@@ -42,91 +42,98 @@
             />
         </div>
 
-        <div class="row recipeTime">
-            <div class="row">
-                <span class="w-60 text-left">Preparation Time: </span>
-                <div class="d-flex w-40 justify-center">
-                    <CustomNumberInput
-                        :id="'prepTimeInput'"
-                        :label="'min'"
-                        v-model="newRecipe.time.preparation"
-                        :min="0"
-                    />
-                </div>
-            </div>
-
-            <div class="row">
-                <span class="w-60 text-left">Cooking Time: </span>
-                <div class="d-flex w-40 justify-center">
-                    <CustomNumberInput
-                        :id="'cookTimeInput'"
-                        :label="'min'"
-                        v-model="newRecipe.time.cooking"
-                        :min="5"
-                    />
-                </div>
-            </div>
-        </div>
-
         <div class="row">
-            <span class="w-60 text-left">Servings: </span>
-            <div class="d-flex w-40 justify-center">
-                <CustomNumberInput
-                    :id="'servingsInput'"
-                    v-model="newRecipe.servings"
-                    :min="1"
-                />
-            </div>
-        </div>
+            <div class="row numberInputs">
+                <div class="row recipeTime">
+                    <div class="row">
+                        <span class="w-60 text-left">Preparation Time: </span>
+                        <div class="d-flex w-40 justify-center">
+                            <CustomNumberInput
+                                :id="'prepTimeInput'"
+                                :label="'min'"
+                                v-model="newRecipe.time.preparation"
+                                :min="0"
+                            />
+                        </div>
+                    </div>
 
-        <div class="row">
-            Ingredients:
-            <div class="row mt-0" ref="ingredientInput">
-                <div
-                    class="row"
-                    v-for="(ingredient, index) in newRecipe.ingredients"
-                    :key="ingredient._id"
-                >
-                    <input
-                        class="w-10"
-                        v-model="ingredient.quantity"
-                        type="number"
-                        min="1"
-                    />
-                    <input
-                        class="w-20"
-                        v-model="ingredient.units"
-                        type="text"
-                        placeholder="Units"
-                    />
-                    <input
-                        class="w-60"
-                        v-model="ingredient.name"
-                        type="text"
-                        placeholder="Ingredient"
-                    />
-                    <div class="w-10 d-flex-center">
-                        <button class="close" @click="deleteIngredient(index)">
-                            <CloseIcon class="default" />
-                            <CloseIcon class="hover" color="red" />
-                        </button>
+                    <div class="row">
+                        <span class="w-60 text-left">Cooking Time: </span>
+                        <div class="d-flex w-40 justify-center">
+                            <CustomNumberInput
+                                :id="'cookTimeInput'"
+                                :label="'min'"
+                                v-model="newRecipe.time.cooking"
+                                :min="5"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <span class="w-60 text-left">Servings: </span>
+                    <div class="d-flex w-40 justify-center">
+                        <CustomNumberInput
+                            :id="'servingsInput'"
+                            v-model="newRecipe.servings"
+                            :min="1"
+                        />
                     </div>
                 </div>
             </div>
 
-            <div class="row d-flex-center">
-                <button class="add" @click="addIngredient">
-                    <AddCircleIcon class="default" size="l" />
-                    <AddCircleFilledIcon class="hover" size="l" />
-                </button>
+            <div class="row ingredients">
+                Ingredients:
+                <div class="row mt-0" ref="ingredientInput">
+                    <div
+                        class="row ingredient"
+                        v-for="(ingredient, index) in newRecipe.ingredients"
+                        :key="ingredient._id"
+                    >
+                        <input
+                            class="w-10"
+                            v-model="ingredient.quantity"
+                            type="number"
+                            min="1"
+                        />
+                        <input
+                            class="w-20"
+                            v-model="ingredient.units"
+                            type="text"
+                            placeholder="Units"
+                        />
+                        <input
+                            class="w-60"
+                            v-model="ingredient.name"
+                            type="text"
+                            placeholder="Ingredient"
+                        />
+                        <div class="w-10 d-flex-center">
+                            <button
+                                class="close"
+                                @click="deleteIngredient(index)"
+                            >
+                                <CloseIcon class="default" />
+                                <CloseIcon class="hover" color="red" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row d-flex-center">
+                    <button class="add" @click="addIngredient">
+                        <AddCircleIcon class="default" size="l" />
+                        <AddCircleFilledIcon class="hover" size="l" />
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row steps">
             Instructions:
             <div class="row mt-0" ref="stepInput">
                 <div
-                    class="row"
+                    class="row step"
                     v-for="(step, index) in newRecipe.instructions"
                     :key="step._id"
                 >
@@ -159,7 +166,7 @@
             </div>
         </div>
 
-        <div class="row align-center">
+        <div class="row align-center tags">
             Tags:
             <div class="d-flex" ref="tagInput">
                 <div
@@ -425,7 +432,6 @@ export default defineComponent({
 <style scoped>
 .container {
     position: relative;
-    /* width: 90%; */
     margin-left: 5vw;
     margin-right: 5vw;
     display: flex;
@@ -469,7 +475,7 @@ button.close:focus > .hover {
 }
 
 button.cancel {
-    margin-right: -5vw;
+    margin-right: -1rem;
 }
 
 button.add {
@@ -495,6 +501,28 @@ button.add:focus > .hover {
     margin-top: 1rem;
 }
 
+.ingredient,
+.step {
+    flex-wrap: nowrap;
+}
+
+.ingredient > input:first-child {
+    width: 15%;
+}
+.ingredient > input:nth-child(2) {
+    width: 15%;
+}
+.ingredient > input:nth-child(3) {
+    width: 70%;
+}
+.ingredient > div:last-child,
+.step > div:last-child {
+    width: fit-content !important;
+}
+.step > textarea {
+    width: 100%;
+}
+
 .pill {
     display: flex;
     background-color: grey;
@@ -510,5 +538,41 @@ button.add:focus > .hover {
 }
 .pill input:focus {
     border-bottom: 1px solid white;
+}
+
+@media only screen and (min-width: 769px) {
+    .numberInputs {
+        width: 40% !important;
+        padding: 0.5rem;
+        height: fit-content;
+    }
+    .numberInputs .row {
+        height: fit-content;
+    }
+    .recipeTime {
+        margin-top: 0 !important;
+    }
+    .recipeTime > .row:first-child {
+        margin-top: 0 !important;
+    }
+
+    .ingredients {
+        width: 60% !important;
+        height: fit-content;
+        background-color: lightgrey;
+    }
+    .ingredients .row {
+        height: fit-content;
+    }
+
+    .ingredient:first-child {
+        margin-top: 0.5rem !important;
+    }
+
+    .steps,
+    .ingredients,
+    .tags {
+        padding: 0.5rem;
+    }
 }
 </style>

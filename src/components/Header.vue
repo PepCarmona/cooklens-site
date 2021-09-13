@@ -231,7 +231,7 @@ header {
     outline: none;
     cursor: pointer;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 769px) {
     header {
         height: 60px;
     }

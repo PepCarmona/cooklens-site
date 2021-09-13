@@ -39,4 +39,9 @@ body * {
     color: #2c3e50;
     padding-bottom: 80px;
 }
+@media only screen and (min-width: 769px) {
+    #app {
+        padding-bottom: 20px;
+    }
+}
 </style>

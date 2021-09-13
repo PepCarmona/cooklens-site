@@ -147,8 +147,9 @@ export default defineComponent({
     transform: translateY(60px);
 }
 
-@media only screen and (min-width: 768px) {
-    #mobile-sticky-footer {
+@media only screen and (min-width: 769px) {
+    #mobile-sticky-footer,
+    .slide-footer {
         display: none;
     }
 }
