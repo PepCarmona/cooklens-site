@@ -5,12 +5,10 @@
         </div>
         <div class="container inner" :class="{ slim }">
             <input
-                inputmode="numeric"
-                @change="handleInput"
+                @input="handleInput"
+                @blur="checkInput"
                 :value="value"
-                type="text"
-                maxlength="3"
-                pattern="([0-9]|[0-9]|[0-9])"
+                type="number"
                 :id="id"
                 ref="input"
                 :class="{ 'text-center': !label }"
@@ -42,6 +40,10 @@ export default defineComponent({
         id: String,
         min: Number,
         max: Number,
+        maxLength: {
+            type: Number,
+            default: 3,
+        },
         step: {
             type: Number,
             default: 1,
@@ -64,9 +66,52 @@ export default defineComponent({
 
         const valueIsMin = computed(() => value.value === props.min);
 
-        const valueIsMax = computed(() => value.value === props.max);
+        const valueIsMax = computed(() => {
+            if (input.value !== undefined) {
+                const nextValue = (value.value + props.step).toString();
+
+                return (
+                    value.value === props.max ||
+                    (input.value !== undefined &&
+                        nextValue.length > props.maxLength)
+                );
+            }
+            return false;
+        });
 
         function handleInput() {
+            if (!input.value?.value) {
+                return;
+            }
+
+            const sanitizedInputValueLength = input.value.value
+                .replaceAll(',', '')
+                .replaceAll('.', '').length;
+
+            if (sanitizedInputValueLength > props.maxLength) {
+                input.value.value = input.value.value.substr(
+                    0,
+                    props.maxLength + 1
+                );
+                return;
+            }
+
+            if (
+                input.value.value.length > 1 &&
+                input.value.value.charAt(0) === '0'
+            ) {
+                input.value.value = input.value.value.substr(
+                    1,
+                    input.value.value.length
+                );
+            }
+
+            value.value = parseInt(input.value!.value);
+
+            emit('update:modelValue', parseInt(input.value!.value));
+        }
+
+        function checkInput() {
             if (input.value!.value === '') {
                 value.value = 0;
                 input.value!.value = '0';
@@ -88,7 +133,9 @@ export default defineComponent({
                 input.value!.value = props.max.toString();
             }
 
-            emit('update:modelValue', value.value);
+            value.value = parseInt(input.value!.value);
+
+            emit('update:modelValue', parseInt(input.value!.value));
         }
 
         function removeToValue() {
@@ -97,7 +144,6 @@ export default defineComponent({
                 props.min !== undefined &&
                 parseInt(input.value!.value) < props.min
             ) {
-                input.value!.value! = props.min.toString();
                 value.value = props.min;
             }
 
@@ -111,12 +157,11 @@ export default defineComponent({
         }
 
         function addToValue() {
-            // If value is below max, set value to max
+            // If value is above max, set value to max
             if (
                 props.max !== undefined &&
                 parseInt(input.value!.value) > props.max
             ) {
-                input.value!.value! = props.max.toString();
                 value.value = props.max;
             }
 
@@ -131,6 +176,7 @@ export default defineComponent({
         return {
             value,
             handleInput,
+            checkInput,
             removeToValue,
             addToValue,
             input,
@@ -153,6 +199,14 @@ input {
 }
 input:focus {
     border-bottom: 1px solid black;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type='number'] {
+    -moz-appearance: textfield;
 }
 
 label {
