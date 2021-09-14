@@ -1,200 +1,222 @@
 <template>
     <div class="container">
         <div class="row justify-between mt-0">
-            <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
-            <h3 v-else>New recipe</h3>
+            <button v-if="showImport" class="p-1" @click="showImport = false">
+                <ArrowBackIcon size="l" />
+            </button>
+            <template v-else>
+                <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
+                <h3 v-else>New recipe</h3>
 
-            <div class="d-flex">
-                <button class="p-1" v-if="recipe" @click="editRecipe">
-                    <SaveIcon size="l" />
-                </button>
-                <button class="p-1" v-else @click="addRecipe">
-                    <SaveIcon size="l" />
-                </button>
-                <button class="cancel p-1" @click="cancel">
-                    <CloseIcon size="l" />
-                </button>
-            </div>
-        </div>
-
-        <div class="row">
-            <input
-                @input="capitalizeFirstLetter"
-                class="w-100"
-                placeholder="Title"
-                ref="titleInput"
-                v-model="newRecipe.title"
-                type="text"
-                id="titleInput"
-                required
-            />
-        </div>
-
-        <div class="row">
-            <textarea
-                @input="capitalizeFirstLetter"
-                @keyup="resizeTextArea"
-                @keypress="resizeTextArea"
-                class="w-100"
-                placeholder="Description"
-                v-model="newRecipe.description"
-                id="descriptionInput"
-            />
-        </div>
-
-        <div class="row">
-            <div class="row numberInputs">
-                <div class="row recipeTime">
-                    <div class="row">
-                        <span class="w-60 text-left">Preparation Time: </span>
-                        <div class="d-flex w-40 justify-center">
-                            <CustomNumberInput
-                                :id="'prepTimeInput'"
-                                :label="'min'"
-                                v-model="newRecipe.time.preparation"
-                                :min="0"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <span class="w-60 text-left">Cooking Time: </span>
-                        <div class="d-flex w-40 justify-center">
-                            <CustomNumberInput
-                                :id="'cookTimeInput'"
-                                :label="'min'"
-                                v-model="newRecipe.time.cooking"
-                                :min="5"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <span class="w-60 text-left">Servings: </span>
-                    <div class="d-flex w-40 justify-center">
-                        <CustomNumberInput
-                            :id="'servingsInput'"
-                            v-model="newRecipe.servings"
-                            :min="1"
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <div class="row ingredients">
-                Ingredients:
-                <div class="row mt-0" ref="ingredientInput">
-                    <div
-                        class="row ingredient"
-                        v-for="(ingredient, index) in newRecipe.ingredients"
-                        :key="ingredient._id"
+                <div class="d-flex">
+                    <button
+                        class="p-1"
+                        @click="showImport = true"
+                        title="Import"
                     >
-                        <div>
+                        <ImportIcon size="l" />
+                    </button>
+                    <button
+                        class="p-1"
+                        v-if="recipe"
+                        @click="editRecipe"
+                        title="Save"
+                    >
+                        <SaveIcon size="l" />
+                    </button>
+                    <button class="p-1" v-else @click="addRecipe" title="Save">
+                        <SaveIcon size="l" />
+                    </button>
+                    <button class="cancel p-1" @click="cancel" title="Cancel">
+                        <CloseIcon size="l" />
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <template v-if="showImport">
+            <ImportRecipe />
+        </template>
+        <template v-else>
+            <div class="row">
+                <input
+                    @input="capitalizeFirstLetter"
+                    class="w-100"
+                    placeholder="Title"
+                    ref="titleInput"
+                    v-model="newRecipe.title"
+                    type="text"
+                    id="titleInput"
+                    required
+                />
+            </div>
+
+            <div class="row">
+                <textarea
+                    @input="capitalizeFirstLetter"
+                    @keyup="resizeTextArea"
+                    @keypress="resizeTextArea"
+                    class="w-100"
+                    placeholder="Description"
+                    v-model="newRecipe.description"
+                    id="descriptionInput"
+                />
+            </div>
+
+            <div class="row">
+                <div class="row numberInputs">
+                    <div class="row recipeTime">
+                        <div class="row">
+                            <span class="w-60 text-left"
+                                >Preparation Time:
+                            </span>
+                            <div class="d-flex w-40 justify-center">
+                                <CustomNumberInput
+                                    :id="'prepTimeInput'"
+                                    :label="'min'"
+                                    v-model="newRecipe.time.preparation"
+                                    :min="0"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <span class="w-60 text-left">Cooking Time: </span>
+                            <div class="d-flex w-40 justify-center">
+                                <CustomNumberInput
+                                    :id="'cookTimeInput'"
+                                    :label="'min'"
+                                    v-model="newRecipe.time.cooking"
+                                    :min="5"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <span class="w-60 text-left">Servings: </span>
+                        <div class="d-flex w-40 justify-center">
                             <CustomNumberInput
-                                v-model="ingredient.quantity"
+                                :id="'servingsInput'"
+                                v-model="newRecipe.servings"
                                 :min="1"
-                                slim
                             />
                         </div>
-                        <input
-                            class="w-20"
-                            v-model="ingredient.units"
-                            type="text"
-                            placeholder="Units"
-                        />
-                        <input
-                            class="w-60"
-                            v-model="ingredient.name"
-                            type="text"
-                            placeholder="Ingredient"
+                    </div>
+                </div>
+
+                <div class="row ingredients">
+                    Ingredients:
+                    <div class="row mt-0" ref="ingredientInput">
+                        <div
+                            class="row ingredient"
+                            v-for="(ingredient, index) in newRecipe.ingredients"
+                            :key="ingredient._id"
+                        >
+                            <div>
+                                <CustomNumberInput
+                                    v-model="ingredient.quantity"
+                                    :min="0"
+                                    slim
+                                />
+                            </div>
+                            <input
+                                class="w-20"
+                                v-model="ingredient.units"
+                                type="text"
+                                placeholder="Units"
+                            />
+                            <input
+                                class="w-60"
+                                v-model="ingredient.name"
+                                type="text"
+                                placeholder="Ingredient"
+                            />
+                            <div class="w-10 d-flex-center">
+                                <button
+                                    class="close"
+                                    @click="deleteIngredient(index)"
+                                >
+                                    <CloseIcon class="default" />
+                                    <CloseIcon class="hover" color="red" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row d-flex-center">
+                        <button class="add" @click="addIngredient">
+                            <AddCircleIcon class="default" size="l" />
+                            <AddCircleFilledIcon class="hover" size="l" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row steps">
+                Instructions:
+                <div class="row mt-0" ref="stepInput">
+                    <div
+                        class="row step"
+                        v-for="(step, index) in newRecipe.instructions"
+                        :key="step._id"
+                    >
+                        <div class="w-10 d-flex justify-center">
+                            <div class="stepPosition">
+                                {{ step.position }}
+                            </div>
+                        </div>
+                        <textarea
+                            @input="capitalizeFirstLetter"
+                            @keyup="resizeTextArea"
+                            @keypress="resizeTextArea"
+                            class="w-80"
+                            v-model="step.content"
+                            placeholder="Instructions"
                         />
                         <div class="w-10 d-flex-center">
-                            <button
-                                class="close"
-                                @click="deleteIngredient(index)"
-                            >
+                            <button class="close" @click="deleteStep(index)">
                                 <CloseIcon class="default" />
                                 <CloseIcon class="hover" color="red" />
                             </button>
                         </div>
                     </div>
                 </div>
-
                 <div class="row d-flex-center">
-                    <button class="add" @click="addIngredient">
+                    <button class="add" @click="addStep">
                         <AddCircleIcon class="default" size="l" />
                         <AddCircleFilledIcon class="hover" size="l" />
                     </button>
                 </div>
             </div>
-        </div>
 
-        <div class="row steps">
-            Instructions:
-            <div class="row mt-0" ref="stepInput">
-                <div
-                    class="row step"
-                    v-for="(step, index) in newRecipe.instructions"
-                    :key="step._id"
-                >
-                    <div class="w-10 d-flex justify-center">
-                        <div class="stepPosition">
-                            {{ step.position }}
-                        </div>
-                    </div>
-                    <textarea
-                        @input="capitalizeFirstLetter"
-                        @keyup="resizeTextArea"
-                        @keypress="resizeTextArea"
-                        class="w-80"
-                        v-model="step.content"
-                        placeholder="Instructions"
-                    />
-                    <div class="w-10 d-flex-center">
-                        <button class="close" @click="deleteStep(index)">
-                            <CloseIcon class="default" />
+            <div class="row align-center tags">
+                Tags:
+                <div class="d-flex" ref="tagInput">
+                    <div
+                        v-for="(tag, index) in newRecipe.tags"
+                        :key="tag._id"
+                        class="pill ml-05"
+                    >
+                        <input
+                            @input="resizeInput"
+                            v-model="tag.value"
+                            type="text"
+                        />
+                        <button class="close" @click="deleteTag(index)">
+                            <CloseIcon class="default" color="white" />
                             <CloseIcon class="hover" color="red" />
                         </button>
                     </div>
                 </div>
-            </div>
-            <div class="row d-flex-center">
-                <button class="add" @click="addStep">
-                    <AddCircleIcon class="default" size="l" />
-                    <AddCircleFilledIcon class="hover" size="l" />
-                </button>
-            </div>
-        </div>
-
-        <div class="row align-center tags">
-            Tags:
-            <div class="d-flex" ref="tagInput">
-                <div
-                    v-for="(tag, index) in newRecipe.tags"
-                    :key="tag._id"
-                    class="pill ml-05"
-                >
-                    <input
-                        @input="resizeInput"
-                        v-model="tag.value"
-                        type="text"
-                    />
-                    <button class="close" @click="deleteTag(index)">
-                        <CloseIcon class="default" color="white" />
-                        <CloseIcon class="hover" color="red" />
+                <div class="ml-05">
+                    <button class="add" @click="addTag">
+                        <AddCircleIcon class="default" size="l" />
+                        <AddCircleFilledIcon class="hover" size="l" />
                     </button>
                 </div>
             </div>
-            <div class="ml-05">
-                <button class="add" @click="addTag">
-                    <AddCircleIcon class="default" size="l" />
-                    <AddCircleFilledIcon class="hover" size="l" />
-                </button>
-            </div>
-        </div>
-
-        <div class="row"></div>
+        </template>
     </div>
 </template>
 
@@ -222,8 +244,11 @@ import {
     EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
     EOS_ADD_CIRCLE_FILLED as AddCircleFilledIcon,
     EOS_SAVE_OUTLINED as SaveIcon,
+    EOS_UPLOAD_OUTLINED as ImportIcon,
+    EOS_KEYBOARD_BACKSPACE_OUTLINED as ArrowBackIcon,
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
+import ImportRecipe from '@/components/ImportRecipe.vue';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -239,6 +264,9 @@ export default defineComponent({
         AddCircleFilledIcon,
         SaveIcon,
         CustomNumberInput,
+        ImportIcon,
+        ArrowBackIcon,
+        ImportRecipe,
     },
 
     emits: ['saved', 'cancel'],
@@ -252,6 +280,17 @@ export default defineComponent({
         const ingredientInput = ref<HTMLElement>();
         const stepInput = ref<HTMLInputElement>();
         const tagInput = ref<HTMLDivElement>();
+
+        const showImport = ref(false);
+
+        const data = {
+            newRecipe,
+            titleInput,
+            ingredientInput,
+            stepInput,
+            tagInput,
+            showImport,
+        };
 
         onMounted(() => {
             if (props.recipe) {
@@ -408,7 +447,7 @@ export default defineComponent({
         }
 
         return {
-            newRecipe,
+            ...data,
             addIngredient,
             addStep,
             addTag,
@@ -418,10 +457,6 @@ export default defineComponent({
             addRecipe,
             editRecipe,
             cancel,
-            titleInput,
-            ingredientInput,
-            stepInput,
-            tagInput,
             resizeInput,
             resizeTextArea,
             capitalizeFirstLetter,

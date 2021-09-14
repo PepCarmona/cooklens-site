@@ -1,11 +1,11 @@
-interface RecipeTime {
+export interface RecipeTime {
     preparation?: number;
     cooking: number;
 }
 
 export interface Ingredient {
     _id?: string;
-    quantity: number;
+    quantity?: number;
     units?: string;
     name: string;
 }
@@ -31,12 +31,21 @@ export interface Recipe {
     tags: Tag[];
 }
 
+export class RecipeTimeClass implements RecipeTime {
+    preparation: number;
+    cooking: number;
+    constructor() {
+        this.preparation = 0;
+        this.cooking = 5;
+    }
+}
+
 export class IngredientClass implements Ingredient {
-    quantity: number;
-    units: string;
+    quantity?: number;
+    units?: string;
     name: string;
     constructor() {
-        this.quantity = 1;
+        this.quantity = 0;
         this.units = '';
         this.name = '';
     }
@@ -69,10 +78,7 @@ export class RecipeClass implements Recipe {
     constructor() {
         this.title = '';
         this.description = '';
-        this.time = {
-            preparation: 0,
-            cooking: 5,
-        };
+        this.time = new RecipeTimeClass();
         this.servings = 4;
         this.ingredients = [new IngredientClass()];
         this.instructions = [new StepClass()];

@@ -11,7 +11,7 @@
                 type="number"
                 :id="id"
                 ref="input"
-                :class="{ 'text-center': !label }"
+                :class="{ 'text-center': !label, 'hide-value': value === 0 }"
             />
             <label v-if="label" :for="id">{{ label }}</label>
         </div>
@@ -207,6 +207,9 @@ input::-webkit-inner-spin-button {
 }
 input[type='number'] {
     -moz-appearance: textfield;
+}
+input.hide-value {
+    color: transparent;
 }
 
 label {
