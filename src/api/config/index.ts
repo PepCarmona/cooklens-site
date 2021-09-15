@@ -12,5 +12,6 @@ export const URI = {
         add: `${proxy}/recipes/add`,
         update: `${proxy}/recipes/update`,
         delete: `${proxy}/recipes/delete`,
+        import: `${proxy}/recipes/import`,
     },
 };

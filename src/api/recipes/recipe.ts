@@ -22,6 +22,7 @@ export interface Tag {
 }
 export interface Recipe {
     _id?: string;
+    url?: string;
     title: string;
     description?: string;
     time: RecipeTime;

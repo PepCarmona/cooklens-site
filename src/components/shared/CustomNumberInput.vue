@@ -11,7 +11,10 @@
                 type="number"
                 :id="id"
                 ref="input"
-                :class="{ 'text-center': !label, 'hide-value': value === 0 }"
+                :class="{
+                    'text-center': !label,
+                    'hide-value': value === 0 && emptyIf0,
+                }"
             />
             <label v-if="label" :for="id">{{ label }}</label>
         </div>
@@ -50,6 +53,7 @@ export default defineComponent({
         },
         label: String,
         slim: Boolean,
+        emptyIf0: Boolean,
     },
 
     components: {
