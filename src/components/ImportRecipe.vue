@@ -1,23 +1,27 @@
 <template>
     <div class="import-container row p-1 justify-center">
-        <span class="row justify-center mb-05"
-            >Import recipe from one of our &nbsp;
-            <span class="dotted">supported sites</span></span
-        >
-        <div class="row mt-05 justify-center">
-            <div class="d-flex w-100">
-                <template v-if="isLoading">
-                    <span class="w-100 p-05">Loading...</span>
-                </template>
-                <template v-else>
-                    <input
-                        ref="input"
-                        class="w-100 p-05"
-                        type="text"
-                        placeholder="Url"
-                    />
-                    <button @click="importFromUrl" class="ml-05">Import</button>
-                </template>
+        <div class="import-inner-container row mt-0 justify-center">
+            <span class="row justify-center mb-05"
+                >Import recipe from one of our &nbsp;
+                <span class="dotted">supported sites</span></span
+            >
+            <div class="row mt-05 justify-center">
+                <div class="d-flex w-100">
+                    <template v-if="isLoading">
+                        <span class="w-100 p-05">Loading...</span>
+                    </template>
+                    <template v-else>
+                        <input
+                            ref="input"
+                            class="w-100 p-05"
+                            type="text"
+                            placeholder="Url"
+                        />
+                        <button @click="importFromUrl" class="ml-05">
+                            Import
+                        </button>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -107,5 +111,20 @@ button {
     border: 1px solid black;
     border-radius: 2px;
     padding: 1rem;
+}
+@media only screen and (min-width: 769px) {
+    .import-inner-container {
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    span {
+        font-size: 1.4rem;
+    }
+}
+@media only screen and (min-width: 500px) {
+    span {
+        font-size: 1.2rem;
+    }
 }
 </style>

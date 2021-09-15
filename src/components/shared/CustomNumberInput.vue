@@ -1,9 +1,9 @@
 <template>
-    <div class="container" :class="{ slim }">
+    <div class="input-container" :class="{ slim }">
         <div class="arrow" :class="{ disabled: valueIsMin }">
             <ArrowLeftIcon @click="removeToValue" color="white" />
         </div>
-        <div class="container inner" :class="{ slim }">
+        <div class="input-container inner" :class="{ slim }">
             <input
                 @input="handleInput"
                 @blur="checkInput"
@@ -222,7 +222,7 @@ label {
     margin-right: 0.5rem;
 }
 
-.container {
+.input-container {
     background-color: lightgrey;
     height: 40px;
     width: 100%;
@@ -231,7 +231,7 @@ label {
     align-items: center;
     margin: 0 !important;
 }
-.container.slim {
+.input-container.slim {
     height: 25px;
 }
 
@@ -248,7 +248,7 @@ label {
     pointer-events: none;
 }
 
-.container.inner {
+.input-container.inner {
     width: 100%;
     align-items: center;
     justify-content: center;

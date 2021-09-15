@@ -7,7 +7,7 @@
         <div class="row justify-center">
             <h3>Or create your own recipe</h3>
         </div>
-        <div class="row">
+        <div class="row mt-0">
             <input
                 @input="capitalizeFirstLetter"
                 class="w-100"
@@ -186,22 +186,17 @@
         </div>
 
         <div class="row justify-center mt-2">
-            <div class="d-flex">
-                <button
-                    class="p-1"
-                    v-if="recipe"
-                    @click="editRecipe"
-                    title="Save"
-                >
-                    <SaveIcon size="xl" />
-                </button>
-                <button class="p-1" v-else @click="addRecipe" title="Save">
-                    <SaveIcon size="xl" />
-                </button>
-                <button class="cancel p-1" @click="cancel" title="Cancel">
-                    <CloseIcon size="xl" />
-                </button>
-            </div>
+            <button
+                class="save p-1"
+                v-if="recipe"
+                @click="editRecipe"
+                title="Save"
+            >
+                Save recipe
+            </button>
+            <button class="save p-1" v-else @click="addRecipe" title="Save">
+                Save recipe
+            </button>
         </div>
     </div>
 </template>
@@ -229,7 +224,6 @@ import {
     EOS_CLOSE_OUTLINED as CloseIcon,
     EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
     EOS_ADD_CIRCLE_FILLED as AddCircleFilledIcon,
-    EOS_SAVE_OUTLINED as SaveIcon,
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/ImportRecipe.vue';
@@ -246,12 +240,11 @@ export default defineComponent({
         CloseIcon,
         AddCircleIcon,
         AddCircleFilledIcon,
-        SaveIcon,
         CustomNumberInput,
         ImportRecipe,
     },
 
-    emits: ['saved', 'cancel'],
+    emits: ['saved'],
 
     setup(props, { emit }) {
         const axios: AxiosStatic | undefined = inject('axios');
@@ -399,10 +392,6 @@ export default defineComponent({
                 .catch((err) => console.error(err));
         }
 
-        function cancel() {
-            emit('cancel');
-        }
-
         function resizeInput(event: Event) {
             const input = event.target as HTMLInputElement;
             //TODO - take into account m is bigger and i is smalloer
@@ -438,7 +427,6 @@ export default defineComponent({
             deleteTag,
             addRecipe,
             editRecipe,
-            cancel,
             resizeInput,
             resizeTextArea,
             capitalizeFirstLetter,
@@ -450,13 +438,11 @@ export default defineComponent({
 <style scoped>
 .container {
     position: relative;
-    margin-left: 5vw;
-    margin-right: 5vw;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
     display: flex;
     flex-wrap: wrap;
-}
-.container > div:last-child {
-    border-top: 1px solid black;
 }
 
 .stepPosition {
@@ -498,10 +484,6 @@ button.close:focus > .hover {
     display: flex;
 }
 
-button.cancel {
-    margin-right: -1rem;
-}
-
 button.add {
     border-radius: 50px;
 }
@@ -519,6 +501,15 @@ button.add:focus > .default {
 button.add:hover > .hover,
 button.add:focus > .hover {
     display: flex;
+}
+button.save {
+    background-color: grey;
+    color: white;
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 0.6rem;
+    width: 100%;
+    font-size: 1.2rem;
 }
 
 .row {
@@ -564,10 +555,19 @@ button.add:focus > .hover {
     border-bottom: 1px solid white;
 }
 
+@media only screen and (min-width: 767px) {
+    button.save {
+        width: 350px;
+    }
+}
+
 @media only screen and (min-width: 769px) {
+    .container {
+        width: 80%;
+    }
     .numberInputs {
         width: 40% !important;
-        padding: 0.5rem;
+        padding-right: 1rem;
         height: fit-content;
     }
     .numberInputs .row {
@@ -581,9 +581,10 @@ button.add:focus > .hover {
     }
 
     .ingredients {
-        width: 60% !important;
+        width: calc(60% - 1rem) !important;
         height: fit-content;
         background-color: lightgrey;
+        margin-left: 1rem;
     }
     .ingredients .row {
         height: fit-content;
@@ -597,6 +598,10 @@ button.add:focus > .hover {
     .ingredients,
     .tags {
         padding: 0.5rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
     }
 }
 </style>
