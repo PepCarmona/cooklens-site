@@ -2,7 +2,7 @@
     <div class="container">
         <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
 
-        <ImportRecipe />
+        <ImportRecipe @importedRecipe="importRecipe" />
 
         <div class="row justify-center">
             <h3>Or create your own recipe</h3>
@@ -227,6 +227,7 @@ import {
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/ImportRecipe.vue';
+import router from '@/router';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -356,7 +357,9 @@ export default defineComponent({
             axios
                 ?.post(URI.recipes.add, sanitizedRecipe.value)
                 .then(() => {
-                    emit('saved');
+                    router.push({
+                        name: 'Home',
+                    });
                 })
                 .catch((err) => console.error(err));
         }
@@ -417,6 +420,10 @@ export default defineComponent({
             }
         }
 
+        function importRecipe(value: Recipe) {
+            newRecipe.value = value;
+        }
+
         return {
             ...data,
             addIngredient,
@@ -430,6 +437,7 @@ export default defineComponent({
             resizeInput,
             resizeTextArea,
             capitalizeFirstLetter,
+            importRecipe,
         };
     },
 });

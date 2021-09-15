@@ -1,10 +1,28 @@
 <template>
     <div class="import-container row p-1 justify-center">
         <div class="import-inner-container row mt-0 justify-center">
-            <span class="row justify-center mb-05"
-                >Import recipe from one of our &nbsp;
-                <span class="dotted">supported sites</span></span
-            >
+            <div class="tooltip-container">
+                <span class="row justify-center mb-05"
+                    >Import recipe from one of our &nbsp;
+                    <span @click="showIntegratedSitesMobile" class="dotted">
+                        supported sites
+                    </span>
+                    <div
+                        v-if="integratedSites.length > 0"
+                        class="tooltip"
+                        ref="tooltip"
+                    >
+                        <span v-for="site in integratedSites" :key="site">
+                            {{ site }}
+                        </span>
+                    </div>
+                    <div
+                        @click="hideIntegratedSitesMobile"
+                        class="overlay"
+                        ref="overlay"
+                    ></div>
+                </span>
+            </div>
             <div class="row mt-05 justify-center">
                 <div class="d-flex w-100">
                     <template v-if="isLoading">
@@ -31,21 +49,41 @@
 import { URI } from '@/api/config';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
-import { defineComponent, inject, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 
 export default defineComponent({
     name: 'ImportRecipe',
 
-    setup() {
+    emits: ['importedRecipe'],
+
+    setup(_, { emit }) {
         const axios: AxiosStatic | undefined = inject('axios');
-        const router = useRouter();
 
         const input = ref<HTMLInputElement>();
+        const tooltip = ref<HTMLDivElement>();
+        const overlay = ref<HTMLDivElement>();
+        const integratedSites = ref<string[]>([]);
+        const windowWidth = ref<number>(window.innerWidth);
 
         const isLoading = ref(false);
 
-        onMounted(() => input.value?.focus());
+        onMounted(() => {
+            window.addEventListener(
+                'resize',
+                () => (windowWidth.value = window.innerWidth)
+            );
+
+            axios
+                ?.get(URI.recipes.integratedSites)
+                .then(
+                    (response) =>
+                        (integratedSites.value = Object.keys(response.data))
+                )
+                .catch((err) => console.error(err));
+            input.value?.focus();
+        });
+
+        const isMobile = computed(() => windowWidth.value < 768);
 
         function importFromUrl() {
             const inputUrl = input.value?.value ?? '';
@@ -63,23 +101,36 @@ export default defineComponent({
             axios
                 ?.get(url.toString())
                 .then((response: AxiosResponse<Recipe>) => {
-                    const formattedTitle = response.data.title
-                        .toLowerCase()
-                        .replaceAll(' ', '-');
-
-                    router.push({
-                        name: 'Recipe',
-                        params: { title: formattedTitle },
-                        query: { id: response.data._id },
-                    });
+                    emit('importedRecipe', response.data);
                 })
                 .catch((err) => console.error(err))
                 .finally(() => (isLoading.value = false));
         }
+
+        function showIntegratedSitesMobile() {
+            if (overlay.value && tooltip.value && isMobile.value) {
+                overlay.value.style.display = 'block';
+                tooltip.value.style.display = 'block';
+            }
+        }
+
+        function hideIntegratedSitesMobile() {
+            if (overlay.value && tooltip.value) {
+                overlay.value.style.display = 'none';
+                tooltip.value.style.display = 'none';
+            }
+        }
+
         return {
             input,
-            importFromUrl,
+            tooltip,
+            overlay,
+            integratedSites,
             isLoading,
+            isMobile,
+            importFromUrl,
+            showIntegratedSitesMobile,
+            hideIntegratedSitesMobile,
         };
     },
 });
@@ -95,6 +146,7 @@ span {
 }
 span.dotted {
     border-bottom: 1px dotted black;
+    cursor: help;
 }
 input {
     background-color: rgba(255, 255, 255, 0.5);
@@ -112,6 +164,53 @@ button {
     border-radius: 2px;
     padding: 1rem;
 }
+
+.tooltip-container {
+    position: relative;
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    bottom: -100%;
+    right: 0;
+    background-color: black;
+    color: white;
+    padding: 0.4rem;
+    border-radius: 5px;
+    z-index: 11;
+}
+.tooltip::after {
+    content: ' ';
+    position: absolute;
+    bottom: 100%;
+    right: 50%;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+.tooltip > span::before {
+    content: '· ';
+}
+.dotted:hover + .tooltip {
+    display: block;
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    height: calc(100vh - 100px);
+    width: 100vw;
+    top: 50px;
+    left: 0;
+    background-color: transparent;
+    z-index: 10;
+}
+
+@media only screen and (min-width: 500px) {
+    span {
+        font-size: 1.2rem;
+    }
+}
 @media only screen and (min-width: 769px) {
     .import-inner-container {
         width: 60%;
@@ -121,10 +220,14 @@ button {
     span {
         font-size: 1.4rem;
     }
-}
-@media only screen and (min-width: 500px) {
-    span {
-        font-size: 1.2rem;
+    .tooltip {
+        bottom: 0;
+        right: -32%;
+    }
+    .tooltip::after {
+        bottom: 50%;
+        right: 99%;
+        border-color: transparent black transparent transparent;
     }
 }
 </style>
