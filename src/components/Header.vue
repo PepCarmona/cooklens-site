@@ -1,9 +1,11 @@
 <template>
     <header>
         <div id="logo">
-            <img :src="logoUrl" alt="logo" />
+            <router-link to="/"><img :src="logoUrl" alt="logo" /></router-link>
         </div>
-        <div id="title">Cooklens</div>
+        <div id="title">
+            <router-link to="/">Cooklens</router-link>
+        </div>
         <div v-if="isMobile" id="menu-mobile" class="menu">
             <span @click="showMenu = true"><MenuIcon size="l" /></span>
             <div class="slide-menu-mobile">
@@ -103,6 +105,7 @@ header {
     align-items: center;
     background-color: rgb(163, 163, 163);
 }
+
 #logo {
     display: flex;
     height: 100%;
@@ -111,13 +114,19 @@ header {
     justify-content: center;
     padding: 1rem;
 }
+#logo > a {
+    display: flex;
+}
 
 #title {
     font-size: 1.3rem;
     font-weight: 600;
     text-align: center;
-    width: 100%;
-    position: absolute;
+    width: fit-content;
+}
+#title > a {
+    color: black;
+    text-decoration: none;
 }
 
 .menu {
@@ -135,6 +144,9 @@ header {
 .menu a.router-link-exact-active {
     color: #42b983;
 }
+.menu > span {
+    cursor: pointer;
+}
 .menuTitle {
     display: block;
     font-size: 1.3rem;
@@ -147,6 +159,7 @@ header {
     position: absolute;
     top: 1rem;
     left: -3rem;
+    cursor: pointer;
 }
 
 .overlay {
