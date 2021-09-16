@@ -198,6 +198,9 @@
                 Save recipe
             </button>
         </div>
+        <div v-if="saveErrors" class="row mt-05 errors">
+            {{ saveErrors }}
+        </div>
     </div>
 </template>
 
@@ -210,7 +213,7 @@ import {
     StepClass,
     TagClass,
 } from '@/api/recipes/recipe';
-import { AxiosStatic } from 'axios';
+import { AxiosError, AxiosStatic } from 'axios';
 import {
     computed,
     defineComponent,
@@ -251,6 +254,7 @@ export default defineComponent({
         const axios: AxiosStatic | undefined = inject('axios');
 
         const newRecipe = ref<Recipe>(new RecipeClass());
+        const saveErrors = ref<string | null>(null);
 
         const titleInput = ref<HTMLInputElement>();
         const ingredientInput = ref<HTMLElement>();
@@ -350,6 +354,8 @@ export default defineComponent({
         }
 
         function addRecipe() {
+            saveErrors.value = null;
+
             if (!isValidRecipe()) {
                 return;
             }
@@ -361,7 +367,10 @@ export default defineComponent({
                         name: 'Home',
                     });
                 })
-                .catch((err) => console.error(err));
+                .catch((err: AxiosError) => {
+                    console.error(err.response?.data);
+                    saveErrors.value = err.response?.data;
+                });
         }
 
         function isValidRecipe(): boolean {
@@ -438,6 +447,7 @@ export default defineComponent({
             resizeTextArea,
             capitalizeFirstLetter,
             importRecipe,
+            saveErrors,
         };
     },
 });
@@ -561,6 +571,11 @@ button.save {
 }
 .pill input:focus {
     border-bottom: 1px solid white;
+}
+
+.errors {
+    color: red;
+    font-size: 0.8rem;
 }
 
 @media only screen and (min-width: 767px) {

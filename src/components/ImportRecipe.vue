@@ -4,7 +4,11 @@
             <div class="tooltip-container">
                 <span class="row justify-center mb-05"
                     >Import recipe from one of our &nbsp;
-                    <span @click="showIntegratedSitesMobile" class="dotted">
+                    <span
+                        @click="showIntegratedSitesMobile"
+                        class="dotted"
+                        :class="{ loading: integratedSites.length === 0 }"
+                    >
                         supported sites
                     </span>
                     <div
@@ -23,22 +27,28 @@
                     ></div>
                 </span>
             </div>
-            <div class="row mt-05 justify-center">
+            <div class="row mt-05">
                 <div class="d-flex w-100">
                     <template v-if="isLoading">
                         <span class="w-100 p-05">Loading...</span>
                     </template>
+
                     <template v-else>
                         <input
                             ref="input"
                             class="w-100 p-05"
                             type="text"
                             placeholder="Url"
+                            @keypress="autoImport"
                         />
                         <button @click="importFromUrl" class="ml-05">
                             Import
                         </button>
                     </template>
+                </div>
+
+                <div v-if="importErrors" class="errors">
+                    {{ importErrors }}
                 </div>
             </div>
         </div>
@@ -48,7 +58,7 @@
 <script lang="ts">
 import { URI } from '@/api/config';
 import { Recipe } from '@/api/recipes/recipe';
-import { AxiosResponse, AxiosStatic } from 'axios';
+import { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 
 export default defineComponent({
@@ -62,7 +72,10 @@ export default defineComponent({
         const input = ref<HTMLInputElement>();
         const tooltip = ref<HTMLDivElement>();
         const overlay = ref<HTMLDivElement>();
+
         const integratedSites = ref<string[]>([]);
+        const importErrors = ref<string | null>(null);
+
         const windowWidth = ref<number>(window.innerWidth);
 
         const isLoading = ref(false);
@@ -88,8 +101,10 @@ export default defineComponent({
         function importFromUrl() {
             const inputUrl = input.value?.value ?? '';
 
+            importErrors.value = null;
+
             if (inputUrl === '') {
-                console.error('Input URL is empty');
+                importErrors.value = 'Input URL is empty';
                 return;
             }
 
@@ -103,10 +118,14 @@ export default defineComponent({
                 .then((response: AxiosResponse<Recipe>) => {
                     emit('importedRecipe', response.data);
                 })
-                .catch((err) => console.error(err))
+                .catch((err: AxiosError) => {
+                    console.error(err.response?.data);
+                    importErrors.value = err.response?.data;
+                })
                 .finally(() => (isLoading.value = false));
         }
 
+        // TODO: refactor to v-if
         function showIntegratedSitesMobile() {
             if (overlay.value && tooltip.value && isMobile.value) {
                 overlay.value.style.display = 'block';
@@ -121,16 +140,24 @@ export default defineComponent({
             }
         }
 
+        function autoImport(event: KeyboardEvent) {
+            if (event.key === 'Enter') {
+                importFromUrl();
+            }
+        }
+
         return {
             input,
             tooltip,
             overlay,
+            importErrors,
             integratedSites,
             isLoading,
             isMobile,
             importFromUrl,
             showIntegratedSitesMobile,
             hideIntegratedSitesMobile,
+            autoImport,
         };
     },
 });
@@ -147,6 +174,9 @@ span {
 span.dotted {
     border-bottom: 1px dotted black;
     cursor: help;
+}
+span.dotted.loading {
+    cursor: progress;
 }
 input {
     background-color: rgba(255, 255, 255, 0.5);
@@ -204,6 +234,12 @@ button {
     left: 0;
     background-color: transparent;
     z-index: 10;
+}
+
+.errors {
+    margin-top: 0.5rem;
+    color: red;
+    font-size: 0.8rem;
 }
 
 @media only screen and (min-width: 500px) {
