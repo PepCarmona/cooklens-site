@@ -1,5 +1,11 @@
 <template>
-    <div class="import-container row p-1 justify-center">
+    <CustomModal v-if="isLoading">
+        <div class="modalContent">
+            <span class="mb-1">Importing Recipe</span>
+            <LoadingSpinner class="m-auto" size="xxxl" />
+        </div>
+    </CustomModal>
+    <div class="import-container mt-1 w-100 p-1 justify-center">
         <div class="import-inner-container row mt-0 justify-center">
             <div class="tooltip-container">
                 <span class="row justify-center mb-05"
@@ -29,22 +35,14 @@
             </div>
             <div class="row mt-05">
                 <div class="d-flex w-100">
-                    <template v-if="isLoading">
-                        <span class="w-100 p-05">Loading...</span>
-                    </template>
-
-                    <template v-else>
-                        <input
-                            ref="input"
-                            class="w-100 p-05"
-                            type="text"
-                            placeholder="Url"
-                            @keypress="autoImport"
-                        />
-                        <button @click="importFromUrl" class="ml-05">
-                            Import
-                        </button>
-                    </template>
+                    <input
+                        ref="input"
+                        class="w-100 p-05"
+                        type="text"
+                        placeholder="Url"
+                        @keypress="autoImport"
+                    />
+                    <button @click="importFromUrl" class="ml-05">Import</button>
                 </div>
 
                 <div v-if="importErrors" class="errors">
@@ -60,9 +58,16 @@ import { URI } from '@/api/config';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
+import CustomModal from './shared/CustomModal.vue';
+import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'ImportRecipe',
+
+    components: {
+        CustomModal,
+        LoadingSpinner,
+    },
 
     emits: ['importedRecipe'],
 
@@ -242,9 +247,28 @@ button {
     font-size: 0.8rem;
 }
 
+.modalContent > * {
+    display: block;
+}
+.modalContent > span {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
 @media only screen and (min-width: 500px) {
     span {
         font-size: 1.2rem;
+    }
+}
+@media only screen and (min-width: 767px) {
+    .tooltip {
+        bottom: 0;
+        right: -32%;
+    }
+    .tooltip::after {
+        bottom: 50%;
+        right: 99%;
+        border-color: transparent black transparent transparent;
     }
 }
 @media only screen and (min-width: 769px) {
@@ -255,15 +279,6 @@ button {
     }
     span {
         font-size: 1.4rem;
-    }
-    .tooltip {
-        bottom: 0;
-        right: -32%;
-    }
-    .tooltip::after {
-        bottom: 50%;
-        right: 99%;
-        border-color: transparent black transparent transparent;
     }
 }
 </style>

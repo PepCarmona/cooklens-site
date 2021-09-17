@@ -103,7 +103,7 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     transform: translate(-50%, 50%);
-    z-index: 9;
+    z-index: 11;
 }
 .slide-footer.hidden {
     bottom: 0;

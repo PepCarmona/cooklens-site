@@ -5,10 +5,18 @@
         <ImportRecipe @importedRecipe="importRecipe" />
 
         <div class="row justify-center">
-            <h3>Or create your own recipe</h3>
+            <h2
+                v-if="importedRecipe"
+                class="m-0 p-1 pt-2"
+                ref="importedRecipeTitle"
+            >
+                {{ newRecipe.title }}
+            </h2>
+            <h3 v-else>Or create your own recipe</h3>
         </div>
         <div class="row mt-0">
             <input
+                v-if="!importedRecipe"
                 @input="capitalizeFirstLetter"
                 class="w-100"
                 placeholder="Title"
@@ -261,8 +269,10 @@ export default defineComponent({
         const stepInput = ref<HTMLInputElement>();
         const tagInput = ref<HTMLDivElement>();
         const textAreaRefs = ref<HTMLTextAreaElement[]>([]);
+        const importedRecipeTitle = ref<HTMLElement>();
 
         const showImport = ref(false);
+        const importedRecipe = ref(false);
 
         const data = {
             newRecipe,
@@ -272,6 +282,8 @@ export default defineComponent({
             tagInput,
             showImport,
             textAreaRefs,
+            importedRecipe,
+            importedRecipeTitle,
         };
 
         onMounted(() => {
@@ -449,7 +461,11 @@ export default defineComponent({
         async function importRecipe(value: Recipe) {
             Object.assign(newRecipe, value);
 
+            importedRecipe.value = true;
+
             await nextTick();
+
+            importedRecipeTitle.value?.scrollIntoView({ behavior: 'smooth' });
 
             textAreaRefs.value.forEach((textArea) =>
                 resizeTextArea(null, textArea)
