@@ -22,12 +22,11 @@
 
         <div class="row">
             <textarea
-                @input="capitalizeFirstLetter"
-                @keyup="resizeTextArea"
-                @keypress="resizeTextArea"
+                @input="sanitizeTextArea"
                 class="w-100"
                 placeholder="Description"
                 v-model="newRecipe.description"
+                :ref="(el) => textAreaRefs.push(el)"
                 id="descriptionInput"
             />
         </div>
@@ -135,12 +134,11 @@
                         </div>
                     </div>
                     <textarea
-                        @input="capitalizeFirstLetter"
-                        @keyup="resizeTextArea"
-                        @keypress="resizeTextArea"
+                        @input="sanitizeTextArea"
                         class="w-80"
                         v-model="step.content"
                         placeholder="Instructions"
+                        :ref="(el) => textAreaRefs.push(el)"
                     />
                     <div class="w-10 d-flex-center">
                         <button class="close" @click="deleteStep(index)">
@@ -219,8 +217,10 @@ import {
     defineComponent,
     inject,
     nextTick,
+    onBeforeUpdate,
     onMounted,
     PropType,
+    reactive,
     ref,
 } from 'vue';
 import {
@@ -253,13 +253,14 @@ export default defineComponent({
     setup(props, { emit }) {
         const axios: AxiosStatic | undefined = inject('axios');
 
-        const newRecipe = ref<Recipe>(new RecipeClass());
+        const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
 
         const titleInput = ref<HTMLInputElement>();
         const ingredientInput = ref<HTMLElement>();
         const stepInput = ref<HTMLInputElement>();
         const tagInput = ref<HTMLDivElement>();
+        const textAreaRefs = ref<HTMLTextAreaElement[]>([]);
 
         const showImport = ref(false);
 
@@ -270,17 +271,20 @@ export default defineComponent({
             stepInput,
             tagInput,
             showImport,
+            textAreaRefs,
         };
 
         onMounted(() => {
             if (props.recipe) {
-                newRecipe.value = props.recipe;
+                Object.assign(newRecipe, props.recipe);
                 titleInput.value?.focus();
             }
         });
 
+        onBeforeUpdate(() => (textAreaRefs.value = []));
+
         const sanitizedRecipe = computed<Recipe>(() => {
-            const sanitized = newRecipe.value;
+            const sanitized = newRecipe;
             sanitized.ingredients = sanitized.ingredients.filter(
                 (ingredient) => !!ingredient.quantity || !!ingredient.name
             );
@@ -300,7 +304,7 @@ export default defineComponent({
         });
 
         async function addIngredient() {
-            newRecipe.value.ingredients.push(new IngredientClass());
+            newRecipe.ingredients.push(new IngredientClass());
 
             await nextTick();
 
@@ -314,9 +318,9 @@ export default defineComponent({
 
         async function addStep() {
             const newStep = new StepClass();
-            newStep.position = newRecipe.value.instructions.length + 1;
+            newStep.position = newRecipe.instructions.length + 1;
 
-            newRecipe.value.instructions.push(newStep);
+            newRecipe.instructions.push(newStep);
 
             await nextTick();
 
@@ -329,7 +333,7 @@ export default defineComponent({
         }
 
         async function addTag() {
-            newRecipe.value.tags.push(new TagClass());
+            newRecipe.tags.push(new TagClass());
 
             await nextTick();
 
@@ -342,15 +346,15 @@ export default defineComponent({
         }
 
         function deleteIngredient(index: number) {
-            newRecipe.value.ingredients.splice(index, 1);
+            newRecipe.ingredients.splice(index, 1);
         }
 
         function deleteStep(index: number) {
-            newRecipe.value.instructions.splice(index, 1);
+            newRecipe.instructions.splice(index, 1);
         }
 
         function deleteTag(index: number) {
-            newRecipe.value.tags.splice(index, 1);
+            newRecipe.tags.splice(index, 1);
         }
 
         function addRecipe() {
@@ -394,7 +398,7 @@ export default defineComponent({
 
         function editRecipe() {
             const url = new URL(URI.recipes.update);
-            url.searchParams.append('id', newRecipe.value._id!);
+            url.searchParams.append('id', newRecipe._id!);
 
             axios
                 ?.put(url.toString(), sanitizedRecipe.value)
@@ -410,11 +414,18 @@ export default defineComponent({
             input.style.width = `${input.value.length + 1}ch`;
         }
 
-        function resizeTextArea(event: Event) {
-            const textArea = event.target as HTMLTextAreaElement;
+        function resizeTextArea(
+            event: Event | null,
+            _textArea?: HTMLTextAreaElement
+        ) {
+            const textArea = event
+                ? (event.target as HTMLTextAreaElement)
+                : _textArea;
 
-            textArea.style.height = '0';
-            textArea.style.height = `${textArea.scrollHeight + 5}px`;
+            if (textArea) {
+                textArea.style.height = '0';
+                textArea.style.height = `${textArea.scrollHeight + 5}px`;
+            }
         }
 
         function capitalizeFirstLetter(event: Event) {
@@ -429,8 +440,20 @@ export default defineComponent({
             }
         }
 
-        function importRecipe(value: Recipe) {
-            newRecipe.value = value;
+        function sanitizeTextArea(event: Event) {
+            console.log('input');
+            capitalizeFirstLetter(event);
+            resizeTextArea(event);
+        }
+
+        async function importRecipe(value: Recipe) {
+            Object.assign(newRecipe, value);
+
+            await nextTick();
+
+            textAreaRefs.value.forEach((textArea) =>
+                resizeTextArea(null, textArea)
+            );
         }
 
         return {
@@ -446,6 +469,7 @@ export default defineComponent({
             resizeInput,
             resizeTextArea,
             capitalizeFirstLetter,
+            sanitizeTextArea,
             importRecipe,
             saveErrors,
         };
