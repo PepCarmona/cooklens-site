@@ -5,6 +5,7 @@
         </div>
         <div class="input-container inner" :class="{ slim }">
             <input
+                @focus="saveInitialValue"
                 @input="handleInput"
                 @blur="checkInput"
                 :value="value"
@@ -65,6 +66,7 @@ export default defineComponent({
 
     setup(props, { emit }) {
         const value = ref(props.modelValue);
+        const onFocusValue = ref<string | null>(null);
 
         const input = ref<HTMLInputElement>();
 
@@ -88,16 +90,23 @@ export default defineComponent({
                 return;
             }
 
-            const sanitizedInputValueLength = input.value.value
+            const numberOfDigits = input.value.value
                 .replaceAll(',', '')
                 .replaceAll('.', '').length;
 
-            if (sanitizedInputValueLength > props.maxLength) {
+            if (numberOfDigits >= props.maxLength) {
                 input.value.value = input.value.value.substr(
                     0,
-                    props.maxLength + 1
+                    props.maxLength
                 );
-                return;
+            }
+
+            if (onFocusValue.value === '0') {
+                if (input.value.value.replaceAll('0', '').length > 0) {
+                    input.value.value = input.value.value.replaceAll('0', '');
+                } else {
+                    input.value.value = '0';
+                }
             }
 
             if (
@@ -177,8 +186,13 @@ export default defineComponent({
 
             emit('update:modelValue', value.value);
         }
+
+        function saveInitialValue(event: Event) {
+            onFocusValue.value = (event.target as HTMLInputElement).value;
+        }
         return {
             value,
+            onFocusValue,
             handleInput,
             checkInput,
             removeToValue,
@@ -186,6 +200,7 @@ export default defineComponent({
             input,
             valueIsMin,
             valueIsMax,
+            saveInitialValue,
         };
     },
 });
