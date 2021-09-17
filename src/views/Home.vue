@@ -10,7 +10,7 @@
             <div v-if="isSearching">Loading...</div>
             <template
                 v-else
-                v-for="(recipe, index) in recipes"
+                v-for="(recipe, index) in recipesToShow"
                 :key="recipe._id"
             >
                 <RecipeCard
@@ -18,6 +18,13 @@
                     @click="openRecipeDetails(index)"
                 />
             </template>
+            <button
+                v-if="showFilteredRecipes & !isSearching"
+                @click="getAllRecipes"
+                class="seeAll"
+            >
+                See all
+            </button>
         </div>
     </div>
 </template>
@@ -43,18 +50,21 @@ export default defineComponent({
         const axios: AxiosStatic | undefined = inject('axios');
         const router = useRouter();
 
+        const selectedIndex = ref<number | null>(null);
         const recipes = ref<Recipe[]>([]);
+        const filteredRecipes = ref<Recipe[]>([]);
 
         const isSearching = ref(false);
+        const showFilteredRecipes = ref(false);
 
         const data = {
             recipes,
+            filteredRecipes,
             isSearching,
+            showFilteredRecipes,
         };
 
         onMounted(() => getAllRecipes());
-
-        const selectedIndex = ref<number | null>(null);
 
         const selectedRecipe = computed<Recipe | null>(() => {
             if (selectedIndex.value === null) {
@@ -63,8 +73,16 @@ export default defineComponent({
             return recipes.value[selectedIndex.value];
         });
 
+        const recipesToShow = computed<Recipe[]>(() => {
+            if (showFilteredRecipes.value) {
+                return filteredRecipes.value;
+            }
+            return recipes.value;
+        });
+
         function getAllRecipes() {
             isSearching.value = true;
+            showFilteredRecipes.value = false;
 
             axios
                 ?.get<Recipe[]>(URI.recipes.get)
@@ -100,7 +118,9 @@ export default defineComponent({
                 return;
             }
 
-            recipes.value = searchResultRecipes;
+            showFilteredRecipes.value = true;
+
+            filteredRecipes.value = searchResultRecipes;
         }
 
         return {
@@ -108,6 +128,7 @@ export default defineComponent({
             getAllRecipes,
             openRecipeDetails,
             showSearchRecipes,
+            recipesToShow,
         };
     },
 });
@@ -128,6 +149,20 @@ export default defineComponent({
 }
 .card-container > .card:first-child {
     margin-top: 0;
+}
+
+.seeAll {
+    position: absolute;
+    background-color: black;
+    color: white;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    margin-top: -2rem;
+    cursor: pointer;
 }
 
 @media only screen and (min-width: 769px) {

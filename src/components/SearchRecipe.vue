@@ -1,5 +1,5 @@
 <template>
-    <div class="d-flex w-100">
+    <div class="d-flex w-100 searchRow">
         <input
             @keypress="autoSearch"
             ref="searchInput"
@@ -156,11 +156,22 @@ input {
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px); */
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
     padding: 0.5rem;
     border: none;
+    outline: none;
+}
+input:focus {
+    box-shadow: 0 0 5px black;
+}
+input:focus + button {
+    box-shadow: 0 0 4px black;
 }
 .searchButton {
     background-color: grey !important;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 .switchSearch {
