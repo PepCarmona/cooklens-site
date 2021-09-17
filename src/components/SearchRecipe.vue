@@ -1,14 +1,19 @@
 <template>
-    <h3>Search by {{ searchType }}</h3>
+    <div class="d-flex w-100">
+        <input
+            @keypress="autoSearch"
+            ref="searchInput"
+            type="text"
+            id="search"
+            class="w-100"
+            :placeholder="'Search by ' + searchType"
+        />
+        <button @click="search" class="searchButton p-05" ref="searchButton">
+            <SearchIcon size="xl" color="white" />
+        </button>
+    </div>
 
-    <input
-        ref="searchInput"
-        type="text"
-        id="search"
-        @input="search($event.target.value)"
-    />
-
-    <div>
+    <div class="switchSearch">
         <button v-if="searchType !== 'title'" @click="changeSearch('title')">
             Search by title
         </button>
@@ -22,16 +27,12 @@
             Search by tag
         </button>
     </div>
-
-    <div v-for="recipe in searchResult" :key="recipe._id">
-        <div>{{ recipe.title }}</div>
-        <div>{{ recipe.description }}</div>
-    </div>
 </template>
 
 <script lang="ts">
 import { Recipe } from '@/api/recipes/recipe';
 import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
 
 type SearchType = 'title' | 'ingredient' | 'tag';
 
@@ -45,16 +46,25 @@ export default defineComponent({
         },
     },
 
-    setup(props) {
+    components: {
+        SearchIcon,
+    },
+
+    emits: ['searchResult'],
+
+    setup(props, { emit }) {
         const searchResult = ref<Recipe[]>([]);
 
         const searchType = ref<SearchType>('title');
 
         const searchInput = ref<HTMLInputElement>();
+        const searchButton = ref<HTMLButtonElement>();
 
         onMounted(() => searchInput.value?.focus());
 
-        function searchByTitle(searchQuery: string) {
+        function searchByTitle() {
+            const searchQuery = searchInput.value!.value;
+
             searchResult.value = props.recipes.filter(
                 (recipe) =>
                     searchQuery.length > 0 &&
@@ -62,9 +72,13 @@ export default defineComponent({
                         .toLowerCase()
                         .search(searchQuery.toLowerCase()) > -1
             );
+
+            emit('searchResult', searchResult.value);
         }
 
-        function searchByIngredient(searchQuery: string) {
+        function searchByIngredient() {
+            const searchQuery = searchInput.value!.value;
+
             searchResult.value = props.recipes.filter(
                 (recipe) =>
                     searchQuery.length > 0 &&
@@ -75,8 +89,13 @@ export default defineComponent({
                                 .search(searchQuery.toLowerCase()) > -1
                     )
             );
+
+            emit('searchResult', searchResult.value);
         }
-        function searchByTag(searchQuery: string) {
+
+        function searchByTag() {
+            const searchQuery = searchInput.value!.value;
+
             searchResult.value = props.recipes.filter(
                 (recipe) =>
                     searchQuery.length > 0 &&
@@ -87,26 +106,34 @@ export default defineComponent({
                                 .search(searchQuery.toLowerCase()) > -1
                     )
             );
+
+            emit('searchResult', searchResult.value);
         }
 
-        function search(searchQuery: string) {
+        function search() {
             switch (searchType.value) {
                 case 'title':
-                    searchByTitle(searchQuery);
+                    searchByTitle();
                     break;
                 case 'ingredient':
-                    searchByIngredient(searchQuery);
+                    searchByIngredient();
                     break;
                 case 'tag':
-                    searchByTag(searchQuery);
+                    searchByTag();
                     break;
             }
         }
 
         function changeSearch(type: SearchType) {
             searchType.value = type;
-            if (searchInput.value) {
-                search(searchInput.value.value);
+            if (searchInput.value!.value.length > 0) {
+                search();
+            }
+        }
+
+        function autoSearch(event: KeyboardEvent) {
+            if (event.key === 'Enter') {
+                search();
             }
         }
 
@@ -116,7 +143,38 @@ export default defineComponent({
             searchType,
             changeSearch,
             searchInput,
+            searchButton,
+            autoSearch,
         };
     },
 });
 </script>
+
+<style scoped>
+input {
+    /* background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px); */
+    padding: 0.5rem;
+    border: none;
+}
+.searchButton {
+    background-color: grey !important;
+}
+
+.switchSearch {
+    display: flex;
+    width: fit-content;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+.switchSearch > button {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-decoration: underline;
+}
+.switchSearch > button:first-child {
+    margin-right: 2rem;
+}
+</style>

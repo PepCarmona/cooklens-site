@@ -96,6 +96,8 @@ export default defineComponent({
 .card {
     max-width: 400px;
     border: 1px solid grey;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 .image > img {
     width: 100%;

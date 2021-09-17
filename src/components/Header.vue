@@ -103,7 +103,6 @@ header {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(163, 163, 163);
 }
 
 #logo {

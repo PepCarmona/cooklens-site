@@ -1,15 +1,12 @@
 <template>
     <div>
-        <div v-if="selectedView === 'add'">
-            <CreateRecipe
-                @saved="showAllRecipes"
-                @cancel="selectedView = 'view'"
+        <div class="search">
+            <SearchRecipe
+                @searchResult="showSearchRecipes"
+                :recipes="recipes"
             />
         </div>
-        <div
-            class="card-container d-flex mt-1 m-auto justify-around"
-            v-if="selectedView === 'view'"
-        >
+        <div class="card-container d-flex mt-1 m-auto justify-around">
             <div v-if="isSearching">Loading...</div>
             <template
                 v-else
@@ -20,14 +17,7 @@
                     :recipe="recipe"
                     @click="openRecipeDetails(index)"
                 />
-                <div
-                    v-if="index < recipes.length - 1"
-                    class="horizontal-separator w-60 my-2 m-auto"
-                ></div>
             </template>
-        </div>
-        <div v-if="selectedView === 'search'">
-            <SearchRecipe :recipes="recipes" />
         </div>
     </div>
 </template>
@@ -37,18 +27,14 @@ import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
-import CreateRecipe from '@/components/CreateRecipe.vue';
 import RecipeCard from '@/components/RecipeCard.vue';
 import SearchRecipe from '@/components/SearchRecipe.vue';
 import { useRouter } from 'vue-router';
-
-type View = 'add' | 'edit' | 'view' | 'search';
 
 export default defineComponent({
     name: 'Home',
 
     components: {
-        CreateRecipe,
         RecipeCard,
         SearchRecipe,
     },
@@ -57,19 +43,16 @@ export default defineComponent({
         const axios: AxiosStatic | undefined = inject('axios');
         const router = useRouter();
 
-        const selectedView = ref<View | null>(null);
-
         const recipes = ref<Recipe[]>([]);
 
         const isSearching = ref(false);
 
         const data = {
-            selectedView,
             recipes,
             isSearching,
         };
 
-        onMounted(() => showAllRecipes());
+        onMounted(() => getAllRecipes());
 
         const selectedIndex = ref<number | null>(null);
 
@@ -79,21 +62,6 @@ export default defineComponent({
             }
             return recipes.value[selectedIndex.value];
         });
-
-        function showAddRecipe() {
-            selectedView.value = selectedView.value === 'add' ? null : 'add';
-        }
-
-        function showAllRecipes() {
-            if (selectedView.value === 'view') {
-                selectedView.value = null;
-                return;
-            }
-
-            getAllRecipes();
-
-            selectedView.value = 'view';
-        }
 
         function getAllRecipes() {
             isSearching.value = true;
@@ -105,11 +73,6 @@ export default defineComponent({
                 })
                 .catch((err) => console.error(err))
                 .finally(() => (isSearching.value = false));
-        }
-
-        function showSearchRecipe() {
-            selectedView.value =
-                selectedView.value === 'search' ? null : 'search';
         }
 
         function openRecipeDetails(index: number) {
@@ -131,26 +94,56 @@ export default defineComponent({
             });
         }
 
+        function showSearchRecipes(searchResultRecipes: Recipe[]) {
+            if (searchResultRecipes.length === 0) {
+                getAllRecipes();
+                return;
+            }
+
+            recipes.value = searchResultRecipes;
+        }
+
         return {
             ...data,
-            showAddRecipe,
-            showAllRecipes,
             getAllRecipes,
-            showSearchRecipe,
             openRecipeDetails,
+            showSearchRecipes,
         };
     },
 });
 </script>
 
 <style scoped>
+.search {
+    background-color: lightgrey;
+    padding: 2rem;
+    padding-top: calc(2rem + 50px);
+    padding-bottom: 1rem;
+    margin-top: -50px;
+}
+
 .card-container {
     flex-wrap: wrap;
     width: 90%;
 }
-@media only screen and (min-width: 1024px) {
-    .horizontal-separator {
-        display: none;
+.card-container > .card:first-child {
+    margin-top: 0;
+}
+
+@media only screen and (min-width: 769px) {
+    .search {
+        padding-top: calc(2rem + 60px);
+        margin-top: -60px;
+    }
+}
+@media only screen and (min-width: 906px) {
+    .card-container > .card:nth-child(2) {
+        margin-top: 0;
+    }
+}
+@media only screen and (min-width: 1350px) {
+    .card-container > .card:nth-child(3) {
+        margin-top: 0;
     }
 }
 </style>
