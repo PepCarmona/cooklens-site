@@ -4,6 +4,7 @@
             <SearchRecipe
                 @searchResult="showSearchRecipes"
                 :recipes="recipes"
+                ref="searchComponent"
             />
         </div>
         <div class="card-container d-flex mt-1 m-auto justify-around">
@@ -20,23 +21,33 @@
             </template>
             <button
                 v-if="showFilteredRecipes & !isSearching"
-                @click="getAllRecipes"
+                @click="showAllRecipes"
                 class="seeAll"
             >
                 See all
             </button>
+            <div v-if="recipesToShow.length === 0">
+                No recipes math this search
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, ref } from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    nextTick,
+    onMounted,
+    ref,
+} from 'vue';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import RecipeCard from '@/components/RecipeCard.vue';
 import SearchRecipe from '@/components/SearchRecipe.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -49,6 +60,7 @@ export default defineComponent({
     setup() {
         const axios: AxiosStatic | undefined = inject('axios');
         const router = useRouter();
+        const route = useRoute();
 
         const selectedIndex = ref<number | null>(null);
         const recipes = ref<Recipe[]>([]);
@@ -57,11 +69,14 @@ export default defineComponent({
         const isSearching = ref(false);
         const showFilteredRecipes = ref(false);
 
+        const searchComponent = ref<InstanceType<typeof SearchRecipe>>();
+
         const data = {
             recipes,
             filteredRecipes,
             isSearching,
             showFilteredRecipes,
+            searchComponent,
         };
 
         onMounted(() => getAllRecipes());
@@ -88,6 +103,9 @@ export default defineComponent({
                 ?.get<Recipe[]>(URI.recipes.get)
                 .then((response: AxiosResponse<Recipe[]>) => {
                     recipes.value = response.data;
+                    if (route.query.searchText) {
+                        nextTick(() => searchComponent.value?.search());
+                    }
                 })
                 .catch((err) => console.error(err))
                 .finally(() => (isSearching.value = false));
@@ -113,7 +131,11 @@ export default defineComponent({
         }
 
         function showSearchRecipes(searchResultRecipes: Recipe[]) {
-            if (searchResultRecipes.length === 0) {
+            if (
+                searchComponent.value &&
+                searchComponent.value.searchInput &&
+                searchComponent.value.searchInput.value === ''
+            ) {
                 getAllRecipes();
                 return;
             }
@@ -123,11 +145,24 @@ export default defineComponent({
             filteredRecipes.value = searchResultRecipes;
         }
 
+        function showAllRecipes() {
+            getAllRecipes();
+
+            router.push({
+                name: 'RecipeList',
+            });
+
+            if (searchComponent.value && searchComponent.value.searchInput) {
+                searchComponent.value.searchInput.value = '';
+            }
+        }
+
         return {
             ...data,
             getAllRecipes,
             openRecipeDetails,
             showSearchRecipes,
+            showAllRecipes,
             recipesToShow,
         };
     },

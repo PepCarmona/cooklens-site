@@ -31,8 +31,9 @@
 
 <script lang="ts">
 import { Recipe } from '@/api/recipes/recipe';
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
 import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
+import { useRoute, useRouter } from 'vue-router';
 
 type SearchType = 'title' | 'ingredient' | 'tag';
 
@@ -53,14 +54,44 @@ export default defineComponent({
     emits: ['searchResult'],
 
     setup(props, { emit }) {
-        const searchResult = ref<Recipe[]>([]);
+        const router = useRouter();
+        const route = useRoute();
 
-        const searchType = ref<SearchType>('title');
+        const searchResult = ref<Recipe[]>([]);
 
         const searchInput = ref<HTMLInputElement>();
         const searchButton = ref<HTMLButtonElement>();
 
-        onMounted(() => searchInput.value?.focus());
+        onMounted(() => {
+            if (searchInput.value) {
+                searchInput.value.value =
+                    route.query.searchText?.toString() || '';
+            }
+
+            searchInput.value?.focus();
+
+            // if (route.query.searchText) {
+            //     console.log('search');
+            //     search();
+            // }
+        });
+
+        // watch(props, () => {
+        //     if (props.recipes.length > 0) {
+        //         search();
+        //     }
+        // });
+
+        const searchType = computed({
+            get() {
+                return (
+                    (route.query.searchBy?.toString() as SearchType) || 'title'
+                );
+            },
+            set(newValue: SearchType) {
+                searchType.value = newValue;
+            },
+        });
 
         function searchByTitle() {
             const searchQuery = searchInput.value!.value;
@@ -111,6 +142,23 @@ export default defineComponent({
         }
 
         function search() {
+            if (searchInput.value!.value === '') {
+                router.push({
+                    name: 'RecipeList',
+                });
+
+                emit('searchResult', []);
+
+                return;
+            }
+            router.push({
+                name: 'RecipeList',
+                query: {
+                    searchBy: searchType.value,
+                    searchText: searchInput.value!.value,
+                },
+            });
+
             switch (searchType.value) {
                 case 'title':
                     searchByTitle();
