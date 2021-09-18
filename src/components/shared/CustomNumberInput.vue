@@ -85,7 +85,8 @@ export default defineComponent({
                 return (
                     value.value === props.max ||
                     (input.value !== undefined &&
-                        nextValue.length > props.maxLength)
+                        nextValue.replaceAll(/\./g, '').length >
+                            props.maxLength)
                 );
             }
             return false;
@@ -104,11 +105,12 @@ export default defineComponent({
                 .replaceAll(',', '')
                 .replaceAll('.', '').length;
 
-            if (numberOfDigits >= props.maxLength) {
-                input.value.value = input.value.value.substr(
-                    0,
-                    props.maxLength + 1
-                );
+            if (numberOfDigits > props.maxLength) {
+                let trimLength = props.maxLength;
+                if (input.value.value.search(/\./g) > -1) {
+                    trimLength += 1;
+                }
+                input.value.value = input.value.value.substr(0, trimLength);
             }
 
             if (
