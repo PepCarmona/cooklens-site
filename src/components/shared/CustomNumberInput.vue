@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 
 import {
     EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
@@ -72,7 +72,7 @@ export default defineComponent({
 
         const input = ref<HTMLInputElement>();
 
-        onMounted(() => {
+        watch(props, () => {
             value.value = props.modelValue;
         });
 
