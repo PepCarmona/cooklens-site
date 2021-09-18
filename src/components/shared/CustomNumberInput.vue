@@ -14,7 +14,7 @@
                 ref="input"
                 :class="{
                     'text-center': !label,
-                    'hide-value': value === 0 && emptyIf0,
+                    'hide-value': value === 0 && emptyIf0 && !manual0Input,
                 }"
             />
             <label v-if="label" :for="id">{{ label }}</label>
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 
 import {
     EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
@@ -68,7 +68,13 @@ export default defineComponent({
         const value = ref(props.modelValue);
         const onFocusValue = ref<string | null>(null);
 
+        const manual0Input = ref(false);
+
         const input = ref<HTMLInputElement>();
+
+        onMounted(() => {
+            value.value = props.modelValue;
+        });
 
         const valueIsMin = computed(() => value.value === props.min);
 
@@ -86,9 +92,13 @@ export default defineComponent({
         });
 
         function handleInput() {
+            manual0Input.value = true;
             if (!input.value?.value) {
                 return;
             }
+
+            value.value = parseFloat(input.value!.value);
+            input.value.value = value.value.toString();
 
             const numberOfDigits = input.value.value
                 .replaceAll(',', '')
@@ -97,21 +107,14 @@ export default defineComponent({
             if (numberOfDigits >= props.maxLength) {
                 input.value.value = input.value.value.substr(
                     0,
-                    props.maxLength
+                    props.maxLength + 1
                 );
-            }
-
-            if (onFocusValue.value === '0') {
-                if (input.value.value.replaceAll('0', '').length > 0) {
-                    input.value.value = input.value.value.replaceAll('0', '');
-                } else {
-                    input.value.value = '0';
-                }
             }
 
             if (
                 input.value.value.length > 1 &&
-                input.value.value.charAt(0) === '0'
+                input.value.value.charAt(0) === '0' &&
+                input.value.value.search(',') === -1
             ) {
                 input.value.value = input.value.value.substr(
                     1,
@@ -119,9 +122,9 @@ export default defineComponent({
                 );
             }
 
-            value.value = parseInt(input.value!.value);
+            value.value = parseFloat(input.value.value);
 
-            emit('update:modelValue', parseInt(input.value!.value));
+            emit('update:modelValue', value.value);
         }
 
         function checkInput() {
@@ -130,9 +133,13 @@ export default defineComponent({
                 input.value!.value = '0';
             }
 
+            if (input.value!.value === '0') {
+                manual0Input.value = false;
+            }
+
             if (
                 props.min !== undefined &&
-                parseInt(input.value!.value) < props.min
+                parseFloat(input.value!.value) < props.min
             ) {
                 value.value = props.min;
                 input.value!.value = props.min.toString();
@@ -140,29 +147,29 @@ export default defineComponent({
 
             if (
                 props.max !== undefined &&
-                parseInt(input.value!.value) > props.max
+                parseFloat(input.value!.value) > props.max
             ) {
                 value.value = props.max;
                 input.value!.value = props.max.toString();
             }
 
-            value.value = parseInt(input.value!.value);
+            value.value = parseFloat(input.value!.value);
 
-            emit('update:modelValue', parseInt(input.value!.value));
+            emit('update:modelValue', value.value);
         }
 
         function removeToValue() {
             // If value is below min, set value to min
             if (
                 props.min !== undefined &&
-                parseInt(input.value!.value) < props.min
+                parseFloat(input.value!.value) < props.min
             ) {
                 value.value = props.min;
             }
 
             // Don't remove step to value if it is already at min
             if (props.min === undefined || value.value > props.min) {
-                value.value = parseInt(input.value!.value!);
+                value.value = parseFloat(input.value!.value!);
                 value.value = value.value - props.step;
             }
 
@@ -173,14 +180,14 @@ export default defineComponent({
             // If value is above max, set value to max
             if (
                 props.max !== undefined &&
-                parseInt(input.value!.value) > props.max
+                parseFloat(input.value!.value) > props.max
             ) {
                 value.value = props.max;
             }
 
             // Don't add step to value if it is already at max
             if (!props.max || value.value < props.max) {
-                value.value = parseInt(input.value!.value!);
+                value.value = parseFloat(input.value!.value!);
                 value.value = value.value + props.step;
             }
 
@@ -188,6 +195,9 @@ export default defineComponent({
         }
 
         function saveInitialValue(event: Event) {
+            if ((event.target as HTMLInputElement).value === '0') {
+                (event.target as HTMLInputElement).value = '';
+            }
             onFocusValue.value = (event.target as HTMLInputElement).value;
         }
         return {
@@ -201,6 +211,7 @@ export default defineComponent({
             valueIsMin,
             valueIsMax,
             saveInitialValue,
+            manual0Input,
         };
     },
 });
