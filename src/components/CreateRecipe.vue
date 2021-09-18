@@ -380,7 +380,7 @@ export default defineComponent({
                 ?.post(URI.recipes.add, sanitizedRecipe.value)
                 .then(() => {
                     router.push({
-                        name: 'Home',
+                        name: 'RecipeList',
                     });
                 })
                 .catch((err: AxiosError) => {

@@ -23,8 +23,13 @@
                                 ><CloseIcon size="xl"
                             /></span>
                             <div class="items">
-                                <router-link @click="showMenu = false" to="/"
+                                <!-- <router-link @click="showMenu = false" to="/"
                                     >Home</router-link
+                                > -->
+                                <router-link
+                                    @click="showMenu = false"
+                                    to="/recipes"
+                                    >Recipes</router-link
                                 >
                                 <router-link
                                     @click="showMenu = false"
@@ -49,7 +54,8 @@
             </div>
         </div>
         <div v-else id="menu-desktop" class="menu">
-            <router-link to="/">Home</router-link>
+            <!-- <router-link to="/">Home</router-link> -->
+            <router-link to="/recipes">Recipes</router-link>
             <router-link to="/about">About</router-link>
             <router-link to="/recipe/random?random=true">Random</router-link>
             <router-link to="/recipe/add">Add recipe</router-link>
