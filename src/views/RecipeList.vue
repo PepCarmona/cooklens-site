@@ -34,14 +34,7 @@
 </template>
 
 <script lang="ts">
-import {
-    computed,
-    defineComponent,
-    inject,
-    nextTick,
-    onMounted,
-    ref,
-} from 'vue';
+import { computed, defineComponent, inject, nextTick, ref, watch } from 'vue';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
@@ -79,7 +72,21 @@ export default defineComponent({
             searchComponent,
         };
 
-        onMounted(() => getAllRecipes());
+        watch(
+            route,
+            () => {
+                if (route.query.searchBy === undefined) {
+                    if (
+                        searchComponent.value &&
+                        searchComponent.value.searchInput
+                    ) {
+                        searchComponent.value.searchInput.value = '';
+                    }
+                    getAllRecipes();
+                }
+            },
+            { immediate: true }
+        );
 
         const selectedRecipe = computed<Recipe | null>(() => {
             if (selectedIndex.value === null) {
@@ -136,7 +143,6 @@ export default defineComponent({
                 searchComponent.value.searchInput &&
                 searchComponent.value.searchInput.value === ''
             ) {
-                getAllRecipes();
                 return;
             }
 
@@ -146,8 +152,6 @@ export default defineComponent({
         }
 
         function showAllRecipes() {
-            getAllRecipes();
-
             router.push({
                 name: 'RecipeList',
             });

@@ -453,7 +453,6 @@ export default defineComponent({
         }
 
         function sanitizeTextArea(event: Event) {
-            console.log('input');
             capitalizeFirstLetter(event);
             resizeTextArea(event);
         }

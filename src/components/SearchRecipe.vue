@@ -69,29 +69,11 @@ export default defineComponent({
             }
 
             searchInput.value?.focus();
-
-            // if (route.query.searchText) {
-            //     console.log('search');
-            //     search();
-            // }
         });
 
-        // watch(props, () => {
-        //     if (props.recipes.length > 0) {
-        //         search();
-        //     }
-        // });
-
-        const searchType = computed({
-            get() {
-                return (
-                    (route.query.searchBy?.toString() as SearchType) || 'title'
-                );
-            },
-            set(newValue: SearchType) {
-                searchType.value = newValue;
-            },
-        });
+        const searchType = computed(
+            () => (route.query.searchBy?.toString() as SearchType) || 'title'
+        );
 
         function searchByTitle() {
             const searchQuery = searchInput.value!.value;
@@ -173,9 +155,15 @@ export default defineComponent({
         }
 
         function changeSearch(type: SearchType) {
-            searchType.value = type;
+            router.push({
+                query: {
+                    searchBy: type,
+                    searchText: searchInput.value!.value,
+                },
+            });
+
             if (searchInput.value!.value.length > 0) {
-                search();
+                setTimeout(() => search(), 10);
             }
         }
 
