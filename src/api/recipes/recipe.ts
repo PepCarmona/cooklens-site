@@ -32,6 +32,11 @@ export interface Recipe {
     tags: Tag[];
 }
 
+export interface PaginatedRecipes {
+    recipes: Recipe[];
+    next: boolean;
+}
+
 export class RecipeTimeClass implements RecipeTime {
     preparation: number;
     cooking: number;

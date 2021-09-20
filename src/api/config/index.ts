@@ -15,5 +15,6 @@ export const URI = {
         import: `${proxy}/recipes/import`,
         integratedSites: `${proxy}/recipes/integrated-sites`,
         search: `${proxy}/recipes/search`,
+        defaultLimit: '2',
     },
 };

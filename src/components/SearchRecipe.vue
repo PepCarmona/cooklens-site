@@ -11,7 +11,11 @@
             class="w-100"
             :placeholder="'Search by ' + searchType"
         />
-        <button @click="search" class="searchButton p-05" ref="searchButton">
+        <button
+            @click="searchPage(1)"
+            class="searchButton p-05"
+            ref="searchButton"
+        >
             <SearchIcon size="xl" color="white" />
         </button>
     </div>
@@ -33,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Recipe } from '@/api/recipes/recipe';
+import { PaginatedRecipes, Recipe } from '@/api/recipes/recipe';
 import {
     computed,
     defineComponent,
@@ -79,6 +83,9 @@ export default defineComponent({
         const searchInput = ref<HTMLInputElement>();
         const searchButton = ref<HTMLButtonElement>();
 
+        const currentPage = ref(1);
+        const nextPage = ref<number | null>(null);
+
         const isSearching = ref(false);
 
         onMounted(() => {
@@ -92,7 +99,7 @@ export default defineComponent({
                 ) {
                     searchInput.value!.value =
                         route.query.searchText!.toString();
-                    search();
+                    searchPage(currentPage.value);
                 }
             }
 
@@ -103,7 +110,7 @@ export default defineComponent({
             () => (route.query.searchBy?.toString() as SearchType) || 'title'
         );
 
-        function search() {
+        function searchPage(page: number) {
             if (searchInput.value!.value === '') {
                 router.push({
                     name: 'RecipeList',
@@ -127,11 +134,18 @@ export default defineComponent({
             const url = new URL(URI.recipes.search);
             url.searchParams.append('searchType', searchType.value);
             url.searchParams.append('searchText', searchInput.value!.value);
+            url.searchParams.append('page', page.toString());
+            url.searchParams.append('limit', URI.recipes.defaultLimit);
 
             axios
                 ?.get(url.toString())
-                .then((response: AxiosResponse<Recipe[]>) => {
-                    emit('searchResult', response.data);
+                .then((response: AxiosResponse<PaginatedRecipes>) => {
+                    currentPage.value = page;
+                    nextPage.value = response.data.next
+                        ? currentPage.value + 1
+                        : null;
+
+                    emit('searchResult', response.data.recipes);
                 })
                 .catch((err) => {
                     emit('searchResult', []);
@@ -149,25 +163,27 @@ export default defineComponent({
             });
 
             if (searchInput.value!.value.length > 0) {
-                setTimeout(() => search(), 10);
+                setTimeout(() => searchPage(1), 10);
             }
         }
 
         function autoSearch(event: KeyboardEvent) {
             if (event.key === 'Enter') {
-                search();
+                searchPage(1);
             }
         }
 
         return {
             searchResult,
-            search,
+            searchPage,
             searchType,
             changeSearch,
             searchInput,
             searchButton,
             autoSearch,
             isSearching,
+            currentPage,
+            nextPage,
         };
     },
 });

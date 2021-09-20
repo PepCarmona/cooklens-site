@@ -102,7 +102,7 @@ export default defineComponent({
             url.searchParams.append('random', 'true');
 
             axios
-                ?.get<Recipe>(url.toString())
+                ?.get(url.toString())
                 .then((response: AxiosResponse<Recipe>) => {
                     const formattedTitle = response.data.title
                         .toLowerCase()

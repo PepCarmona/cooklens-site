@@ -30,13 +30,21 @@
             <div v-if="recipesToShow.length === 0">
                 No recipes match this search
             </div>
+            <Pagination
+                v-if="!(currentPage === 1 && !nextPage)"
+                class="mt-1"
+                :page="currentPage"
+                :next="nextPage"
+                @previousPage="goToPreviousPage"
+                @nextPage="goToNextPage"
+            />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, inject, nextTick, ref, watch } from 'vue';
-import { Recipe } from '@/api/recipes/recipe';
+import { PaginatedRecipes, Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import RecipeCard from '@/components/RecipeCard.vue';
@@ -44,6 +52,7 @@ import SearchRecipe from '@/components/SearchRecipe.vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
+import Pagination from '@/components/shared/Pagination.vue';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -53,6 +62,7 @@ export default defineComponent({
         SearchRecipe,
         CustomModal,
         LoadingModal,
+        Pagination,
     },
 
     setup() {
@@ -62,7 +72,11 @@ export default defineComponent({
 
         const selectedIndex = ref<number | null>(null);
         const recipes = ref<Recipe[]>([]);
+        // const cachedRecipes = ref<Recipe[]>([]);
         const filteredRecipes = ref<Recipe[]>([]);
+
+        const currentPage = ref(1);
+        const nextPage = ref<number | null>(null);
 
         const isSearching = ref(false);
         const showFilteredRecipes = ref(false);
@@ -75,6 +89,8 @@ export default defineComponent({
             isSearching,
             showFilteredRecipes,
             searchComponent,
+            currentPage,
+            nextPage,
         };
 
         watch(
@@ -87,7 +103,7 @@ export default defineComponent({
                     ) {
                         searchComponent.value.searchInput.value = '';
                     }
-                    getAllRecipes();
+                    getRecipesPage(currentPage.value);
                 }
             },
             { immediate: true }
@@ -110,16 +126,25 @@ export default defineComponent({
             return recipes.value;
         });
 
-        function getAllRecipes() {
+        function getRecipesPage(page: number) {
             isSearching.value = true;
             showFilteredRecipes.value = false;
 
+            const url = new URL(URI.recipes.get);
+            url.searchParams.append('page', page.toString());
+            url.searchParams.append('limit', URI.recipes.defaultLimit);
+
             axios
-                ?.get<Recipe[]>(URI.recipes.get)
-                .then((response: AxiosResponse<Recipe[]>) => {
-                    recipes.value = response.data;
+                ?.get(url.toString())
+                .then((response: AxiosResponse<PaginatedRecipes>) => {
+                    recipes.value = response.data.recipes;
+
+                    currentPage.value = page;
+                    nextPage.value = response.data.next
+                        ? currentPage.value + 1
+                        : null;
                     if (route.query.searchText) {
-                        nextTick(() => searchComponent.value?.search());
+                        nextTick(() => searchComponent.value?.searchPage(1));
                     }
                 })
                 .catch((err) => console.error(err))
@@ -155,6 +180,10 @@ export default defineComponent({
             }
 
             showFilteredRecipes.value = true;
+            if (searchComponent.value) {
+                currentPage.value = searchComponent.value.currentPage;
+                nextPage.value = searchComponent.value.nextPage;
+            }
 
             filteredRecipes.value = searchResultRecipes;
         }
@@ -169,13 +198,30 @@ export default defineComponent({
             }
         }
 
+        function goToPreviousPage() {
+            if (showFilteredRecipes.value) {
+                searchComponent.value?.searchPage(currentPage.value - 1);
+                return;
+            }
+            getRecipesPage(currentPage.value - 1);
+        }
+        function goToNextPage() {
+            if (showFilteredRecipes.value) {
+                searchComponent.value?.searchPage(nextPage.value!);
+                return;
+            }
+            getRecipesPage(nextPage.value!);
+        }
+
         return {
             ...data,
-            getAllRecipes,
+            getRecipesPage,
             openRecipeDetails,
             showSearchRecipes,
             showAllRecipes,
             recipesToShow,
+            goToPreviousPage,
+            goToNextPage,
         };
     },
 });
