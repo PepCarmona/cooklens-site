@@ -1,4 +1,7 @@
 <template>
+    <CustomModal v-if="isSearching">
+        <LoadingModal>Searching ...</LoadingModal>
+    </CustomModal>
     <div class="d-flex w-100 searchRow">
         <input
             @keypress="autoSearch"
@@ -31,9 +34,20 @@
 
 <script lang="ts">
 import { Recipe } from '@/api/recipes/recipe';
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onMounted,
+    PropType,
+    ref,
+} from 'vue';
 import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
 import { useRoute, useRouter } from 'vue-router';
+import { AxiosResponse, AxiosStatic } from 'axios';
+import { URI } from '@/api/config';
+import CustomModal from '@/components/shared/CustomModal.vue';
+import LoadingModal from '@/components/shared/LoadingModal.vue';
 
 type SearchType = 'title' | 'ingredient' | 'tag';
 
@@ -49,11 +63,14 @@ export default defineComponent({
 
     components: {
         SearchIcon,
+        CustomModal,
+        LoadingModal,
     },
 
     emits: ['searchResult'],
 
-    setup(props, { emit }) {
+    setup(_, { emit }) {
+        const axios: AxiosStatic | undefined = inject('axios');
         const router = useRouter();
         const route = useRoute();
 
@@ -62,10 +79,21 @@ export default defineComponent({
         const searchInput = ref<HTMLInputElement>();
         const searchButton = ref<HTMLButtonElement>();
 
+        const isSearching = ref(false);
+
         onMounted(() => {
             if (searchInput.value) {
                 searchInput.value.value =
                     route.query.searchText?.toString() || '';
+
+                if (
+                    route.query.searchBy !== undefined &&
+                    route.query.searchText !== undefined
+                ) {
+                    searchInput.value!.value =
+                        route.query.searchText!.toString();
+                    search();
+                }
             }
 
             searchInput.value?.focus();
@@ -74,54 +102,6 @@ export default defineComponent({
         const searchType = computed(
             () => (route.query.searchBy?.toString() as SearchType) || 'title'
         );
-
-        function searchByTitle() {
-            const searchQuery = searchInput.value!.value;
-
-            searchResult.value = props.recipes.filter(
-                (recipe) =>
-                    searchQuery.length > 0 &&
-                    recipe.title
-                        .toLowerCase()
-                        .search(searchQuery.toLowerCase()) > -1
-            );
-
-            emit('searchResult', searchResult.value);
-        }
-
-        function searchByIngredient() {
-            const searchQuery = searchInput.value!.value;
-
-            searchResult.value = props.recipes.filter(
-                (recipe) =>
-                    searchQuery.length > 0 &&
-                    recipe.ingredients.some(
-                        (ingredient) =>
-                            ingredient.name
-                                .toLowerCase()
-                                .search(searchQuery.toLowerCase()) > -1
-                    )
-            );
-
-            emit('searchResult', searchResult.value);
-        }
-
-        function searchByTag() {
-            const searchQuery = searchInput.value!.value;
-
-            searchResult.value = props.recipes.filter(
-                (recipe) =>
-                    searchQuery.length > 0 &&
-                    recipe.tags.some(
-                        (tag) =>
-                            tag.value
-                                .toLowerCase()
-                                .search(searchQuery.toLowerCase()) > -1
-                    )
-            );
-
-            emit('searchResult', searchResult.value);
-        }
 
         function search() {
             if (searchInput.value!.value === '') {
@@ -133,6 +113,9 @@ export default defineComponent({
 
                 return;
             }
+
+            isSearching.value = true;
+
             router.push({
                 name: 'RecipeList',
                 query: {
@@ -141,17 +124,20 @@ export default defineComponent({
                 },
             });
 
-            switch (searchType.value) {
-                case 'title':
-                    searchByTitle();
-                    break;
-                case 'ingredient':
-                    searchByIngredient();
-                    break;
-                case 'tag':
-                    searchByTag();
-                    break;
-            }
+            const url = new URL(URI.recipes.search);
+            url.searchParams.append('searchType', searchType.value);
+            url.searchParams.append('searchText', searchInput.value!.value);
+
+            axios
+                ?.get(url.toString())
+                .then((response: AxiosResponse<Recipe[]>) => {
+                    emit('searchResult', response.data);
+                })
+                .catch((err) => {
+                    emit('searchResult', []);
+                    console.error(err);
+                })
+                .finally(() => (isSearching.value = false));
         }
 
         function changeSearch(type: SearchType) {
@@ -181,6 +167,7 @@ export default defineComponent({
             searchInput,
             searchButton,
             autoSearch,
+            isSearching,
         };
     },
 });

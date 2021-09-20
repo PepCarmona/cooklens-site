@@ -1,9 +1,6 @@
 <template>
     <CustomModal v-if="isLoading">
-        <div class="modalContent">
-            <span class="mb-1">Importing Recipe</span>
-            <LoadingSpinner class="m-auto" size="xxxl" />
-        </div>
+        <LoadingModal>Importing Recipe ...</LoadingModal>
     </CustomModal>
     <div class="import-container mt-1 w-100 p-1 justify-center">
         <div class="import-inner-container row mt-0 justify-center">
@@ -58,15 +55,15 @@ import { URI } from '@/api/config';
 import { Recipe } from '@/api/recipes/recipe';
 import { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
-import CustomModal from './shared/CustomModal.vue';
-import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
+import CustomModal from '@/components/shared/CustomModal.vue';
+import LoadingModal from '@/components/shared/LoadingModal.vue';
 
 export default defineComponent({
     name: 'ImportRecipe',
 
     components: {
         CustomModal,
-        LoadingSpinner,
+        LoadingModal,
     },
 
     emits: ['importedRecipe'],
@@ -245,14 +242,6 @@ button {
     margin-top: 0.5rem;
     color: red;
     font-size: 0.8rem;
-}
-
-.modalContent > * {
-    display: block;
-}
-.modalContent > span {
-    font-size: 1.2rem;
-    font-weight: 600;
 }
 
 @media only screen and (min-width: 500px) {

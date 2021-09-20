@@ -14,5 +14,6 @@ export const URI = {
         delete: `${proxy}/recipes/delete`,
         import: `${proxy}/recipes/import`,
         integratedSites: `${proxy}/recipes/integrated-sites`,
+        search: `${proxy}/recipes/search`,
     },
 };

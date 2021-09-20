@@ -1,4 +1,7 @@
 <template>
+    <CustomModal v-if="isSearching">
+        <LoadingModal>Loading ...</LoadingModal>
+    </CustomModal>
     <div>
         <div class="search">
             <SearchRecipe
@@ -8,9 +11,7 @@
             />
         </div>
         <div class="card-container d-flex mt-1 m-auto justify-around">
-            <div v-if="isSearching">Loading...</div>
             <template
-                v-else
                 v-for="(recipe, index) in recipesToShow"
                 :key="recipe._id"
             >
@@ -27,7 +28,7 @@
                 See all
             </button>
             <div v-if="recipesToShow.length === 0">
-                No recipes math this search
+                No recipes match this search
             </div>
         </div>
     </div>
@@ -41,6 +42,8 @@ import { URI } from '@/api/config/index';
 import RecipeCard from '@/components/RecipeCard.vue';
 import SearchRecipe from '@/components/SearchRecipe.vue';
 import { useRoute, useRouter } from 'vue-router';
+import CustomModal from '@/components/shared/CustomModal.vue';
+import LoadingModal from '@/components/shared/LoadingModal.vue';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -48,6 +51,8 @@ export default defineComponent({
     components: {
         RecipeCard,
         SearchRecipe,
+        CustomModal,
+        LoadingModal,
     },
 
     setup() {
@@ -96,6 +101,9 @@ export default defineComponent({
         });
 
         const recipesToShow = computed<Recipe[]>(() => {
+            if (isSearching.value) {
+                return [];
+            }
             if (showFilteredRecipes.value) {
                 return filteredRecipes.value;
             }

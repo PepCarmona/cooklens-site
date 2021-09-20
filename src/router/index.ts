@@ -12,10 +12,6 @@ const routes: Array<RouteRecordRaw> = [
         name: 'RecipeList',
         component: () =>
             import(/* webpackChunkName: "about" */ '../views/RecipeList.vue'),
-        props: (route) => ({
-            searchBy: route.query.searchBy,
-            searchText: route.query.searchText,
-        }),
     },
     {
         path: '/about',
