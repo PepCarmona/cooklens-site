@@ -43,7 +43,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, nextTick, ref, watch } from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    nextTick,
+    onMounted,
+    // onMounted,
+    ref,
+    watch,
+} from 'vue';
 import { PaginatedRecipes, Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
@@ -93,17 +102,26 @@ export default defineComponent({
             nextPage,
         };
 
+        onMounted(() => {
+            if (route.query.page && route.query.searchBy === undefined) {
+                getRecipesPage(parseInt(route.query.page.toString()));
+            }
+        });
+
         watch(
             route,
             () => {
-                if (route.query.searchBy === undefined) {
+                if (
+                    route.query.searchBy === undefined &&
+                    route.query.page === undefined
+                ) {
                     if (
                         searchComponent.value &&
                         searchComponent.value.searchInput
                     ) {
                         searchComponent.value.searchInput.value = '';
                     }
-                    getRecipesPage(currentPage.value);
+                    getRecipesPage(1);
                 }
             },
             { immediate: true }
@@ -129,6 +147,13 @@ export default defineComponent({
         function getRecipesPage(page: number) {
             isSearching.value = true;
             showFilteredRecipes.value = false;
+
+            router.push({
+                name: 'RecipeList',
+                query: {
+                    page: page > 1 ? page : undefined,
+                },
+            });
 
             const url = new URL(URI.recipes.get);
             url.searchParams.append('page', page.toString());

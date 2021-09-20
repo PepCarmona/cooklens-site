@@ -99,7 +99,11 @@ export default defineComponent({
                 ) {
                     searchInput.value!.value =
                         route.query.searchText!.toString();
-                    searchPage(currentPage.value);
+                    if (route.query.page) {
+                        searchPage(parseInt(route.query.page.toString()));
+                        return;
+                    }
+                    searchPage(1);
                 }
             }
 
@@ -128,6 +132,7 @@ export default defineComponent({
                 query: {
                     searchBy: searchType.value,
                     searchText: searchInput.value!.value,
+                    page: page > 1 ? page : undefined,
                 },
             });
 
