@@ -49,9 +49,7 @@ import {
     inject,
     nextTick,
     onMounted,
-    // onMounted,
     ref,
-    watch,
 } from 'vue';
 import { PaginatedRecipes, Recipe } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
@@ -103,29 +101,18 @@ export default defineComponent({
         };
 
         onMounted(() => {
-            if (route.query.page && route.query.searchBy === undefined) {
-                getRecipesPage(parseInt(route.query.page.toString()));
+            if (!route.query.searchBy) {
+                if (
+                    searchComponent.value &&
+                    searchComponent.value.searchInput
+                ) {
+                    searchComponent.value.searchInput.value = '';
+                }
+                getRecipesPage(
+                    route.query.page ? parseInt(route.query.page.toString()) : 1
+                );
             }
         });
-
-        watch(
-            route,
-            () => {
-                if (
-                    route.query.searchBy === undefined &&
-                    route.query.page === undefined
-                ) {
-                    if (
-                        searchComponent.value &&
-                        searchComponent.value.searchInput
-                    ) {
-                        searchComponent.value.searchInput.value = '';
-                    }
-                    getRecipesPage(1);
-                }
-            },
-            { immediate: true }
-        );
 
         const selectedRecipe = computed<Recipe | null>(() => {
             if (selectedIndex.value === null) {
@@ -221,6 +208,8 @@ export default defineComponent({
             if (searchComponent.value && searchComponent.value.searchInput) {
                 searchComponent.value.searchInput.value = '';
             }
+
+            getRecipesPage(1);
         }
 
         function goToPreviousPage() {
