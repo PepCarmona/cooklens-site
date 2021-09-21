@@ -1,26 +1,35 @@
 <template>
     <div class="pagination-container">
-        <button
-            v-if="page > 1"
-            @click="previousPage"
-            class="mr-05"
-            title="previous page"
-        >
-            <ArrowLeftIcon size="xl" />
-        </button>
-        <div v-if="page" class="numbers">
-            <span v-if="page > 1" class="previous">{{ page - 1 }}</span>
-            <span class="current">{{ page }}</span>
-            <span v-if="next !== null" class="next">{{ next }}</span>
+        <div class="pagination-inner-container">
+            <button
+                v-if="page > 1"
+                @click="previousPage"
+                class="mr-05"
+                title="previous page"
+            >
+                <ArrowLeftIcon size="xl" />
+            </button>
+            <div
+                v-if="page"
+                class="numbers"
+                :class="{
+                    'empty-left': page <= 1,
+                    'empty-right': next === null,
+                }"
+            >
+                <span v-if="page > 1" class="previous">{{ page - 1 }}</span>
+                <span class="current">{{ page }}</span>
+                <span v-if="next !== null" class="next">{{ next }}</span>
+            </div>
+            <button
+                v-if="next !== null"
+                @click="nextPage"
+                class="ml-05"
+                title="next page"
+            >
+                <ArrowRightIcon size="xl" />
+            </button>
         </div>
-        <button
-            v-if="next !== null"
-            @click="nextPage"
-            class="ml-05"
-            title="next page"
-        >
-            <ArrowRightIcon size="xl" />
-        </button>
     </div>
 </template>
 
@@ -46,7 +55,7 @@ export default defineComponent({
 
     emits: ['previousPage', 'nextPage'],
 
-    setup(props, { emit }) {
+    setup(_, { emit }) {
         return {
             previousPage() {
                 emit('previousPage');
@@ -64,7 +73,16 @@ export default defineComponent({
     width: 100%;
     display: flex;
     justify-content: center;
+}
+
+.pagination-inner-container {
+    width: 115px;
+    display: flex;
     align-items: center;
+}
+
+.numbers {
+    width: 32px;
 }
 .current {
     font-size: 1.2rem;
@@ -79,5 +97,14 @@ export default defineComponent({
 }
 .next {
     margin-left: 0.2rem;
+}
+
+.empty-left {
+    margin-left: calc(0.5rem + 32px);
+    text-align: right;
+}
+.empty-right {
+    margin-right: calc(0.5rem + 32px);
+    text-align: left;
 }
 </style>
