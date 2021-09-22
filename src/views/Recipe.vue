@@ -4,15 +4,18 @@
             <LoadingModal>Loading ...</LoadingModal>
         </CustomModal>
         <div class="container" v-else>
-            <h1 class="d-flex">
-                <span class="w-100">{{ recipe.title }}</span>
-                <span><EditIcon size="l" color="grey" /></span>
-            </h1>
-            <div class="gallery-and-icons">
-                <div class="gallery" ref="gallery">
+            <div class="recipe-title mt-2" :class="{ 'mb-2': recipeHasImages }">
+                <h1 class="w-100 m-0">{{ recipe.title }}</h1>
+                <button><EditIcon size="l" color="grey" /></button>
+            </div>
+            <div
+                class="gallery-and-icons"
+                :class="{ 'mb-2': !recipeHasImages }"
+            >
+                <div v-if="recipeHasImages" class="gallery" ref="gallery">
                     <img :src="img" :alt="recipe.title" />
                 </div>
-                <div class="icons">
+                <div class="icons" :class="{ responsive: recipeHasImages }">
                     <button><FavIcon size="l" color="grey" /></button>
                     <button><CalendarIcon size="l" color="grey" /></button>
                     <button><ShareIcon size="l" color="grey" /></button>
@@ -193,6 +196,13 @@ export default defineComponent({
             return recipe.value?.ingredients;
         });
 
+        const recipeHasImages = computed(
+            () =>
+                recipe.value &&
+                recipe.value.images &&
+                recipe.value.images.length > 0
+        );
+
         function getRecipeDetails() {
             const id = route.query.id?.toString();
 
@@ -265,6 +275,7 @@ export default defineComponent({
             img,
             ingredientsToShow,
             getFormattedTime,
+            recipeHasImages,
         };
     },
 });
@@ -278,16 +289,28 @@ export default defineComponent({
     text-align: left;
 }
 
+.recipe-title {
+    display: flex;
+    align-items: center;
+}
+.recipe-title > button {
+    height: fit-content;
+    padding: 0.5rem;
+}
+
+.gallery-and-icons {
+    position: relative;
+}
 .icons {
     display: flex;
 }
 .icons > button {
     border: 1px solid grey;
     border-radius: 2px;
-    padding-top: 0.6rem;
-    padding-bottom: 0.6rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
     margin: 0.5rem;
 }
 .icons > button:first-child {
@@ -366,12 +389,39 @@ export default defineComponent({
     margin-left: 1rem;
 }
 
+@media only screen and (min-width: 350px) {
+    .icons > button {
+        border: 1px solid grey;
+        border-radius: 2px;
+        padding-top: 0.6rem;
+        padding-bottom: 0.6rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        margin: 0.5rem;
+    }
+}
+@media only screen and (min-width: 767px) {
+    .recipe-title > h1 {
+        font-size: 2.8rem;
+    }
+}
 @media only screen and (min-width: 769px) {
     .container {
         width: 70%;
     }
     .container > * {
         width: 70%;
+    }
+
+    .icons.responsive {
+        position: absolute;
+        top: -0.5rem;
+        right: -90px;
+        width: 90px;
+        flex-wrap: wrap;
+    }
+    .icons.responsive > button:first-child {
+        margin-left: 0.5rem;
     }
 }
 </style>

@@ -237,8 +237,9 @@ header {
     justify-content: flex-end;
 }
 #menu-desktop > * {
-    margin-right: 1rem;
-    margin-left: 2rem;
+    width: fit-content;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background-color: transparent;
     font-size: 1rem;
     font-weight: 100;
@@ -249,7 +250,7 @@ header {
     outline: none;
     cursor: pointer;
 }
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 767px) {
     header {
         height: 60px;
     }

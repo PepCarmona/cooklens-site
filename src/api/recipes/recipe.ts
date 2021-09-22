@@ -30,6 +30,7 @@ export interface Recipe {
     ingredients: Ingredient[];
     instructions: Step[];
     tags: Tag[];
+    images?: string[];
 }
 
 export interface PaginatedRecipes {
