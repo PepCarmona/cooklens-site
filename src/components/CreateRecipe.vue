@@ -493,15 +493,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.container {
-    position: relative;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .stepPosition {
     display: flex;
     justify-content: center;
@@ -624,9 +615,6 @@ button.save {
 }
 
 @media only screen and (min-width: 769px) {
-    .container {
-        width: 80%;
-    }
     .numberInputs {
         width: 40% !important;
         padding-right: 1rem;

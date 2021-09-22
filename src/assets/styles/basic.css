@@ -261,6 +261,15 @@
     align-items: flex-end;
 }
 
+.container {
+    position: relative;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
 button {
     display: flex;
     align-items: center;
@@ -274,4 +283,16 @@ button {
 button:focus,
 button:hover {
     background-color: lightgrey;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+@media only screen and (min-width: 769px) {
+    .container {
+        width: 80%;
+    }
 }
