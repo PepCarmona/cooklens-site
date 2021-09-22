@@ -1,94 +1,111 @@
 <template>
     <div>
-        <CustomModal v-if="isLoading">
-            <LoadingModal>Loading ...</LoadingModal>
-        </CustomModal>
-        <div class="container" v-else>
-            <div class="recipe-title mt-2" :class="{ 'mb-2': recipeHasImages }">
-                <h1 class="w-100 m-0">{{ recipe.title }}</h1>
-                <button><EditIcon size="l" color="grey" /></button>
-            </div>
-            <div
-                class="gallery-and-icons"
-                :class="{ 'mb-2': !recipeHasImages }"
-            >
-                <div v-if="recipeHasImages" class="gallery" ref="gallery">
-                    <img :src="img" :alt="recipe.title" />
-                </div>
-                <div class="icons" :class="{ responsive: recipeHasImages }">
-                    <button><FavIcon size="l" color="grey" /></button>
-                    <button><CalendarIcon size="l" color="grey" /></button>
-                    <button><ShareIcon size="l" color="grey" /></button>
-                </div>
-            </div>
-            <div class="mt-1">{{ recipe.description }}</div>
-            <ul class="time mt-3 p-2">
-                <li v-if="recipe.time.preparation">
-                    <b>Prep:</b>
-                    {{ getFormattedTime(recipe.time.preparation) }}
-                </li>
-                <li>
-                    <b>Cook :</b>
-                    {{ getFormattedTime(recipe.time.cooking) }}
-                </li>
-                <li>
-                    <b>Total:</b>
-                    {{
-                        getFormattedTime(
-                            recipe.time.preparation + recipe.time.cooking
-                        )
-                    }}
-                </li>
-                <li><b>Servings:</b> {{ recipe.servings }}</li>
-                <div class="icon">
-                    <ClockIcon size="xl" color="grey" />
-                </div>
-            </ul>
-            <div class="section-title">
-                <span>Ingredients</span>
-                <CustomNumberInput
-                    v-if="canModifyServings"
-                    class="modifyServingsInput"
-                    :id="'servingsInput'"
-                    :min="1"
-                    v-model="modifiedServings"
-                />
-            </div>
-            <ul class="ingredients">
-                <li
-                    v-for="ingredient in ingredientsToShow"
-                    :key="ingredient._id"
+        <CreateRecipe
+            v-if="showEditRecipe"
+            :recipe="recipe"
+            @saved="showNewRecipe"
+            @cancel="showEditRecipe = false"
+        />
+        <template v-else>
+            <CustomModal v-if="isLoading">
+                <LoadingModal>Loading ...</LoadingModal>
+            </CustomModal>
+            <div class="container" v-else>
+                <div
+                    class="recipe-title mt-2"
+                    :class="{ 'mb-2': recipeHasImages }"
                 >
-                    <span class="check">
-                        <input type="checkbox" />
-                    </span>
-                    <span v-if="ingredient.quantity && ingredient.quantity > 0">
-                        {{ ingredient.quantity }}
-                    </span>
-                    <span>{{ ingredient.units }}</span>
-                    <span>{{ ingredient.name }}</span>
-                </li>
-            </ul>
-            <div class="section-title">Instructions</div>
-            <ul class="instructions">
-                <li
-                    class="d-flex"
-                    v-for="step in recipe.instructions"
-                    :key="step._id"
+                    <h1 class="w-100 m-0">{{ recipe.title }}</h1>
+                    <button @click="showEditRecipe = true">
+                        <EditIcon size="l" color="grey" />
+                    </button>
+                </div>
+                <div
+                    class="gallery-and-icons"
+                    :class="{ 'mb-2': !recipeHasImages }"
                 >
-                    <div class="stepPosition">
-                        {{ step.position }}
+                    <div v-if="recipeHasImages" class="gallery" ref="gallery">
+                        <img :src="img" :alt="recipe.title" />
                     </div>
-                    <div class="stepContent">{{ step.content }}</div>
-                </li>
-            </ul>
-            <h3 v-if="recipe.tags.length > 0">Tags:</h3>
-            <ul>
-                <li v-for="tag in recipe.tags" :key="tag._id">
-                    {{ tag.value }}
-                </li>
-            </ul>
-        </div>
+                    <div class="icons" :class="{ responsive: recipeHasImages }">
+                        <button><FavIcon size="l" color="grey" /></button>
+                        <button><CalendarIcon size="l" color="grey" /></button>
+                        <button><ShareIcon size="l" color="grey" /></button>
+                    </div>
+                </div>
+                <div class="mt-1">{{ recipe.description }}</div>
+                <ul class="time mt-3 p-2">
+                    <li v-if="recipe.time.preparation">
+                        <b>Prep:</b>
+                        {{ getFormattedTime(recipe.time.preparation) }}
+                    </li>
+                    <li>
+                        <b>Cook :</b>
+                        {{ getFormattedTime(recipe.time.cooking) }}
+                    </li>
+                    <li>
+                        <b>Total:</b>
+                        {{
+                            getFormattedTime(
+                                recipe.time.preparation + recipe.time.cooking
+                            )
+                        }}
+                    </li>
+                    <li><b>Servings:</b> {{ recipe.servings }}</li>
+                    <div class="icon">
+                        <ClockIcon size="xl" color="grey" />
+                    </div>
+                </ul>
+                <div class="section-title">
+                    <span>Ingredients</span>
+                    <CustomNumberInput
+                        v-if="canModifyServings"
+                        class="modifyServingsInput"
+                        :id="'servingsInput'"
+                        :min="1"
+                        v-model="modifiedServings"
+                    />
+                </div>
+                <ul class="ingredients">
+                    <li
+                        v-for="ingredient in ingredientsToShow"
+                        :key="ingredient._id"
+                    >
+                        <span class="check">
+                            <input type="checkbox" />
+                        </span>
+                        <span
+                            v-if="
+                                ingredient.quantity && ingredient.quantity > 0
+                            "
+                        >
+                            {{ ingredient.quantity }}
+                        </span>
+                        <span>{{ ingredient.units }}</span>
+                        <span>{{ ingredient.name }}</span>
+                    </li>
+                </ul>
+                <div class="section-title">Instructions</div>
+                <ul class="instructions">
+                    <li
+                        class="d-flex"
+                        v-for="step in recipe.instructions"
+                        :key="step._id"
+                    >
+                        <div class="stepPosition">
+                            {{ step.position }}
+                        </div>
+                        <div class="stepContent">{{ step.content }}</div>
+                    </li>
+                </ul>
+                <h3 v-if="recipe.tags.length > 0">Tags:</h3>
+                <ul>
+                    <li v-for="tag in recipe.tags" :key="tag._id">
+                        {{ tag.value }}
+                    </li>
+                </ul>
+            </div>
+        </template>
     </div>
 </template>
 
@@ -108,6 +125,7 @@ import {
     EOS_TODAY_OUTLINED as CalendarIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
 } from 'eos-icons-vue3';
+import CreateRecipe from '@/components/CreateRecipe.vue';
 
 export default defineComponent({
     name: 'Recipe',
@@ -121,6 +139,7 @@ export default defineComponent({
         CalendarIcon,
         ShareIcon,
         ClockIcon,
+        CreateRecipe,
     },
 
     setup() {
@@ -137,8 +156,11 @@ export default defineComponent({
 
         const gallery = ref<HTMLDivElement>();
 
+        // TODO: remove when real images are added
         const imgHeight = ref(0);
         const imgWidth = ref(0);
+
+        const showEditRecipe = ref(false);
 
         const data = {
             isLoading,
@@ -146,6 +168,7 @@ export default defineComponent({
             canModifyServings,
             modifiedServings,
             gallery,
+            showEditRecipe,
         };
 
         onMounted(() => {
@@ -172,6 +195,7 @@ export default defineComponent({
             }
         });
 
+        // TODO: Remove once real images are added
         const img = computed(
             () =>
                 `https://via.placeholder.com/${imgWidth.value}x${imgHeight.value}.webp`
@@ -270,12 +294,19 @@ export default defineComponent({
 
             return formattedTime;
         }
+
+        function showNewRecipe(value: Recipe) {
+            recipe.value = value;
+            showEditRecipe.value = false;
+        }
+
         return {
             ...data,
             img,
             ingredientsToShow,
             getFormattedTime,
             recipeHasImages,
+            showNewRecipe,
         };
     },
 });

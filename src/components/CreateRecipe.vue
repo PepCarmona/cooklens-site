@@ -1,8 +1,6 @@
 <template>
     <div class="container">
-        <h3 v-if="recipe">Edit recipe nº {{ index + 1 }}</h3>
-
-        <ImportRecipe @importedRecipe="importRecipe" />
+        <ImportRecipe v-if="!recipe" @importedRecipe="importRecipe" />
 
         <div class="row justify-center">
             <h2
@@ -12,7 +10,7 @@
             >
                 {{ newRecipe.title }}
             </h2>
-            <h3 v-else>Or create your own recipe</h3>
+            <h3 v-else-if="!recipe">Or create your own recipe</h3>
         </div>
         <div class="row mt-0">
             <input
@@ -192,14 +190,14 @@
         </div>
 
         <div class="row justify-center mt-2">
-            <button
-                class="save p-1"
-                v-if="recipe"
-                @click="editRecipe"
-                title="Save"
-            >
-                Save recipe
-            </button>
+            <template v-if="recipe">
+                <button class="save p-1" @click="editRecipe" title="Save">
+                    Save recipe
+                </button>
+                <button class="cancel p-1" @click="cancel" title="Cancel">
+                    Cancel
+                </button>
+            </template>
             <button class="save p-1" v-else @click="addRecipe" title="Save">
                 Save recipe
             </button>
@@ -245,7 +243,6 @@ export default defineComponent({
 
     props: {
         recipe: Object as PropType<Recipe>,
-        index: Number,
     },
 
     components: {
@@ -256,7 +253,7 @@ export default defineComponent({
         ImportRecipe,
     },
 
-    emits: ['saved'],
+    emits: ['saved', 'cancel'],
 
     setup(props, { emit }) {
         const axios: AxiosStatic | undefined = inject('axios');
@@ -290,6 +287,13 @@ export default defineComponent({
             if (props.recipe) {
                 Object.assign(newRecipe, props.recipe);
                 titleInput.value?.focus();
+                setTimeout(
+                    () =>
+                        textAreaRefs.value.forEach((textArea) =>
+                            resizeTextArea(null, textArea)
+                        ),
+                    50
+                );
             }
         });
 
@@ -415,9 +419,23 @@ export default defineComponent({
             axios
                 ?.put(url.toString(), sanitizedRecipe.value)
                 .then(() => {
-                    emit('saved');
+                    const formattedTitle = sanitizedRecipe.value.title
+                        .toLowerCase()
+                        .replaceAll(' ', '-');
+
+                    router.push({
+                        name: 'Recipe',
+                        params: { title: formattedTitle },
+                        query: { id: sanitizedRecipe.value._id },
+                    });
+
+                    emit('saved', sanitizedRecipe.value);
                 })
                 .catch((err) => console.error(err));
+        }
+
+        function cancel() {
+            emit('cancel');
         }
 
         function resizeInput(event: Event) {
@@ -487,6 +505,7 @@ export default defineComponent({
             sanitizeTextArea,
             importRecipe,
             saveErrors,
+            cancel,
         };
     },
 });
@@ -558,6 +577,16 @@ button.save {
     padding: 0.6rem;
     width: 100%;
     font-size: 1.2rem;
+}
+button.cancel {
+    background-color: lightgrey;
+    color: black;
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 0.6rem;
+    width: 20%;
+    font-size: 1.2rem;
+    margin-left: 2rem;
 }
 
 .row {
