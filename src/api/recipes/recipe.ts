@@ -31,6 +31,7 @@ export interface Recipe {
     instructions: Step[];
     tags: Tag[];
     images?: string[];
+    rating: number;
 }
 
 export interface PaginatedRecipes {
@@ -82,6 +83,7 @@ export class RecipeClass implements Recipe {
     ingredients: Ingredient[];
     instructions: Step[];
     tags: Tag[];
+    rating: number;
     constructor() {
         this.title = '';
         this.description = '';
@@ -90,6 +92,7 @@ export class RecipeClass implements Recipe {
         this.ingredients = [new IngredientClass()];
         this.instructions = [new StepClass()];
         this.tags = [];
+        this.rating = 0;
     }
 }
 
