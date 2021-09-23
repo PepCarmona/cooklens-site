@@ -16,11 +16,11 @@
             </div>
             <div class="row mt-2">
                 <div class="w-50 text-left">
-                    <FilledStar size="l" />
-                    <FilledStar size="l" />
-                    <FilledStar size="l" />
-                    <HalfStar size="l" />
-                    <EmptyStar size="l" />
+                    <Rating
+                        onlyDisplay
+                        :recipeRating="recipe.rating"
+                        :size="'l'"
+                    />
                 </div>
                 <div class="mt-2 w-50 d-flex justify-end align-center">
                     <ClockIcon size="l" />
@@ -47,10 +47,8 @@ import {
     EOS_FAVORITE_OUTLINED as FavIcon,
     EOS_THUMB_UP_OUTLINED as LikeIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
-    EOS_STAR_FILLED as FilledStar,
-    EOS_STAR_HALF_FILLED as HalfStar,
-    EOS_STAR_OUTLINED as EmptyStar,
 } from 'eos-icons-vue3';
+import Rating from '@/components/shared/Rating.vue';
 
 export default defineComponent({
     name: 'RecipeCard',
@@ -59,9 +57,7 @@ export default defineComponent({
         FavIcon,
         LikeIcon,
         ClockIcon,
-        FilledStar,
-        HalfStar,
-        EmptyStar,
+        Rating,
     },
 
     props: {
@@ -98,7 +94,9 @@ export default defineComponent({
     border: 1px solid grey;
     margin-top: 1rem;
     margin-bottom: 1rem;
+    cursor: pointer;
 }
+
 .image > img {
     width: 100%;
 }

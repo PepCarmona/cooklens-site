@@ -99,11 +99,14 @@
                     </li>
                 </ul>
                 <h3 v-if="recipe.tags.length > 0">Tags:</h3>
-                <ul>
-                    <li v-for="tag in recipe.tags" :key="tag._id">
+                <ul class="tags d-flex">
+                    <li class="pill" v-for="tag in recipe.tags" :key="tag._id">
                         {{ tag.value }}
                     </li>
                 </ul>
+                <div class="mt-4 d-flex-center">
+                    <Rating :recipeRating="recipe.rating" @rate="editRating" />
+                </div>
             </div>
         </template>
     </div>
@@ -111,9 +114,17 @@
 
 <script lang="ts">
 import { URI } from '@/api/config';
-import { Ingredient, Recipe } from '@/api/recipes/recipe';
+import { Ingredient, Recipe, RecipeClass } from '@/api/recipes/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
-import { computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
+import {
+    computed,
+    defineComponent,
+    inject,
+    onMounted,
+    reactive,
+    ref,
+    watch,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
@@ -126,6 +137,7 @@ import {
     EOS_SCHEDULE_OUTLINED as ClockIcon,
 } from 'eos-icons-vue3';
 import CreateRecipe from '@/components/CreateRecipe.vue';
+import Rating from '@/components/shared/Rating.vue';
 
 export default defineComponent({
     name: 'Recipe',
@@ -140,6 +152,7 @@ export default defineComponent({
         ShareIcon,
         ClockIcon,
         CreateRecipe,
+        Rating,
     },
 
     setup() {
@@ -149,7 +162,7 @@ export default defineComponent({
 
         const isLoading = ref(true);
 
-        const recipe = ref<Recipe | null>(null);
+        const recipe = reactive<Recipe>(new RecipeClass());
 
         const canModifyServings = ref(false);
         const modifiedServings = ref<number | null>(null);
@@ -203,13 +216,13 @@ export default defineComponent({
 
         const ingredientsToShow = computed(() => {
             if (canModifyServings.value) {
-                const clonedIngredients: Ingredient[] = recipe.value
-                    ? JSON.parse(JSON.stringify(recipe.value.ingredients))
-                    : [];
+                const clonedIngredients: Ingredient[] = JSON.parse(
+                    JSON.stringify(recipe.ingredients)
+                );
                 return clonedIngredients.map((ingredient) => {
                     if (ingredient.quantity) {
                         ingredient.quantity =
-                            (ingredient.quantity / recipe.value!.servings) *
+                            (ingredient.quantity / recipe.servings) *
                             modifiedServings.value!;
                     }
 
@@ -217,14 +230,11 @@ export default defineComponent({
                 });
             }
 
-            return recipe.value?.ingredients;
+            return recipe.ingredients;
         });
 
         const recipeHasImages = computed(
-            () =>
-                recipe.value &&
-                recipe.value.images &&
-                recipe.value.images.length > 0
+            () => recipe.images && recipe.images.length > 0
         );
 
         function getRecipeDetails() {
@@ -238,15 +248,15 @@ export default defineComponent({
             axios
                 ?.get<Recipe>(url.toString())
                 .then((response: AxiosResponse<Recipe>) => {
-                    recipe.value = response.data;
+                    Object.assign(recipe, response.data);
 
-                    canModifyServings.value = recipe.value.ingredients.some(
+                    canModifyServings.value = recipe.ingredients.some(
                         (ingredient) =>
                             ingredient.quantity && ingredient.quantity > 0
                     );
 
                     if (canModifyServings.value) {
-                        modifiedServings.value = recipe.value.servings;
+                        modifiedServings.value = recipe.servings;
                     }
                 })
                 .catch((err) => console.error(err))
@@ -270,15 +280,15 @@ export default defineComponent({
                         query: { id: response.data._id },
                     });
 
-                    recipe.value = response.data;
+                    Object.assign(recipe, response.data);
 
-                    canModifyServings.value = recipe.value.ingredients.some(
+                    canModifyServings.value = recipe.ingredients.some(
                         (ingredient) =>
                             ingredient.quantity && ingredient.quantity > 0
                     );
 
                     if (canModifyServings.value) {
-                        modifiedServings.value = recipe.value.servings;
+                        modifiedServings.value = recipe.servings;
                     }
                 })
                 .catch((err) => console.error(err))
@@ -296,8 +306,19 @@ export default defineComponent({
         }
 
         function showNewRecipe(value: Recipe) {
-            recipe.value = value;
+            Object.assign(recipe, value);
+
             showEditRecipe.value = false;
+        }
+
+        function editRating(value: number) {
+            recipe.rating = value;
+            const url = new URL(URI.recipes.update);
+            url.searchParams.append('id', recipe._id!);
+
+            axios
+                ?.put(url.toString(), { rating: value })
+                .catch((err) => console.error(err));
         }
 
         return {
@@ -307,6 +328,7 @@ export default defineComponent({
             getFormattedTime,
             recipeHasImages,
             showNewRecipe,
+            editRating,
         };
     },
 });
@@ -418,6 +440,17 @@ export default defineComponent({
 .stepContent {
     width: calc(100% - 20px - 1rem);
     margin-left: 1rem;
+}
+
+.pill {
+    background-color: grey;
+    color: white;
+    border-radius: 50px;
+    width: fit-content;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
 }
 
 @media only screen and (min-width: 350px) {
