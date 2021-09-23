@@ -11,7 +11,7 @@
                 <EmptyStar v-else :size="size" />
             </button>
         </div>
-        <div v-if="clicked" class="comment">
+        <div v-if="clicked && showComment" class="comment">
             <textarea
                 name="ta"
                 id="ta"
