@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { Recipe } from '@/api/recipes/recipe';
+import { Recipe } from '@/api/recipe';
 import { computed, defineComponent, PropType } from 'vue';
 import {
     EOS_FAVORITE_OUTLINED as FavIcon,

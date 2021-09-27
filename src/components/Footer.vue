@@ -36,7 +36,9 @@
                     <MealPlanIcon size="xl" />
                 </div>
                 <div>
-                    <ProfileIcon size="xl" />
+                    <router-link to="/profile">
+                        <ProfileIcon size="xl" />
+                    </router-link>
                 </div>
             </div>
         </transition>

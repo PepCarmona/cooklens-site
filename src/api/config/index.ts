@@ -17,4 +17,8 @@ export const URI = {
         search: `${proxy}/recipes/search`,
         defaultLimit: '2',
     },
+    auth: {
+        register: `${proxy}/auth/signup`,
+        login: `${proxy}/auth/signin`,
+    },
 };

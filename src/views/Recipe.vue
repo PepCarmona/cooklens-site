@@ -114,7 +114,7 @@
 
 <script lang="ts">
 import { URI } from '@/api/config';
-import { Ingredient, Recipe, RecipeClass } from '@/api/recipes/recipe';
+import { Ingredient, Recipe, RecipeClass } from '@/api/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import {
     computed,

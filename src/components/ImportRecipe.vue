@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { URI } from '@/api/config';
-import { Recipe } from '@/api/recipes/recipe';
+import { Recipe } from '@/api/recipe';
 import { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
 import { computed, defineComponent, inject, onMounted, ref } from 'vue';
 import CustomModal from '@/components/shared/CustomModal.vue';

@@ -36,12 +36,26 @@
                                     to="/about"
                                     >About</router-link
                                 >
-                                <router-link
+                                <!-- <router-link
                                     @click="showMenu = false"
                                     to="/recipe/random?random=true"
                                     >Random</router-link
+                                > -->
+                                <span
+                                    v-if="!!authenticatedUser"
+                                    @click="
+                                        handleLogOut();
+                                        showMenu = false;
+                                    "
                                 >
-
+                                    Log Out
+                                </span>
+                                <router-link
+                                    v-else
+                                    @click="showMenu = false"
+                                    to="/login"
+                                    >Login</router-link
+                                >
                                 <router-link
                                     @click="showMenu = false"
                                     to="/recipe/add"
@@ -57,7 +71,11 @@
             <!-- <router-link to="/">Home</router-link> -->
             <router-link to="/recipes">Recipes</router-link>
             <router-link to="/about">About</router-link>
-            <router-link to="/recipe/random?random=true">Random</router-link>
+            <!-- <router-link to="/recipe/random?random=true">Random</router-link> -->
+            <span v-if="!!authenticatedUser" @click="handleLogOut"
+                >Log Out</span
+            >
+            <router-link v-else to="/login">Login</router-link>
             <router-link to="/recipe/add">Add recipe</router-link>
         </div>
     </header>
@@ -69,6 +87,8 @@ import {
     EOS_MENU as MenuIcon,
     EOS_CLOSE_OUTLINED as CloseIcon,
 } from 'eos-icons-vue3';
+import useAuthState, { logOut } from '@/store/auth-state';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Header',
@@ -79,8 +99,11 @@ export default defineComponent({
     },
 
     setup() {
+        const router = useRouter();
+
         const showMenu = ref(false);
         const windowWidth = ref<number>(window.innerWidth);
+        const { authenticatedUser } = useAuthState();
 
         onMounted(() =>
             window.addEventListener(
@@ -88,6 +111,11 @@ export default defineComponent({
                 () => (windowWidth.value = window.innerWidth)
             )
         );
+
+        function handleLogOut() {
+            logOut();
+            router.push({ name: 'Home' });
+        }
 
         return {
             showMenu,
@@ -97,6 +125,8 @@ export default defineComponent({
                     : 'https://via.placeholder.com/30/4d4d4d/ffffff.webp?text=X'
             ),
             isMobile: computed(() => windowWidth.value < 768),
+            authenticatedUser,
+            handleLogOut,
         };
     },
 });

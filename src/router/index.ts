@@ -36,6 +36,28 @@ const routes: Array<RouteRecordRaw> = [
                 /* webpackChunkName: "createRecipe" */ '../components/CreateRecipe.vue'
             ),
     },
+    {
+        path: '/login',
+        name: 'Login',
+        component: () =>
+            import(/* webpackChunkName: "login" */ '../components/Login.vue'),
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: () =>
+            import(
+                /* webpackChunkName: "register" */ '../components/Register.vue'
+            ),
+    },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: () =>
+            import(
+                /* webpackChunkName: "profile" */ '../components/Profile.vue'
+            ),
+    },
 ];
 
 const router = createRouter({
