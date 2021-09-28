@@ -33,8 +33,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { User, UserClass } from '@/api/user';
-import useAuthState, { logIn } from '@/store/auth-state';
+import { User, UserClass } from '@/api/types/user';
+import useAuthState from '@/store/auth-state';
+import { logIn } from '@/api/endpoints/auth';
 import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 

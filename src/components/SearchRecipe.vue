@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { PaginatedRecipes, Recipe } from '@/api/recipe';
+import { PaginatedRecipes, Recipe } from '@/api/types/recipe';
 import {
     computed,
     defineComponent,

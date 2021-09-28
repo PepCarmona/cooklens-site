@@ -51,7 +51,7 @@ import {
     onMounted,
     ref,
 } from 'vue';
-import { PaginatedRecipes, Recipe } from '@/api/recipe';
+import { PaginatedRecipes, Recipe } from '@/api/types/recipe';
 import { AxiosResponse, AxiosStatic } from 'axios';
 import { URI } from '@/api/config/index';
 import RecipeCard from '@/components/RecipeCard.vue';

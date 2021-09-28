@@ -216,7 +216,7 @@ import {
     RecipeClass,
     StepClass,
     TagClass,
-} from '@/api/recipe';
+} from '@/api/types/recipe';
 import { AxiosError, AxiosStatic } from 'axios';
 import {
     computed,

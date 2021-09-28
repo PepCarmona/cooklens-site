@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onBeforeMount } from 'vue';
 import useAuthState from '@/store/auth-state';
 import { useRouter } from 'vue-router';
 
@@ -18,7 +18,7 @@ export default defineComponent({
 
         const { authenticatedUser, isLoading } = useAuthState();
 
-        onMounted(() => {
+        onBeforeMount(() => {
             if (!authenticatedUser.value) {
                 router.push({ name: 'Login' });
             }

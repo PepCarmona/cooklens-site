@@ -87,7 +87,8 @@ import {
     EOS_MENU as MenuIcon,
     EOS_CLOSE_OUTLINED as CloseIcon,
 } from 'eos-icons-vue3';
-import useAuthState, { logOut } from '@/store/auth-state';
+import useAuthState from '@/store/auth-state';
+import { logOut } from '@/api/endpoints/auth';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
