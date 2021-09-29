@@ -21,6 +21,7 @@ export async function register(user: User): Promise<void> {
 
     localStorage.setItem('userToken', authResponse.token);
     authenticatedUser.value = authResponse.user;
+    isLoading.value = false;
 }
 export async function logIn(user: User): Promise<void> {
     isLoading.value = true;
@@ -44,6 +45,7 @@ export async function checkSession(): Promise<void> {
     const loggedUser = await authService.checkSession();
 
     authenticatedUser.value = loggedUser;
+    isLoading.value = false;
 }
 
 export default function useAuth(): AuthState {
