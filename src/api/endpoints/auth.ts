@@ -27,9 +27,9 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
     }
 
     public logOut(): Promise<void> {
-        return new Promise((resolve: any) => {
+        return new Promise((resolve) => {
             localStorage.removeItem('userToken');
-            return resolve;
+            resolve();
         });
     }
 
