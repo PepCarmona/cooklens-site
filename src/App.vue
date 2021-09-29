@@ -8,7 +8,7 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
-import { checkSession } from '@/api/endpoints/auth';
+import { checkSession } from '@/store/auth-state';
 
 export default defineComponent({
     components: {

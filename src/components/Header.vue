@@ -88,7 +88,7 @@ import {
     EOS_CLOSE_OUTLINED as CloseIcon,
 } from 'eos-icons-vue3';
 import useAuthState from '@/store/auth-state';
-import { logOut } from '@/api/endpoints/auth';
+import { logOut } from '@/store/auth-state';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -114,8 +114,9 @@ export default defineComponent({
         );
 
         function handleLogOut() {
-            logOut();
-            router.push({ name: 'Home' });
+            logOut().then(() => {
+                router.push({ name: 'Home' });
+            });
         }
 
         return {

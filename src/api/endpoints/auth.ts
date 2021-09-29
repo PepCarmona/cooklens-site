@@ -1,67 +1,46 @@
-import axios, { AxiosResponse } from 'axios';
 import { URI } from '@/api/config';
 import { User } from '@/api/types/user';
-import {
-    startLoading,
-    finishLoading,
-    setAuthenticatedUser,
-} from '@/store/auth-state';
+import useAuth from '@/store/auth-state';
+import { Endpoint } from '.';
 
 interface AuthResponse {
     user: User;
     token: string;
 }
+interface AuthEndpointInterface {
+    register(user: User): Promise<AuthResponse>;
 
-export function checkSession(): Promise<void> | undefined {
-    const token = localStorage.getItem('userToken');
-    if (!token) {
-        console.warn('No token found');
-        return;
+    logIn(user: User): Promise<AuthResponse>;
+
+    logOut(): Promise<void>;
+
+    checkSession(): Promise<User> | null;
+}
+
+export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
+    public register(user: User): Promise<AuthResponse> {
+        return this.post(URI.auth.register, user);
     }
 
-    startLoading();
+    public logIn(user: User): Promise<AuthResponse> {
+        return this.post(URI.auth.login, user);
+    }
 
-    return axios
-        .post(URI.auth.login, { token })
-        .then((response: AxiosResponse<User>) => {
-            setAuthenticatedUser(response.data);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => finishLoading());
-}
+    public logOut(): Promise<void> {
+        return new Promise((resolve: any) => {
+            localStorage.removeItem('userToken');
+            return resolve;
+        });
+    }
 
-export function logIn(user: User): Promise<void> {
-    startLoading();
+    public checkSession(): Promise<User> | null {
+        const { token } = useAuth();
 
-    return axios
-        .post(URI.auth.login, user)
-        .then((response: AxiosResponse<AuthResponse>) => {
-            localStorage.setItem('userToken', response.data.token);
+        if (token.value === '') {
+            console.warn('No token found');
+            return null;
+        }
 
-            setAuthenticatedUser(response.data.user);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => finishLoading());
-}
-
-export function logOut(): void {
-    localStorage.removeItem('userToken');
-
-    setAuthenticatedUser(null);
-}
-
-export function register(user: User): Promise<void> {
-    startLoading();
-    return axios
-        .post(URI.auth.register, user)
-        .then((response: AxiosResponse<AuthResponse>) => {
-            localStorage.setItem(
-                'userToken',
-                JSON.stringify(response.data.token)
-            );
-
-            setAuthenticatedUser(response.data.user);
-        })
-        .catch((err) => console.error(err))
-        .finally(() => finishLoading());
+        return this.post(URI.auth.login, { token });
+    }
 }
