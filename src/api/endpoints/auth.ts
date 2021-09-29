@@ -41,6 +41,6 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
             return null;
         }
 
-        return this.post(URI.auth.login, { token });
+        return this.post(URI.auth.login, { token: token.value });
     }
 }

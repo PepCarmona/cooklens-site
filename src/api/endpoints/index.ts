@@ -1,11 +1,10 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import useAuth from '@/store/auth-state';
 
 export class Endpoint {
     private http: AxiosInstance;
 
     public constructor() {
-        const { token } = useAuth();
+        const token = localStorage.getItem('userToken') || '';
 
         this.http = axios.create({
             headers: { 'x-access-token': token },
