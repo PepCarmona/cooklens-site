@@ -18,7 +18,7 @@
 
         <div v-if="false" class="errors">Errors go here</div>
 
-        <button @click="handleLogin" :disabled="isLoading">
+        <button @click="logIn" :disabled="isLoading">
             <span v-if="isLoading">
                 <LoadingSpinner />
             </span>
@@ -35,7 +35,6 @@
 import { defineComponent, ref } from 'vue';
 import { User, UserClass } from '@/api/types/user';
 import useAuthState from '@/store/auth-state';
-import { logIn } from '@/store/auth-state';
 import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 
@@ -52,12 +51,14 @@ export default defineComponent({
 
         const { isLoading } = useAuthState();
 
-        function handleLogin() {
+        function logIn() {
             if (!isValidUser()) {
                 return;
             }
 
-            logIn(user.value).then(() => router.push({ name: 'Home' }));
+            useAuthState()
+                .logIn(user.value)
+                .then(() => router.push({ name: 'Home' }));
         }
 
         function isValidUser(): boolean {
@@ -92,14 +93,14 @@ export default defineComponent({
 
         function autoLogin(event: KeyboardEvent) {
             if (event.key === 'Enter') {
-                handleLogin();
+                logIn();
             }
         }
 
         return {
             user,
             isLoading,
-            handleLogin,
+            logIn,
             autoLogin,
         };
     },

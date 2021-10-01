@@ -8,7 +8,7 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
-import { checkSession } from '@/store/auth-state';
+import useAuthState from './store/auth-state';
 
 export default defineComponent({
     components: {
@@ -17,7 +17,7 @@ export default defineComponent({
     },
 
     setup() {
-        onBeforeMount(() => checkSession());
+        onBeforeMount(() => useAuthState().checkSession());
         return {};
     },
 });

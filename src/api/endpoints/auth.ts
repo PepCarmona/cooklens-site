@@ -14,7 +14,7 @@ interface AuthEndpointInterface {
 
     logOut(): Promise<void>;
 
-    checkSession(): Promise<User> | null;
+    checkSession(): Promise<User | null>;
 }
 
 export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
@@ -33,12 +33,12 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
         });
     }
 
-    public checkSession(): Promise<User> | null {
+    public checkSession(): Promise<User | null> {
         const { token } = useAuth();
 
         if (token.value === '') {
             console.warn('No token found');
-            return null;
+            return new Promise((resolve) => resolve(null));
         }
 
         return this.post(URI.auth.login, { token: token.value });

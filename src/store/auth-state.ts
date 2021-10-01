@@ -6,6 +6,11 @@ interface AuthState {
     isLoading: Readonly<Ref<boolean>>;
     authenticatedUser: Readonly<Ref<User | null>>;
     token: Readonly<Ref<string>>;
+
+    register(user: User): Promise<void>;
+    logIn(user: User): Promise<void>;
+    logOut(): Promise<void>;
+    checkSession(): Promise<User | null>;
 }
 
 const authService = new AuthEndpoint();
@@ -14,44 +19,54 @@ const isLoading = ref(false);
 const authenticatedUser = ref<User | null>(null);
 const token = ref(localStorage.getItem('userToken') || '');
 
-export async function register(user: User): Promise<void> {
+function register(user: User) {
     isLoading.value = true;
 
-    const authResponse = await authService.register(user);
-
-    localStorage.setItem('userToken', authResponse.token);
-    authenticatedUser.value = authResponse.user;
-    isLoading.value = false;
+    return authService
+        .register(user)
+        .then((authResponse) => {
+            localStorage.setItem('userToken', authResponse.token);
+            authenticatedUser.value = authResponse.user;
+        })
+        .finally(() => (isLoading.value = false));
 }
-export async function logIn(user: User): Promise<void> {
+
+function logIn(user: User) {
     isLoading.value = true;
 
-    const authResponse = await authService.logIn(user);
-
-    localStorage.setItem('userToken', authResponse.token);
-    authenticatedUser.value = authResponse.user;
-    isLoading.value = false;
+    return authService
+        .logIn(user)
+        .then((authResponse) => {
+            localStorage.setItem('userToken', authResponse.token);
+            authenticatedUser.value = authResponse.user;
+        })
+        .finally(() => (isLoading.value = false));
 }
 
-export async function logOut(): Promise<void> {
+async function logOut() {
     authenticatedUser.value = null;
 
     await authService.logOut();
 }
 
-export async function checkSession(): Promise<void> {
+function checkSession() {
     isLoading.value = true;
 
-    const loggedUser = await authService.checkSession();
-
-    authenticatedUser.value = loggedUser;
-    isLoading.value = false;
+    return authService
+        .checkSession()
+        .then((loggedUser) => (authenticatedUser.value = loggedUser))
+        .finally(() => (isLoading.value = false));
 }
 
-export default function useAuth(): AuthState {
+export default function useAuthState(): AuthState {
     return {
         isLoading: readonly(isLoading),
         authenticatedUser: readonly(authenticatedUser),
         token: readonly(token),
+
+        register,
+        logIn,
+        logOut,
+        checkSession,
     };
 }

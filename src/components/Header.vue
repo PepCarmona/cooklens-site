@@ -44,7 +44,7 @@
                                 <span
                                     v-if="!!authenticatedUser"
                                     @click="
-                                        handleLogOut();
+                                        logOut();
                                         showMenu = false;
                                     "
                                 >
@@ -72,9 +72,7 @@
             <router-link to="/recipes">Recipes</router-link>
             <router-link to="/about">About</router-link>
             <!-- <router-link to="/recipe/random?random=true">Random</router-link> -->
-            <span v-if="!!authenticatedUser" @click="handleLogOut"
-                >Log Out</span
-            >
+            <span v-if="!!authenticatedUser" @click="logOut">Log Out</span>
             <router-link v-else to="/login">Login</router-link>
             <router-link to="/recipe/add">Add recipe</router-link>
         </div>
@@ -88,7 +86,6 @@ import {
     EOS_CLOSE_OUTLINED as CloseIcon,
 } from 'eos-icons-vue3';
 import useAuthState from '@/store/auth-state';
-import { logOut } from '@/store/auth-state';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -113,10 +110,12 @@ export default defineComponent({
             )
         );
 
-        function handleLogOut() {
-            logOut().then(() => {
-                router.push({ name: 'Home' });
-            });
+        function logOut() {
+            useAuthState()
+                .logOut()
+                .then(() => {
+                    router.push({ name: 'Home' });
+                });
         }
 
         return {
@@ -128,7 +127,7 @@ export default defineComponent({
             ),
             isMobile: computed(() => windowWidth.value < 768),
             authenticatedUser,
-            handleLogOut,
+            logOut,
         };
     },
 });
