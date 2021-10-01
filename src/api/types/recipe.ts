@@ -1,3 +1,14 @@
+export type SearchType = 'title' | 'ingredient' | 'tag';
+
+export interface PaginatedRecipes {
+    recipes: Recipe[];
+    next: boolean;
+}
+export interface IntegratedSite {
+    name: string;
+    url: string;
+}
+
 export interface RecipeTime {
     preparation?: number;
     cooking: number;
@@ -32,11 +43,6 @@ export interface Recipe {
     tags: Tag[];
     images?: string[];
     rating: number;
-}
-
-export interface PaginatedRecipes {
-    recipes: Recipe[];
-    next: boolean;
 }
 
 export class RecipeTimeClass implements RecipeTime {

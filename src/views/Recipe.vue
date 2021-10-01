@@ -3,8 +3,8 @@
         <CreateRecipe
             v-if="showEditRecipe"
             :recipe="recipe"
-            @saved="showNewRecipe"
-            @cancel="showEditRecipe = false"
+            @saved="hideEdit"
+            @cancel="hideEdit"
         />
         <template v-else>
             <CustomModal v-if="isLoading">
@@ -45,11 +45,7 @@
                     </li>
                     <li>
                         <b>Total:</b>
-                        {{
-                            getFormattedTime(
-                                recipe.time.preparation + recipe.time.cooking
-                            )
-                        }}
+                        {{ totalTime }}
                     </li>
                     <li><b>Servings:</b> {{ recipe.servings }}</li>
                     <div class="icon">
@@ -113,18 +109,8 @@
 </template>
 
 <script lang="ts">
-import { URI } from '@/api/config';
-import { Ingredient, Recipe, RecipeClass } from '@/api/types/recipe';
-import { AxiosResponse, AxiosStatic } from 'axios';
-import {
-    computed,
-    defineComponent,
-    inject,
-    onMounted,
-    reactive,
-    ref,
-    watch,
-} from 'vue';
+import { Ingredient } from '@/api/types/recipe';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
@@ -138,6 +124,7 @@ import {
 } from 'eos-icons-vue3';
 import CreateRecipe from '@/components/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'Recipe',
@@ -156,16 +143,17 @@ export default defineComponent({
     },
 
     setup() {
-        const axios: AxiosStatic | undefined = inject('axios');
+        const {
+            isLoading,
+            canModifyServings,
+            modifiedServings,
+            getRecipe,
+            recipe,
+            editRating,
+        } = useRecipeState();
+
         const route = useRoute();
         const router = useRouter();
-
-        const isLoading = ref(true);
-
-        const recipe = reactive<Recipe>(new RecipeClass());
-
-        const canModifyServings = ref(false);
-        const modifiedServings = ref<number | null>(null);
 
         const gallery = ref<HTMLDivElement>();
 
@@ -217,12 +205,12 @@ export default defineComponent({
         const ingredientsToShow = computed(() => {
             if (canModifyServings.value) {
                 const clonedIngredients: Ingredient[] = JSON.parse(
-                    JSON.stringify(recipe.ingredients)
+                    JSON.stringify(recipe.value.ingredients)
                 );
                 return clonedIngredients.map((ingredient) => {
                     if (ingredient.quantity) {
                         ingredient.quantity =
-                            (ingredient.quantity / recipe.servings) *
+                            (ingredient.quantity / recipe.value.servings) *
                             modifiedServings.value!;
                     }
 
@@ -230,69 +218,44 @@ export default defineComponent({
                 });
             }
 
-            return recipe.ingredients;
+            return recipe.value.ingredients;
         });
 
         const recipeHasImages = computed(
-            () => recipe.images && recipe.images.length > 0
+            () => recipe.value.images && recipe.value.images.length > 0
         );
+
+        const totalTime = computed(() => {
+            return getFormattedTime(
+                (recipe.value.time.preparation ?? 0) + recipe.value.time.cooking
+            );
+        });
 
         function getRecipeDetails() {
             const id = route.query.id?.toString();
 
-            isLoading.value = true;
+            if (!id) {
+                console.error('ID not provided');
+                return;
+            }
 
-            const url = new URL(URI.recipes.get);
-            url.searchParams.append('id', id!);
-
-            axios
-                ?.get<Recipe>(url.toString())
-                .then((response: AxiosResponse<Recipe>) => {
-                    Object.assign(recipe, response.data);
-
-                    canModifyServings.value = recipe.ingredients.some(
-                        (ingredient) =>
-                            ingredient.quantity && ingredient.quantity > 0
-                    );
-
-                    if (canModifyServings.value) {
-                        modifiedServings.value = recipe.servings;
-                    }
-                })
-                .catch((err) => console.error(err))
-                .finally(() => (isLoading.value = false));
+            getRecipe(id);
         }
 
         function getRandomRecipe() {
-            const url = new URL(URI.recipes.get);
-            url.searchParams.append('random', 'true');
-
-            axios
-                ?.get(url.toString())
-                .then((response: AxiosResponse<Recipe>) => {
-                    const formattedTitle = response.data.title
+            useRecipeState()
+                .getRandomRecipe()
+                .then(() => {
+                    const formattedTitle = recipe.value.title
                         .toLowerCase()
                         .replaceAll(' ', '-');
 
                     router.push({
                         name: 'Recipe',
                         params: { title: formattedTitle },
-                        query: { id: response.data._id },
+                        query: { id: recipe.value._id },
                     });
-
-                    Object.assign(recipe, response.data);
-
-                    canModifyServings.value = recipe.ingredients.some(
-                        (ingredient) =>
-                            ingredient.quantity && ingredient.quantity > 0
-                    );
-
-                    if (canModifyServings.value) {
-                        modifiedServings.value = recipe.servings;
-                    }
-                })
-                .catch((err) => console.error(err))
-                .finally(() => (isLoading.value = false));
+                });
         }
 
         function getFormattedTime(time: number) {
@@ -305,30 +268,20 @@ export default defineComponent({
             return formattedTime;
         }
 
-        function showNewRecipe(value: Recipe) {
-            Object.assign(recipe, value);
-
+        function hideEdit() {
             showEditRecipe.value = false;
-        }
-
-        function editRating(value: number) {
-            recipe.rating = value;
-            const url = new URL(URI.recipes.update);
-            url.searchParams.append('id', recipe._id!);
-
-            axios
-                ?.put(url.toString(), { rating: value })
-                .catch((err) => console.error(err));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         return {
             ...data,
             img,
             ingredientsToShow,
+            totalTime,
             getFormattedTime,
             recipeHasImages,
-            showNewRecipe,
             editRating,
+            hideEdit,
         };
     },
 });

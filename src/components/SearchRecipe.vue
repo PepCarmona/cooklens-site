@@ -1,5 +1,5 @@
 <template>
-    <CustomModal v-if="isSearching">
+    <CustomModal v-if="isLoading">
         <LoadingModal>Searching ...</LoadingModal>
     </CustomModal>
     <div class="d-flex w-100 searchRow">
@@ -9,10 +9,10 @@
             type="text"
             id="search"
             class="w-100"
-            :placeholder="'Search by ' + searchType"
+            :placeholder="'Search by ' + search.type"
         />
         <button
-            @click="searchPage(1)"
+            @click="doSearch()"
             class="searchButton p-05"
             ref="searchButton"
         >
@@ -21,39 +21,29 @@
     </div>
 
     <div class="switchSearch">
-        <button v-if="searchType !== 'title'" @click="changeSearch('title')">
+        <button v-if="search.type !== 'title'" @click="changeSearch('title')">
             Search by title
         </button>
         <button
-            v-if="searchType !== 'ingredient'"
+            v-if="search.type !== 'ingredient'"
             @click="changeSearch('ingredient')"
         >
             Search by ingredient
         </button>
-        <button v-if="searchType !== 'tag'" @click="changeSearch('tag')">
+        <button v-if="search.type !== 'tag'" @click="changeSearch('tag')">
             Search by tag
         </button>
     </div>
 </template>
 
 <script lang="ts">
-import { PaginatedRecipes, Recipe } from '@/api/types/recipe';
-import {
-    computed,
-    defineComponent,
-    inject,
-    onMounted,
-    PropType,
-    ref,
-} from 'vue';
+import { Recipe, SearchType } from '@/api/types/recipe';
+import { defineComponent, onMounted, PropType, ref } from 'vue';
 import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
 import { useRoute, useRouter } from 'vue-router';
-import { AxiosResponse, AxiosStatic } from 'axios';
-import { URI } from '@/api/config';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
-
-type SearchType = 'title' | 'ingredient' | 'tag';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'SearchRecipe',
@@ -74,7 +64,16 @@ export default defineComponent({
     emits: ['searchResult'],
 
     setup(_, { emit }) {
-        const axios: AxiosStatic | undefined = inject('axios');
+        const {
+            isLoading,
+            recipes,
+            search,
+            currentPage,
+            nextPage,
+            setSearch,
+            searchRecipes,
+        } = useRecipeState();
+
         const router = useRouter();
         const route = useRoute();
 
@@ -82,11 +81,6 @@ export default defineComponent({
 
         const searchInput = ref<HTMLInputElement>();
         const searchButton = ref<HTMLButtonElement>();
-
-        const currentPage = ref(1);
-        const nextPage = ref<number | null>(null);
-
-        const isSearching = ref(false);
 
         onMounted(() => {
             if (searchInput.value) {
@@ -100,21 +94,17 @@ export default defineComponent({
                     searchInput.value!.value =
                         route.query.searchText!.toString();
                     if (route.query.page) {
-                        searchPage(parseInt(route.query.page.toString()));
+                        doSearch(parseInt(route.query.page.toString()));
                         return;
                     }
-                    searchPage(1);
+                    doSearch();
                 }
             }
 
             searchInput.value?.focus();
         });
 
-        const searchType = computed(
-            () => (route.query.searchBy?.toString() as SearchType) || 'title'
-        );
-
-        function searchPage(page: number) {
+        function doSearch(page?: number) {
             if (searchInput.value!.value === '') {
                 router.push({
                     name: 'RecipeList',
@@ -125,68 +115,60 @@ export default defineComponent({
                 return;
             }
 
-            isSearching.value = true;
+            updateQueryString(page);
+
+            searchRecipes(page)
+                .then(() => {
+                    emit('searchResult', recipes);
+                })
+                .catch(() => {
+                    emit('searchResult', []);
+                });
+        }
+
+        function changeSearch(type: SearchType) {
+            setSearch(type, search.value.text);
+
+            if (searchInput.value!.value.length > 0) {
+                setTimeout(() => doSearch(), 10);
+            }
+        }
+
+        function updateQueryString(page?: number) {
+            const searchBy = search.value.type;
+            const searchText =
+                searchInput.value!.value.length > 0
+                    ? searchInput.value!.value
+                    : undefined;
 
             router.push({
                 name: 'RecipeList',
                 query: {
-                    searchBy: searchType.value,
-                    searchText: searchInput.value!.value,
-                    page: page > 1 ? page : undefined,
+                    searchBy,
+                    searchText,
+                    page: page && page > 1 ? page : undefined,
                 },
             });
 
-            const url = new URL(URI.recipes.search);
-            url.searchParams.append('searchType', searchType.value);
-            url.searchParams.append('searchText', searchInput.value!.value);
-            url.searchParams.append('page', page.toString());
-            url.searchParams.append('limit', URI.recipes.defaultLimit);
-
-            axios
-                ?.get(url.toString())
-                .then((response: AxiosResponse<PaginatedRecipes>) => {
-                    currentPage.value = page;
-                    nextPage.value = response.data.next
-                        ? currentPage.value + 1
-                        : null;
-
-                    emit('searchResult', response.data.recipes);
-                })
-                .catch((err) => {
-                    emit('searchResult', []);
-                    console.error(err);
-                })
-                .finally(() => (isSearching.value = false));
-        }
-
-        function changeSearch(type: SearchType) {
-            router.push({
-                query: {
-                    searchBy: type,
-                    searchText: searchInput.value!.value,
-                },
-            });
-
-            if (searchInput.value!.value.length > 0) {
-                setTimeout(() => searchPage(1), 10);
-            }
+            setSearch(searchBy || 'title', searchText || '');
         }
 
         function autoSearch(event: KeyboardEvent) {
             if (event.key === 'Enter') {
-                searchPage(1);
+                doSearch();
             }
         }
 
         return {
             searchResult,
-            searchPage,
-            searchType,
+            doSearch,
+            search,
             changeSearch,
+            updateQueryString,
             searchInput,
             searchButton,
             autoSearch,
-            isSearching,
+            isLoading,
             currentPage,
             nextPage,
         };

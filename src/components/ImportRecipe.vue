@@ -20,7 +20,7 @@
                         ref="tooltip"
                     >
                         <span v-for="site in integratedSites" :key="site">
-                            {{ site }}
+                            {{ site.name }}
                         </span>
                     </div>
                     <div
@@ -51,12 +51,11 @@
 </template>
 
 <script lang="ts">
-import { URI } from '@/api/config';
 import { Recipe } from '@/api/types/recipe';
-import { AxiosError, AxiosResponse, AxiosStatic } from 'axios';
-import { computed, defineComponent, inject, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'ImportRecipe',
@@ -69,18 +68,15 @@ export default defineComponent({
     emits: ['importedRecipe'],
 
     setup(_, { emit }) {
-        const axios: AxiosStatic | undefined = inject('axios');
-
         const input = ref<HTMLInputElement>();
         const tooltip = ref<HTMLDivElement>();
         const overlay = ref<HTMLDivElement>();
 
-        const integratedSites = ref<string[]>([]);
         const importErrors = ref<string | null>(null);
 
         const windowWidth = ref<number>(window.innerWidth);
 
-        const isLoading = ref(false);
+        const { isLoading, integratedSites } = useRecipeState();
 
         onMounted(() => {
             window.addEventListener(
@@ -88,13 +84,8 @@ export default defineComponent({
                 () => (windowWidth.value = window.innerWidth)
             );
 
-            axios
-                ?.get(URI.recipes.integratedSites)
-                .then(
-                    (response) =>
-                        (integratedSites.value = Object.keys(response.data))
-                )
-                .catch((err) => console.error(err));
+            useRecipeState().getIntegratedSites();
+
             input.value?.focus();
         });
 
@@ -110,21 +101,14 @@ export default defineComponent({
                 return;
             }
 
-            isLoading.value = true;
-
-            const url = new URL(URI.recipes.import);
-            url.searchParams.append('url', inputUrl);
-
-            axios
-                ?.get(url.toString())
-                .then((response: AxiosResponse<Recipe>) => {
-                    emit('importedRecipe', response.data);
+            useRecipeState()
+                .importRecipe(inputUrl)
+                .then((importedRecipe: Recipe) => {
+                    emit('importedRecipe', importedRecipe);
                 })
-                .catch((err: AxiosError) => {
-                    console.error(err.response?.data);
-                    importErrors.value = err.response?.data;
-                })
-                .finally(() => (isLoading.value = false));
+                .catch((err: string) => {
+                    importErrors.value = err;
+                });
         }
 
         // TODO: refactor to v-if

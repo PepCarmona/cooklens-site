@@ -209,7 +209,6 @@
 </template>
 
 <script lang="ts">
-import { URI } from '@/api/config';
 import {
     IngredientClass,
     Recipe,
@@ -217,11 +216,10 @@ import {
     StepClass,
     TagClass,
 } from '@/api/types/recipe';
-import { AxiosError, AxiosStatic } from 'axios';
+import { AxiosError } from 'axios';
 import {
     computed,
     defineComponent,
-    inject,
     nextTick,
     onBeforeUpdate,
     onMounted,
@@ -237,6 +235,7 @@ import {
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/ImportRecipe.vue';
 import router from '@/router';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -256,8 +255,6 @@ export default defineComponent({
     emits: ['saved', 'cancel'],
 
     setup(props, { emit }) {
-        const axios: AxiosStatic | undefined = inject('axios');
-
         const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
 
@@ -311,10 +308,6 @@ export default defineComponent({
                 (step, index) => (step.position = index + 1)
             );
             sanitized.tags = sanitized.tags.filter((tag) => !!tag.value);
-
-            if (sanitized.time.preparation === 0) {
-                sanitized.time.preparation = undefined;
-            }
 
             return sanitized;
         });
@@ -380,15 +373,14 @@ export default defineComponent({
                 return;
             }
 
-            axios
-                ?.post(URI.recipes.add, sanitizedRecipe.value)
+            useRecipeState()
+                .addRecipe(sanitizedRecipe.value)
                 .then(() => {
                     router.push({
                         name: 'RecipeList',
                     });
                 })
                 .catch((err: AxiosError) => {
-                    console.error(err.response?.data);
                     saveErrors.value = err.response?.data;
                 });
         }
@@ -413,25 +405,21 @@ export default defineComponent({
         }
 
         function editRecipe() {
-            const url = new URL(URI.recipes.update);
-            url.searchParams.append('id', newRecipe._id!);
-
-            axios
-                ?.put(url.toString(), sanitizedRecipe.value)
-                .then(() => {
-                    const formattedTitle = sanitizedRecipe.value.title
+            useRecipeState()
+                .editRecipe(sanitizedRecipe.value)
+                .then((editedRecipe) => {
+                    const formattedTitle = editedRecipe.title
                         .toLowerCase()
                         .replaceAll(' ', '-');
 
                     router.push({
                         name: 'Recipe',
                         params: { title: formattedTitle },
-                        query: { id: sanitizedRecipe.value._id },
+                        query: { id: editedRecipe._id },
                     });
 
-                    emit('saved', sanitizedRecipe.value);
-                })
-                .catch((err) => console.error(err));
+                    emit('saved', editedRecipe);
+                });
         }
 
         function cancel() {

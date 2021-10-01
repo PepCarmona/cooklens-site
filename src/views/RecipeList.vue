@@ -1,5 +1,5 @@
 <template>
-    <CustomModal v-if="isSearching">
+    <CustomModal v-if="isLoading">
         <LoadingModal>Loading ...</LoadingModal>
     </CustomModal>
     <div>
@@ -11,25 +11,20 @@
             />
         </div>
         <div class="card-container d-flex mt-1 m-auto justify-around">
-            <template
-                v-for="(recipe, index) in recipesToShow"
-                :key="recipe._id"
-            >
+            <template v-for="(recipe, index) in recipes" :key="recipe._id">
                 <RecipeCard
                     :recipe="recipe"
                     @click="openRecipeDetails(index)"
                 />
             </template>
             <button
-                v-if="showFilteredRecipes & !isSearching"
+                v-if="showFilteredRecipes & !isLoading"
                 @click="showAllRecipes"
                 class="seeAll"
             >
                 See all
             </button>
-            <div v-if="recipesToShow.length === 0">
-                No recipes match this search
-            </div>
+            <div v-if="recipes.length === 0">No recipes match this search</div>
             <Pagination
                 v-if="!(currentPage === 1 && !nextPage)"
                 class="mt-1"
@@ -43,23 +38,15 @@
 </template>
 
 <script lang="ts">
-import {
-    computed,
-    defineComponent,
-    inject,
-    nextTick,
-    onMounted,
-    ref,
-} from 'vue';
-import { PaginatedRecipes, Recipe } from '@/api/types/recipe';
-import { AxiosResponse, AxiosStatic } from 'axios';
-import { URI } from '@/api/config/index';
+import { computed, defineComponent, nextTick, onMounted, ref } from 'vue';
+import { Recipe } from '@/api/types/recipe';
 import RecipeCard from '@/components/RecipeCard.vue';
 import SearchRecipe from '@/components/SearchRecipe.vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import Pagination from '@/components/shared/Pagination.vue';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -73,31 +60,24 @@ export default defineComponent({
     },
 
     setup() {
-        const axios: AxiosStatic | undefined = inject('axios');
+        const { isLoading, currentPage, nextPage, recipes } = useRecipeState();
         const router = useRouter();
         const route = useRoute();
 
-        const selectedIndex = ref<number | null>(null);
-        const recipes = ref<Recipe[]>([]);
-        // const cachedRecipes = ref<Recipe[]>([]);
-        const filteredRecipes = ref<Recipe[]>([]);
-
-        const currentPage = ref(1);
-        const nextPage = ref<number | null>(null);
-
-        const isSearching = ref(false);
         const showFilteredRecipes = ref(false);
+
+        const selectedIndex = ref<number | null>(null);
+
+        // const cachedRecipes = ref<Recipe[]>([]);
 
         const searchComponent = ref<InstanceType<typeof SearchRecipe>>();
 
         const data = {
-            recipes,
-            filteredRecipes,
-            isSearching,
-            showFilteredRecipes,
-            searchComponent,
             currentPage,
             nextPage,
+            isLoading,
+            showFilteredRecipes,
+            searchComponent,
         };
 
         onMounted(() => {
@@ -108,9 +88,7 @@ export default defineComponent({
                 ) {
                     searchComponent.value.searchInput.value = '';
                 }
-                getRecipesPage(
-                    route.query.page ? parseInt(route.query.page.toString()) : 1
-                );
+                getRecipesPage(parseInt(route.query.page?.toString() ?? '1'));
             }
         });
 
@@ -121,46 +99,23 @@ export default defineComponent({
             return recipes.value[selectedIndex.value];
         });
 
-        const recipesToShow = computed<Recipe[]>(() => {
-            if (isSearching.value) {
-                return [];
-            }
-            if (showFilteredRecipes.value) {
-                return filteredRecipes.value;
-            }
-            return recipes.value;
-        });
-
-        function getRecipesPage(page: number) {
-            isSearching.value = true;
+        function getRecipesPage(page?: number) {
             showFilteredRecipes.value = false;
 
             router.push({
                 name: 'RecipeList',
                 query: {
-                    page: page > 1 ? page : undefined,
+                    page: page && page > 1 ? page : undefined,
                 },
             });
 
-            const url = new URL(URI.recipes.get);
-            url.searchParams.append('page', page.toString());
-            url.searchParams.append('limit', URI.recipes.defaultLimit);
-
-            axios
-                ?.get(url.toString())
-                .then((response: AxiosResponse<PaginatedRecipes>) => {
-                    recipes.value = response.data.recipes;
-
-                    currentPage.value = page;
-                    nextPage.value = response.data.next
-                        ? currentPage.value + 1
-                        : null;
+            useRecipeState()
+                .searchRecipes(page)
+                .then(() => {
                     if (route.query.searchText) {
-                        nextTick(() => searchComponent.value?.searchPage(1));
+                        nextTick(() => searchComponent.value?.doSearch());
                     }
-                })
-                .catch((err) => console.error(err))
-                .finally(() => (isSearching.value = false));
+                });
         }
 
         function openRecipeDetails(index: number) {
@@ -182,7 +137,7 @@ export default defineComponent({
             });
         }
 
-        function showSearchRecipes(searchResultRecipes: Recipe[]) {
+        function showSearchRecipes() {
             if (
                 searchComponent.value &&
                 searchComponent.value.searchInput &&
@@ -192,12 +147,6 @@ export default defineComponent({
             }
 
             showFilteredRecipes.value = true;
-            if (searchComponent.value) {
-                currentPage.value = searchComponent.value.currentPage;
-                nextPage.value = searchComponent.value.nextPage;
-            }
-
-            filteredRecipes.value = searchResultRecipes;
         }
 
         function showAllRecipes() {
@@ -209,19 +158,21 @@ export default defineComponent({
                 searchComponent.value.searchInput.value = '';
             }
 
-            getRecipesPage(1);
+            useRecipeState().setSearch('title', '');
+
+            getRecipesPage();
         }
 
         function goToPreviousPage() {
             if (showFilteredRecipes.value) {
-                searchComponent.value?.searchPage(currentPage.value - 1);
+                searchComponent.value?.doSearch(currentPage.value - 1);
                 return;
             }
             getRecipesPage(currentPage.value - 1);
         }
         function goToNextPage() {
             if (showFilteredRecipes.value) {
-                searchComponent.value?.searchPage(nextPage.value!);
+                searchComponent.value?.doSearch(nextPage.value!);
                 return;
             }
             getRecipesPage(nextPage.value!);
@@ -233,7 +184,7 @@ export default defineComponent({
             openRecipeDetails,
             showSearchRecipes,
             showAllRecipes,
-            recipesToShow,
+            recipes,
             goToPreviousPage,
             goToNextPage,
         };
