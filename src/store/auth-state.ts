@@ -34,9 +34,9 @@ export async function logIn(user: User): Promise<void> {
 }
 
 export async function logOut(): Promise<void> {
-    await authService.logOut();
-
     authenticatedUser.value = null;
+
+    await authService.logOut();
 }
 
 export async function checkSession(): Promise<void> {

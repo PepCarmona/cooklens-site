@@ -17,11 +17,11 @@ export class Endpoint {
             (error: AxiosError) => {
                 if (error.response) {
                     console.error('API ERROR:', error.response);
-                    return error.response;
+                    return Promise.reject(error.response.data);
                 }
 
                 console.error('API ERROR:', error.message);
-                return error.message;
+                return Promise.reject(error.message);
             }
         );
     }
