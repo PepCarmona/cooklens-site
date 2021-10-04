@@ -99,7 +99,7 @@ function searchRecipes(page = 1, limit = parseInt(URI.recipes.defaultLimit)) {
                 ? currentPage.value + 1
                 : null;
 
-            recipes.value = paginatedRecipes.recipes;
+            recipes.value = paginatedRecipes.result;
         })
         .finally(() => (isLoading.value = false));
 }

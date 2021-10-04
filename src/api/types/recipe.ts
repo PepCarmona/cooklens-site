@@ -1,8 +1,9 @@
+import { PaginatedResponse } from '@/api/endpoints';
+
 export type SearchType = 'title' | 'ingredient' | 'tag';
 
-export interface PaginatedRecipes {
-    recipes: Recipe[];
-    next: boolean;
+export interface PaginatedRecipes extends PaginatedResponse {
+    result: Recipe[];
 }
 export interface IntegratedSite {
     name: string;
