@@ -239,7 +239,13 @@ export default defineComponent({
                 return;
             }
 
-            getRecipe(id);
+            getRecipe(id).catch((err) => {
+                console.error(err);
+                // TODO: show custom error page && display error on floating modal
+                router.push({
+                    name: 'RecipeList',
+                });
+            });
         }
 
         function getRandomRecipe() {
@@ -254,6 +260,12 @@ export default defineComponent({
                         name: 'Recipe',
                         params: { title: formattedTitle },
                         query: { id: recipe.value._id },
+                    });
+                })
+                .catch((err) => {
+                    console.error(err);
+                    router.push({
+                        name: 'RecipeList',
                     });
                 });
         }
