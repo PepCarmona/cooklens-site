@@ -1,4 +1,3 @@
-import { URI } from '@/api/config';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import {
     IntegratedSite,
@@ -87,7 +86,7 @@ function setSearch(type: SearchType, text: string) {
     search.text = text;
 }
 
-function searchRecipes(page = 1, limit = parseInt(URI.recipes.defaultLimit)) {
+function searchRecipes(page = 1, limit = 2) {
     isLoading.value = true;
 
     return recipeService

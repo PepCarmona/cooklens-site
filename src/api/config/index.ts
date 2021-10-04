@@ -15,10 +15,14 @@ export const URI = {
         import: `${proxy}/recipes/import`,
         integratedSites: `${proxy}/recipes/integrated-sites`,
         search: `${proxy}/recipes/search`,
-        defaultLimit: '2',
     },
     auth: {
         register: `${proxy}/auth/signup`,
         login: `${proxy}/auth/signin`,
+    },
+    user: {
+        addFavRecipe: `${proxy}/user/addFavRecipe`,
+        removeFavRecipe: `${proxy}/user/removeFavRecipe`,
+        getFavRecipes: `${proxy}/user/getFavRecipes`,
     },
 };

@@ -1,6 +1,6 @@
 import { AuthEndpoint } from '@/api/endpoints/auth';
 import { User } from '@/api/types/user';
-import { readonly, Ref, ref } from 'vue';
+import { readonly, Ref, ref, computed } from 'vue';
 
 interface AuthState {
     isLoading: Readonly<Ref<boolean>>;
@@ -61,7 +61,7 @@ function checkSession() {
 export default function useAuthState(): AuthState {
     return {
         isLoading: readonly(isLoading),
-        authenticatedUser: readonly(authenticatedUser),
+        authenticatedUser: computed(() => authenticatedUser.value),
         token: readonly(token),
 
         register,
