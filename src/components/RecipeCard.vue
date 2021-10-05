@@ -9,9 +9,13 @@
         <div class="content d-flex p-1">
             <div class="row">
                 <div class="title w-80 text-left">{{ recipe.title }}</div>
-                <div class="w-20 d-flex align-items-center justify-end">
-                    <FavIcon size="l" />
-                    <LikeIcon class="ml-05" size="l" />
+                <div
+                    v-if="authenticatedUser"
+                    @click.stop="toggleFav"
+                    class="w-20 d-flex align-items-center justify-end"
+                >
+                    <FavFilledIcon v-if="isFav" size="l" color="red" />
+                    <FavIcon v-else size="l" color="red" />
                 </div>
             </div>
             <div class="row mt-2">
@@ -45,17 +49,19 @@ import { Recipe } from '@/api/types/recipe';
 import { computed, defineComponent, PropType } from 'vue';
 import {
     EOS_FAVORITE_OUTLINED as FavIcon,
-    EOS_THUMB_UP_OUTLINED as LikeIcon,
+    EOS_FAVORITE_FILLED as FavFilledIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
 } from 'eos-icons-vue3';
 import Rating from '@/components/shared/Rating.vue';
+import useAuthState from '@/store/auth-state';
+import useUserState from '@/store/user-state';
 
 export default defineComponent({
     name: 'RecipeCard',
 
     components: {
         FavIcon,
-        LikeIcon,
+        FavFilledIcon,
         ClockIcon,
         Rating,
     },
@@ -68,6 +74,12 @@ export default defineComponent({
     },
 
     setup(props) {
+        const { authenticatedUser } = useAuthState();
+
+        const isFav = computed(() =>
+            authenticatedUser.value?.favRecipes?.includes(props.recipe._id!)
+        );
+
         const formattedTime = computed(() => {
             const totalTime = props.recipe.time.preparation
                 ? props.recipe.time.preparation + props.recipe.time.cooking
@@ -81,8 +93,16 @@ export default defineComponent({
 
             return formattedTime;
         });
+
+        function toggleFav() {
+            useUserState().toggleFavRecipe(props.recipe);
+        }
+
         return {
+            authenticatedUser,
+            isFav,
             formattedTime,
+            toggleFav,
         };
     },
 });
