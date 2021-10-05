@@ -20,6 +20,18 @@
                         <EditIcon size="l" color="grey" />
                     </button>
                 </div>
+                <div class="recipe-info">
+                    <div>By: {{ getRecipeAuthor() }}</div>
+                    <div v-if="recipe.url">
+                        Imported from
+                        <a
+                            :href="recipe.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ formattedURL }}</a
+                        >
+                    </div>
+                </div>
                 <div
                     class="gallery-and-icons"
                     :class="{ 'mb-2': !recipeHasImages }"
@@ -28,7 +40,14 @@
                         <img :src="img" :alt="recipe.title" />
                     </div>
                     <div class="icons" :class="{ responsive: recipeHasImages }">
-                        <button><FavIcon size="l" color="grey" /></button>
+                        <button @click="toggleFavRecipe(recipe)">
+                            <FavFilledIcon
+                                v-if="isFavoriteRecipe(recipe)"
+                                size="l"
+                                color="grey"
+                            />
+                            <FavIcon v-else size="l" color="grey" />
+                        </button>
                         <button><CalendarIcon size="l" color="grey" /></button>
                         <button><ShareIcon size="l" color="grey" /></button>
                     </div>
@@ -118,6 +137,7 @@ import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import {
     EOS_MODE_EDIT_OUTLINED as EditIcon,
     EOS_FAVORITE_OUTLINED as FavIcon,
+    EOS_FAVORITE_FILLED as FavFilledIcon,
     EOS_SHARE as ShareIcon,
     EOS_TODAY_OUTLINED as CalendarIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
@@ -125,6 +145,7 @@ import {
 import CreateRecipe from '@/components/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
+import useUserState from '@/store/user-state';
 
 export default defineComponent({
     name: 'RecipeDetails',
@@ -135,6 +156,7 @@ export default defineComponent({
         CustomNumberInput,
         EditIcon,
         FavIcon,
+        FavFilledIcon,
         CalendarIcon,
         ShareIcon,
         ClockIcon,
@@ -147,10 +169,12 @@ export default defineComponent({
             isLoading,
             canModifyServings,
             modifiedServings,
+            isFavoriteRecipe,
             getRecipe,
             recipe,
             editRating,
         } = useRecipeState();
+        const { toggleFavRecipe } = useUserState();
 
         const route = useRoute();
         const router = useRouter();
@@ -168,6 +192,8 @@ export default defineComponent({
             recipe,
             canModifyServings,
             modifiedServings,
+            isFavoriteRecipe,
+            toggleFavRecipe,
             gallery,
             showEditRecipe,
         };
@@ -231,6 +257,10 @@ export default defineComponent({
             );
         });
 
+        const formattedURL = computed(
+            () => new URL(recipe.value.url!).hostname
+        );
+
         function getRecipeDetails() {
             const id = route.query.id?.toString();
 
@@ -285,15 +315,21 @@ export default defineComponent({
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function getRecipeAuthor() {
+            return 'PepCarmona';
+        }
+
         return {
             ...data,
             img,
             ingredientsToShow,
             totalTime,
+            formattedURL,
             getFormattedTime,
             recipeHasImages,
             editRating,
             hideEdit,
+            getRecipeAuthor,
         };
     },
 });
@@ -309,11 +345,18 @@ export default defineComponent({
 
 .recipe-title {
     display: flex;
-    align-items: center;
 }
 .recipe-title > button {
     height: fit-content;
     padding: 0.5rem;
+    margin-top: 10px;
+}
+
+.recipe-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding-right: 60px;
 }
 
 .gallery-and-icons {

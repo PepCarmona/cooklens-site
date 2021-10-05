@@ -7,6 +7,7 @@ import {
 } from '@/api/types/recipe';
 import { computed, reactive, readonly, ref, Ref } from 'vue';
 import usePaginationState from '@/store/pagination-state';
+import useAuthState from './auth-state';
 
 interface Search {
     type: SearchType;
@@ -23,6 +24,7 @@ interface RecipeState {
 
     integratedSites: Readonly<Ref<IntegratedSite[]>>;
 
+    isFavoriteRecipe(recipe: Recipe): boolean;
     addRecipe(recipe: Recipe): Promise<Recipe>;
     editRecipe(recipe: Recipe): Promise<Recipe>;
     editRating(value: number): Promise<void>;
@@ -36,6 +38,7 @@ interface RecipeState {
 
 const recipeService = new RecipesEndpoint();
 const { checkIfNextPageExists, goToPage } = usePaginationState();
+const { authenticatedUser } = useAuthState();
 
 const isLoading = ref(false);
 const recipe = ref<Recipe>(new RecipeClass());
@@ -45,6 +48,13 @@ const recipes = ref<Recipe[]>([]);
 const search = reactive<Search>({ type: 'title', text: '' });
 
 const integratedSites = ref<IntegratedSite[]>([]);
+
+function isFavoriteRecipe(recipe: Recipe): boolean {
+    if (!authenticatedUser.value || !authenticatedUser.value.favRecipes) {
+        return false;
+    }
+    return authenticatedUser.value.favRecipes.includes(recipe._id!);
+}
 
 function addRecipe(recipe: Recipe): Promise<Recipe> {
     isLoading.value = true;
@@ -158,6 +168,7 @@ export default function useRecipeState(): RecipeState {
 
         integratedSites: computed(() => integratedSites.value),
 
+        isFavoriteRecipe,
         addRecipe,
         editRecipe,
         editRating,

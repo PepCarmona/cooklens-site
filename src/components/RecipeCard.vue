@@ -14,16 +14,14 @@
                     class="w-20 d-flex align-items-center justify-end"
                 >
                     <FavFilledIcon
-                        v-if="isFav"
-                        @click.stop="toggleFav"
+                        v-if="isFavoriteRecipe(recipe)"
+                        @click.stop="toggleFavRecipe(recipe)"
                         size="l"
-                        color="red"
                     />
                     <FavIcon
                         v-else
-                        @click.stop="toggleFav"
+                        @click.stop="toggleFavRecipe(recipe)"
                         size="l"
-                        color="red"
                     />
                 </div>
             </div>
@@ -64,6 +62,7 @@ import {
 import Rating from '@/components/shared/Rating.vue';
 import useAuthState from '@/store/auth-state';
 import useUserState from '@/store/user-state';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'RecipeCard',
@@ -84,10 +83,8 @@ export default defineComponent({
 
     setup(props) {
         const { authenticatedUser } = useAuthState();
-
-        const isFav = computed(() =>
-            authenticatedUser.value?.favRecipes?.includes(props.recipe._id!)
-        );
+        const { toggleFavRecipe } = useUserState();
+        const { isFavoriteRecipe } = useRecipeState();
 
         const formattedTime = computed(() => {
             const totalTime = props.recipe.time.preparation
@@ -103,15 +100,11 @@ export default defineComponent({
             return formattedTime;
         });
 
-        function toggleFav() {
-            useUserState().toggleFavRecipe(props.recipe);
-        }
-
         return {
             authenticatedUser,
-            isFav,
+            isFavoriteRecipe,
             formattedTime,
-            toggleFav,
+            toggleFavRecipe,
         };
     },
 });
