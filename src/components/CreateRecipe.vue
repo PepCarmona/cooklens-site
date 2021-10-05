@@ -38,6 +38,15 @@
         </div>
 
         <div class="row">
+            <img
+                v-for="image in newRecipe.images"
+                :key="image"
+                :src="image"
+                height="300"
+            />
+        </div>
+
+        <div class="row">
             <div class="row numberInputs">
                 <div class="row recipeTime">
                     <div class="row">

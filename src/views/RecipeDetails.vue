@@ -11,16 +11,13 @@
                 <LoadingModal>Loading ...</LoadingModal>
             </CustomModal>
             <div class="container" v-else>
-                <div
-                    class="recipe-title mt-2"
-                    :class="{ 'mb-2': recipeHasImages }"
-                >
+                <div class="recipe-title mt-2">
                     <h1 class="w-100 m-0">{{ recipe.title }}</h1>
                     <button v-if="isOwnedRecipe" @click="showEditRecipe = true">
                         <EditIcon size="l" color="grey" />
                     </button>
                 </div>
-                <div class="recipe-info">
+                <div class="recipe-info" :class="{ 'mb-2': recipeHasImages }">
                     <div v-if="recipe.author">
                         By: {{ recipe.author.username }}
                     </div>
@@ -39,7 +36,11 @@
                     :class="{ 'mb-2': !recipeHasImages }"
                 >
                     <div v-if="recipeHasImages" class="gallery" ref="gallery">
-                        <img :src="img" :alt="recipe.title" />
+                        <img
+                            :src="recipe.images[0]"
+                            :alt="recipe.title"
+                            height="350"
+                        />
                     </div>
                     <div class="icons" :class="{ responsive: recipeHasImages }">
                         <button @click="toggleFavRecipe(recipe)">

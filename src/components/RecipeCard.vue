@@ -2,9 +2,11 @@
     <div class="card">
         <div class="image">
             <img
+                v-if="!recipe.images || !recipe.images.length > 0"
                 src="https://via.placeholder.com/400x300.webp"
                 :alt="recipe.title"
             />
+            <img v-else :src="recipe.images[0]" height="300" width="400" />
         </div>
         <div class="content d-flex p-1">
             <div class="row">
