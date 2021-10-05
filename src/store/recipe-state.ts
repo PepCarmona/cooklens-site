@@ -82,7 +82,7 @@ function setSearch(type: SearchType, text: string) {
     search.text = text;
 }
 
-function searchRecipes(page = 1, limit = 2) {
+function searchRecipes(page = 1, limit = 5) {
     isLoading.value = true;
 
     return recipeService

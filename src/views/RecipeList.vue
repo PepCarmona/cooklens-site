@@ -166,6 +166,7 @@ export default defineComponent({
         }
 
         function goToPreviousPage() {
+            window.scrollTo({ top: 0 });
             if (showFilteredRecipes.value) {
                 searchComponent.value?.doSearch(currentPage.value - 1);
                 return;
@@ -173,6 +174,7 @@ export default defineComponent({
             getRecipesPage(currentPage.value - 1);
         }
         function goToNextPage() {
+            window.scrollTo({ top: 0 });
             if (showFilteredRecipes.value) {
                 searchComponent.value?.doSearch(currentPage.value + 1);
                 return;
