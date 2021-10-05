@@ -19,6 +19,7 @@ interface RecipesEndpointInterface {
     ): Promise<PaginatedRecipes>;
     getRecipe(id: string): Promise<Recipe>;
     getRandomRecipe(): Promise<Recipe>;
+    deleteRecipe(recipe: Recipe): Promise<Recipe>;
     getIntegratedSites(): Promise<IntegratedSite[]>;
 }
 
@@ -73,6 +74,13 @@ export class RecipesEndpoint
         url.searchParams.append('random', 'true');
 
         return this.get(url.toString());
+    }
+
+    public deleteRecipe(recipe: Recipe): Promise<Recipe> {
+        const url = new URL(URI.recipes.delete);
+        url.searchParams.append('id', recipe._id!);
+
+        return this.delete(url.toString());
     }
 
     public getIntegratedSites(): Promise<IntegratedSite[]> {

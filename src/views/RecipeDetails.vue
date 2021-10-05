@@ -16,7 +16,7 @@
                     :class="{ 'mb-2': recipeHasImages }"
                 >
                     <h1 class="w-100 m-0">{{ recipe.title }}</h1>
-                    <button @click="showEditRecipe = true">
+                    <button v-if="isOwnedRecipe" @click="showEditRecipe = true">
                         <EditIcon size="l" color="grey" />
                     </button>
                 </div>
@@ -148,6 +148,8 @@ import CreateRecipe from '@/components/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
 import useUserState from '@/store/user-state';
+import useAuthState from '@/store/auth-state';
+import { User } from '@/api/types/user';
 
 export default defineComponent({
     name: 'RecipeDetails',
@@ -177,6 +179,7 @@ export default defineComponent({
             editRating,
         } = useRecipeState();
         const { toggleFavRecipe } = useUserState();
+        const { authenticatedUser } = useAuthState();
 
         const route = useRoute();
         const router = useRouter();
@@ -263,6 +266,13 @@ export default defineComponent({
             () => new URL(recipe.value.url!).hostname
         );
 
+        const isOwnedRecipe = computed(
+            () =>
+                recipe.value.author &&
+                authenticatedUser.value?._id ===
+                    (recipe.value.author as User)._id
+        );
+
         function getRecipeDetails() {
             const id = route.query.id?.toString();
 
@@ -323,6 +333,7 @@ export default defineComponent({
             ingredientsToShow,
             totalTime,
             formattedURL,
+            isOwnedRecipe,
             getFormattedTime,
             recipeHasImages,
             editRating,

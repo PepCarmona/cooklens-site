@@ -33,6 +33,7 @@ interface RecipeState {
     searchRecipes(page?: number, limit?: number): Promise<void>;
     getRecipe(id: string): Promise<void>;
     getRandomRecipe(): Promise<void>;
+    deleteRecipe(recipe: Recipe): Promise<Recipe>;
     getIntegratedSites(): Promise<IntegratedSite[]>;
 }
 
@@ -150,6 +151,14 @@ function getRandomRecipe() {
         .finally(() => (isLoading.value = false));
 }
 
+function deleteRecipe(recipe: Recipe) {
+    isLoading.value = true;
+
+    return recipeService
+        .deleteRecipe(recipe)
+        .finally(() => (isLoading.value = false));
+}
+
 function getIntegratedSites() {
     isLoading.value = true;
 
@@ -179,6 +188,7 @@ export default function useRecipeState(): RecipeState {
         searchRecipes,
         getRecipe,
         getRandomRecipe,
+        deleteRecipe,
         getIntegratedSites,
     };
 }

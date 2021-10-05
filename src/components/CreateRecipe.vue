@@ -191,14 +191,17 @@
 
         <div class="row justify-center mt-2">
             <template v-if="recipe">
-                <button class="save p-1" @click="editRecipe" title="Save">
+                <button class="save m-1" @click="editRecipe" title="Save">
                     Save recipe
                 </button>
-                <button class="cancel p-1" @click="cancel" title="Cancel">
+                <button class="cancel m-1" @click="cancel" title="Cancel">
                     Cancel
                 </button>
+                <button class="delete m-1" @click="deleteRecipe" title="Delete">
+                    Delete
+                </button>
             </template>
-            <button class="save p-1" v-else @click="addRecipe" title="Save">
+            <button class="save" v-else @click="addRecipe" title="Save">
                 Save recipe
             </button>
         </div>
@@ -234,8 +237,8 @@ import {
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/ImportRecipe.vue';
-import router from '@/router';
 import useRecipeState from '@/store/recipe-state';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'CreateRecipe',
@@ -255,6 +258,8 @@ export default defineComponent({
     emits: ['saved', 'cancel'],
 
     setup(props, { emit }) {
+        const router = useRouter();
+
         const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
 
@@ -426,6 +431,16 @@ export default defineComponent({
             emit('cancel');
         }
 
+        function deleteRecipe() {
+            useRecipeState()
+                .deleteRecipe(props.recipe!)
+                .then(() =>
+                    router.push({
+                        name: 'RecipesMainView',
+                    })
+                );
+        }
+
         function resizeInput(event: Event) {
             const input = event.target as HTMLInputElement;
             //TODO - take into account m is bigger and i is smalloer
@@ -487,6 +502,7 @@ export default defineComponent({
             deleteTag,
             addRecipe,
             editRecipe,
+            deleteRecipe,
             resizeInput,
             resizeTextArea,
             capitalizeFirstLetter,
@@ -575,6 +591,14 @@ button.cancel {
     width: 20%;
     font-size: 1.2rem;
     margin-left: 2rem;
+}
+button.delete {
+    background-color: rgb(255 192 192);
+    color: rgb(168, 0, 0);
+    border: 1px solid rgb(168, 0, 0);
+    border-radius: 2px;
+    padding: 0.6rem;
+    font-size: 1.1rem;
 }
 
 .row {
