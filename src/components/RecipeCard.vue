@@ -11,11 +11,20 @@
                 <div class="title w-80 text-left">{{ recipe.title }}</div>
                 <div
                     v-if="authenticatedUser"
-                    @click.stop="toggleFav"
                     class="w-20 d-flex align-items-center justify-end"
                 >
-                    <FavFilledIcon v-if="isFav" size="l" color="red" />
-                    <FavIcon v-else size="l" color="red" />
+                    <FavFilledIcon
+                        v-if="isFav"
+                        @click.stop="toggleFav"
+                        size="l"
+                        color="red"
+                    />
+                    <FavIcon
+                        v-else
+                        @click.stop="toggleFav"
+                        size="l"
+                        color="red"
+                    />
                 </div>
             </div>
             <div class="row mt-2">
