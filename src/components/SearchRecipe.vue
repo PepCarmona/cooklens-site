@@ -100,7 +100,7 @@ export default defineComponent({
         function doSearch(page?: number) {
             if (searchInput.value!.value === '') {
                 router.push({
-                    name: 'RecipeList',
+                    name: 'RecipesMainView',
                 });
 
                 emit('searchResult', []);
@@ -135,7 +135,7 @@ export default defineComponent({
                     : undefined;
 
             router.push({
-                name: 'RecipeList',
+                name: 'RecipesMainView',
                 query: {
                     searchBy,
                     searchText,

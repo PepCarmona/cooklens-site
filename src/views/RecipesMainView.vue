@@ -49,7 +49,7 @@ import useRecipeState from '@/store/recipe-state';
 import usePaginationState from '@/store/pagination-state';
 
 export default defineComponent({
-    name: 'RecipeList',
+    name: 'RecipesMainView',
 
     components: {
         RecipeCard,
@@ -105,7 +105,7 @@ export default defineComponent({
             showFilteredRecipes.value = false;
 
             router.push({
-                name: 'RecipeList',
+                name: 'RecipesMainView',
                 query: {
                     page: page && page > 1 ? page : undefined,
                 },
@@ -153,7 +153,7 @@ export default defineComponent({
 
         function showAllRecipes() {
             router.push({
-                name: 'RecipeList',
+                name: 'RecipesMainView',
             });
 
             if (searchComponent.value && searchComponent.value.searchInput) {

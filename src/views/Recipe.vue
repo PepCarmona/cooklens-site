@@ -243,7 +243,7 @@ export default defineComponent({
                 console.error(err);
                 // TODO: show custom error page && display error on floating modal
                 router.push({
-                    name: 'RecipeList',
+                    name: 'RecipesMainView',
                 });
             });
         }
@@ -265,7 +265,7 @@ export default defineComponent({
                 .catch((err) => {
                     console.error(err);
                     router.push({
-                        name: 'RecipeList',
+                        name: 'RecipesMainView',
                     });
                 });
         }

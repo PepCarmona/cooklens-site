@@ -9,9 +9,11 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/recipes',
-        name: 'RecipeList',
+        name: 'RecipesMainView',
         component: () =>
-            import(/* webpackChunkName: "about" */ '../views/RecipeList.vue'),
+            import(
+                /* webpackChunkName: "about" */ '../views/RecipesMainView.vue'
+            ),
     },
     {
         path: '/about',

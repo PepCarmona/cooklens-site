@@ -377,7 +377,7 @@ export default defineComponent({
                 .addRecipe(sanitizedRecipe.value)
                 .then(() => {
                     router.push({
-                        name: 'RecipeList',
+                        name: 'RecipesMainView',
                     });
                 })
                 .catch((err: AxiosError) => {
