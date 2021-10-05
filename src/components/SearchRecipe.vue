@@ -64,15 +64,8 @@ export default defineComponent({
     emits: ['searchResult'],
 
     setup(_, { emit }) {
-        const {
-            isLoading,
-            recipes,
-            search,
-            currentPage,
-            nextPage,
-            setSearch,
-            searchRecipes,
-        } = useRecipeState();
+        const { isLoading, recipes, search, setSearch, searchRecipes } =
+            useRecipeState();
 
         const router = useRouter();
         const route = useRoute();
@@ -169,8 +162,6 @@ export default defineComponent({
             searchButton,
             autoSearch,
             isLoading,
-            currentPage,
-            nextPage,
         };
     },
 });

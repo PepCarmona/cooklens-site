@@ -2,7 +2,7 @@
     <div class="pagination-container">
         <div class="pagination-inner-container">
             <button
-                v-if="page > 1"
+                v-if="currentPage > 1"
                 @click="previousPage"
                 class="mr-05"
                 title="previous page"
@@ -10,19 +10,23 @@
                 <ArrowLeftIcon size="xl" />
             </button>
             <div
-                v-if="page"
+                v-if="currentPage"
                 class="numbers"
                 :class="{
-                    'empty-left': page <= 1,
-                    'empty-right': next === null,
+                    'empty-left': currentPage <= 1,
+                    'empty-right': !nextPageExists,
                 }"
             >
-                <span v-if="page > 1" class="previous">{{ page - 1 }}</span>
-                <span class="current">{{ page }}</span>
-                <span v-if="next !== null" class="next">{{ next }}</span>
+                <span v-if="currentPage > 1" class="previous">
+                    {{ currentPage - 1 }}
+                </span>
+                <span class="current">{{ currentPage }}</span>
+                <span v-if="nextPageExists" class="next">
+                    {{ currentPage + 1 }}
+                </span>
             </div>
             <button
-                v-if="next !== null"
+                v-if="nextPageExists"
                 @click="nextPage"
                 class="ml-05"
                 title="next page"
@@ -39,13 +43,13 @@ import {
     EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
     EOS_KEYBOARD_ARROW_LEFT_OUTLINED as ArrowLeftIcon,
 } from 'eos-icons-vue3';
+import usePaginationState from '@/store/pagination-state';
 
 export default defineComponent({
     name: 'Pagination',
 
     props: {
-        page: Number,
-        next: Number || null,
+        nextPageExists: Boolean,
     },
 
     components: {
@@ -56,7 +60,9 @@ export default defineComponent({
     emits: ['previousPage', 'nextPage'],
 
     setup(_, { emit }) {
+        const { currentPage } = usePaginationState();
         return {
+            currentPage,
             previousPage() {
                 emit('previousPage');
             },

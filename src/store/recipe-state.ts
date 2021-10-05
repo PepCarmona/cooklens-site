@@ -6,6 +6,7 @@ import {
     SearchType,
 } from '@/api/types/recipe';
 import { computed, reactive, readonly, ref, Ref } from 'vue';
+import usePaginationState from '@/store/pagination-state';
 
 interface Search {
     type: SearchType;
@@ -22,9 +23,6 @@ interface RecipeState {
 
     integratedSites: Readonly<Ref<IntegratedSite[]>>;
 
-    currentPage: Readonly<Ref<number>>;
-    nextPage: Readonly<Ref<number | null>>;
-
     addRecipe(recipe: Recipe): Promise<Recipe>;
     editRecipe(recipe: Recipe): Promise<Recipe>;
     editRating(value: number): Promise<void>;
@@ -37,6 +35,7 @@ interface RecipeState {
 }
 
 const recipeService = new RecipesEndpoint();
+const { checkIfNextPageExists, goToPage } = usePaginationState();
 
 const isLoading = ref(false);
 const recipe = ref<Recipe>(new RecipeClass());
@@ -46,9 +45,6 @@ const recipes = ref<Recipe[]>([]);
 const search = reactive<Search>({ type: 'title', text: '' });
 
 const integratedSites = ref<IntegratedSite[]>([]);
-
-const currentPage = ref(1);
-const nextPage = ref<number | null>(null);
 
 function addRecipe(recipe: Recipe): Promise<Recipe> {
     isLoading.value = true;
@@ -92,11 +88,9 @@ function searchRecipes(page = 1, limit = 2) {
     return recipeService
         .searchRecipes(page, limit, search.type, search.text)
         .then((paginatedRecipes) => {
-            currentPage.value = page;
+            goToPage(page);
 
-            nextPage.value = paginatedRecipes.next
-                ? currentPage.value + 1
-                : null;
+            checkIfNextPageExists(paginatedRecipes.next);
 
             recipes.value = paginatedRecipes.result;
         })
@@ -163,9 +157,6 @@ export default function useRecipeState(): RecipeState {
         search: computed(() => search),
 
         integratedSites: computed(() => integratedSites.value),
-
-        currentPage: computed(() => currentPage.value),
-        nextPage: computed(() => nextPage.value),
 
         addRecipe,
         editRecipe,

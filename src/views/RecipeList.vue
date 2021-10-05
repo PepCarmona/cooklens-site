@@ -26,10 +26,9 @@
             </button>
             <div v-if="recipes.length === 0">No recipes match this search</div>
             <Pagination
-                v-if="!(currentPage === 1 && !nextPage)"
+                v-if="!(currentPage === 1 && !nextPageExists)"
                 class="mt-1"
-                :page="currentPage"
-                :next="nextPage"
+                :nextPageExists="nextPageExists"
                 @previousPage="goToPreviousPage"
                 @nextPage="goToNextPage"
             />
@@ -47,6 +46,7 @@ import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import Pagination from '@/components/shared/Pagination.vue';
 import useRecipeState from '@/store/recipe-state';
+import usePaginationState from '@/store/pagination-state';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -60,7 +60,9 @@ export default defineComponent({
     },
 
     setup() {
-        const { isLoading, currentPage, nextPage, recipes } = useRecipeState();
+        const { isLoading, recipes } = useRecipeState();
+        const { currentPage, nextPageExists } = usePaginationState();
+
         const router = useRouter();
         const route = useRoute();
 
@@ -74,7 +76,7 @@ export default defineComponent({
 
         const data = {
             currentPage,
-            nextPage,
+            nextPageExists,
             isLoading,
             showFilteredRecipes,
             searchComponent,
@@ -172,10 +174,10 @@ export default defineComponent({
         }
         function goToNextPage() {
             if (showFilteredRecipes.value) {
-                searchComponent.value?.doSearch(nextPage.value!);
+                searchComponent.value?.doSearch(currentPage.value + 1);
                 return;
             }
-            getRecipesPage(nextPage.value!);
+            getRecipesPage(currentPage.value + 1);
         }
 
         return {
