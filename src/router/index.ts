@@ -23,10 +23,10 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/recipe/:title',
-        name: 'Recipe',
+        name: 'RecipeDetails',
         component: () =>
             import(
-                /* webpackChunkName: "recipeDetails" */ '../views/Recipe.vue'
+                /* webpackChunkName: "recipeDetails" */ '../views/RecipeDetails.vue'
             ),
         props: (route) => ({ id: route.query.id, random: route.query.random }),
     },

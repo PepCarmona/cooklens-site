@@ -127,7 +127,7 @@ import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
-    name: 'Recipe',
+    name: 'RecipeDetails',
 
     components: {
         CustomModal,
@@ -257,7 +257,7 @@ export default defineComponent({
                         .replaceAll(' ', '-');
 
                     router.push({
-                        name: 'Recipe',
+                        name: 'RecipeDetails',
                         params: { title: formattedTitle },
                         query: { id: recipe.value._id },
                     });

@@ -413,7 +413,7 @@ export default defineComponent({
                         .replaceAll(' ', '-');
 
                     router.push({
-                        name: 'Recipe',
+                        name: 'RecipeDetails',
                         params: { title: formattedTitle },
                         query: { id: editedRecipe._id },
                     });
