@@ -1,4 +1,5 @@
 import { PaginatedResponse } from '@/api/endpoints';
+import { User } from './user';
 
 export type SearchType = 'title' | 'ingredient' | 'tag';
 
@@ -44,6 +45,7 @@ export interface Recipe {
     tags: Tag[];
     images?: string[];
     rating: number;
+    author?: string | User;
 }
 
 export class RecipeTimeClass implements RecipeTime {

@@ -21,7 +21,9 @@
                     </button>
                 </div>
                 <div class="recipe-info">
-                    <div>By: {{ getRecipeAuthor() }}</div>
+                    <div v-if="recipe.author">
+                        By: {{ recipe.author.username }}
+                    </div>
                     <div v-if="recipe.url">
                         Imported from
                         <a
@@ -315,10 +317,6 @@ export default defineComponent({
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function getRecipeAuthor() {
-            return 'PepCarmona';
-        }
-
         return {
             ...data,
             img,
@@ -329,7 +327,6 @@ export default defineComponent({
             recipeHasImages,
             editRating,
             hideEdit,
-            getRecipeAuthor,
         };
     },
 });

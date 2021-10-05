@@ -59,6 +59,8 @@ function isFavoriteRecipe(recipe: Recipe): boolean {
 function addRecipe(recipe: Recipe): Promise<Recipe> {
     isLoading.value = true;
 
+    recipe.author = authenticatedUser.value?._id;
+
     return recipeService
         .addRecipe(recipe)
         .finally(() => (isLoading.value = false));
