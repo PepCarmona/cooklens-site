@@ -10,41 +10,24 @@
                 ref="searchComponent"
             />
         </div>
-        <div class="card-container d-flex mt-1 m-auto justify-around">
-            <template v-for="(recipe, index) in recipes" :key="recipe._id">
-                <RecipeCard
-                    :recipe="recipe"
-                    @click="openRecipeDetails(index)"
-                />
-            </template>
-            <button
-                v-if="showFilteredRecipes & !isLoading"
-                @click="showAllRecipes"
-                class="seeAll"
-            >
-                See all
-            </button>
-            <div v-if="recipes.length === 0">No recipes match this search</div>
-            <Pagination
-                v-if="!(currentPage === 1 && !nextPageExists)"
-                class="mt-1"
-                :nextPageExists="nextPageExists"
-                @previousPage="goToPreviousPage"
-                @nextPage="goToNextPage"
-            />
-        </div>
+        <RecipeList
+            :recipes="recipes"
+            :showFilteredRecipes="showFilteredRecipes && !isLoading"
+            @showAllRecipes="showAllRecipes"
+            @goToPage="goToPage"
+        />
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, ref } from 'vue';
-import { Recipe } from '@/api/types/recipe';
-import RecipeCard from '@/components/recipes/RecipeCard.vue';
-import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
+import { defineComponent, nextTick, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
+import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
-import Pagination from '@/components/shared/Pagination.vue';
+import RecipeList from '@/components/recipes/RecipeList.vue';
+
 import useRecipeState from '@/store/recipe-state';
 import usePaginationState from '@/store/pagination-state';
 
@@ -52,11 +35,10 @@ export default defineComponent({
     name: 'RecipesMainView',
 
     components: {
-        RecipeCard,
         SearchRecipe,
         CustomModal,
         LoadingModal,
-        Pagination,
+        RecipeList,
     },
 
     setup() {
@@ -67,8 +49,6 @@ export default defineComponent({
         const route = useRoute();
 
         const showFilteredRecipes = ref(false);
-
-        const selectedIndex = ref<number | null>(null);
 
         // const cachedRecipes = ref<Recipe[]>([]);
 
@@ -94,13 +74,6 @@ export default defineComponent({
             }
         });
 
-        const selectedRecipe = computed<Recipe | null>(() => {
-            if (selectedIndex.value === null) {
-                return null;
-            }
-            return recipes.value[selectedIndex.value];
-        });
-
         function getRecipesPage(page?: number) {
             showFilteredRecipes.value = false;
 
@@ -118,25 +91,6 @@ export default defineComponent({
                         nextTick(() => searchComponent.value?.doSearch());
                     }
                 });
-        }
-
-        function openRecipeDetails(index: number) {
-            selectedIndex.value = index;
-
-            if (selectedIndex.value === null || selectedRecipe.value === null) {
-                console.error('No selected recipe');
-                return;
-            }
-
-            const formattedTitle = selectedRecipe.value.title
-                .toLowerCase()
-                .replaceAll(' ', '-');
-
-            router.push({
-                name: 'RecipeDetails',
-                params: { title: formattedTitle },
-                query: { id: selectedRecipe.value._id! },
-            });
         }
 
         function showSearchRecipes() {
@@ -165,32 +119,22 @@ export default defineComponent({
             getRecipesPage();
         }
 
-        function goToPreviousPage() {
+        function goToPage(page: number) {
             window.scrollTo({ top: 0 });
             if (showFilteredRecipes.value) {
-                searchComponent.value?.doSearch(currentPage.value - 1);
+                searchComponent.value?.doSearch(page);
                 return;
             }
-            getRecipesPage(currentPage.value - 1);
-        }
-        function goToNextPage() {
-            window.scrollTo({ top: 0 });
-            if (showFilteredRecipes.value) {
-                searchComponent.value?.doSearch(currentPage.value + 1);
-                return;
-            }
-            getRecipesPage(currentPage.value + 1);
+            getRecipesPage(page);
         }
 
         return {
             ...data,
             getRecipesPage,
-            openRecipeDetails,
             showSearchRecipes,
             showAllRecipes,
             recipes,
-            goToPreviousPage,
-            goToNextPage,
+            goToPage,
         };
     },
 });
@@ -205,42 +149,10 @@ export default defineComponent({
     margin-top: -50px;
 }
 
-.card-container {
-    flex-wrap: wrap;
-    width: 90%;
-}
-.card-container > .card:first-child {
-    margin-top: 0;
-}
-
-.seeAll {
-    position: absolute;
-    background-color: black;
-    color: white;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem;
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
-    border-radius: 50px;
-    font-size: 1.05rem;
-    margin-top: -2rem;
-    cursor: pointer;
-}
-
 @media only screen and (min-width: 769px) {
     .search {
         padding-top: calc(2rem + 60px);
         margin-top: -60px;
-    }
-}
-@media only screen and (min-width: 906px) {
-    .card-container > .card:nth-child(2) {
-        margin-top: 0;
-    }
-}
-@media only screen and (min-width: 1350px) {
-    .card-container > .card:nth-child(3) {
-        margin-top: 0;
     }
 }
 </style>
