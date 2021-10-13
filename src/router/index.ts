@@ -35,21 +35,23 @@ const routes: Array<RouteRecordRaw> = [
         name: 'CreateRecipe',
         component: () =>
             import(
-                /* webpackChunkName: "createRecipe" */ '../components/CreateRecipe.vue'
+                /* webpackChunkName: "createRecipe" */ '../components/recipes/CreateRecipe.vue'
             ),
     },
     {
         path: '/login',
         name: 'Login',
         component: () =>
-            import(/* webpackChunkName: "login" */ '../components/Login.vue'),
+            import(
+                /* webpackChunkName: "login" */ '../components/profile/auth/Login.vue'
+            ),
     },
     {
         path: '/register',
         name: 'Register',
         component: () =>
             import(
-                /* webpackChunkName: "register" */ '../components/Register.vue'
+                /* webpackChunkName: "register" */ '../components/profile/auth/Register.vue'
             ),
     },
     {

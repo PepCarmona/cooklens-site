@@ -39,8 +39,8 @@
 <script lang="ts">
 import { computed, defineComponent, nextTick, onMounted, ref } from 'vue';
 import { Recipe } from '@/api/types/recipe';
-import RecipeCard from '@/components/RecipeCard.vue';
-import SearchRecipe from '@/components/SearchRecipe.vue';
+import RecipeCard from '@/components/recipes/RecipeCard.vue';
+import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';

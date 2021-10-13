@@ -245,7 +245,7 @@ import {
     EOS_ADD_CIRCLE_FILLED as AddCircleFilledIcon,
 } from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
-import ImportRecipe from '@/components/ImportRecipe.vue';
+import ImportRecipe from '@/components/recipes/ImportRecipe.vue';
 import useRecipeState from '@/store/recipe-state';
 import { useRouter } from 'vue-router';
 

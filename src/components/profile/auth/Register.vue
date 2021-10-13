@@ -123,5 +123,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import '../assets/styles/login.css';
+@import '~@/assets/styles/login.css';
 </style>

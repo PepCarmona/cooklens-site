@@ -145,7 +145,7 @@ import {
     EOS_TODAY_OUTLINED as CalendarIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
 } from 'eos-icons-vue3';
-import CreateRecipe from '@/components/CreateRecipe.vue';
+import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
 import useUserState from '@/store/user-state';
