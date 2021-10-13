@@ -41,7 +41,7 @@
                                     to="/recipe/random?random=true"
                                     >Random</router-link
                                 > -->
-                                <span
+                                <!-- <span
                                     v-if="!!authenticatedUser"
                                     @click="
                                         logOut();
@@ -49,7 +49,13 @@
                                     "
                                 >
                                     Log Out
-                                </span>
+                                </span> -->
+                                <router-link
+                                    v-if="!!authenticatedUser"
+                                    to="/profile"
+                                >
+                                    My Profile
+                                </router-link>
                                 <router-link
                                     v-else
                                     @click="showMenu = false"
@@ -68,11 +74,13 @@
             </div>
         </div>
         <div v-else id="menu-desktop" class="menu">
-            <!-- <router-link to="/">Home</router-link> -->
             <router-link to="/recipes">Recipes</router-link>
             <router-link to="/about">About</router-link>
             <!-- <router-link to="/recipe/random?random=true">Random</router-link> -->
-            <span v-if="!!authenticatedUser" @click="logOut">Log Out</span>
+            <!-- <span v-if="!!authenticatedUser" @click="logOut">Log Out</span> -->
+            <router-link v-if="!!authenticatedUser" to="/profile">
+                My Profile
+            </router-link>
             <router-link v-else to="/login">Login</router-link>
             <router-link to="/recipe/add">Add recipe</router-link>
         </div>
