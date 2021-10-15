@@ -9,12 +9,13 @@ const proxy =
 export const URI = {
     recipes: {
         get: `${proxy}/recipes/get`,
+        getById: `${proxy}/recipes/getById`,
+        getRandom: `${proxy}/recipes/getRandom`,
         add: `${proxy}/recipes/add`,
         update: `${proxy}/recipes/update`,
         delete: `${proxy}/recipes/delete`,
         import: `${proxy}/recipes/import`,
         integratedSites: `${proxy}/recipes/integrated-sites`,
-        search: `${proxy}/recipes/search`,
     },
     auth: {
         register: `${proxy}/auth/signup`,

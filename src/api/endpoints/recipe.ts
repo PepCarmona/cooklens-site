@@ -51,7 +51,7 @@ export class RecipesEndpoint
         searchType?: SearchType,
         searchText?: string
     ): Promise<PaginatedRecipes> {
-        const url = new URL(URI.recipes.search);
+        const url = new URL(URI.recipes.get);
         url.searchParams.append('page', page.toString());
         url.searchParams.append('limit', limit.toString());
         if (searchType && searchText) {
@@ -63,17 +63,14 @@ export class RecipesEndpoint
     }
 
     public getRecipe(id: string): Promise<Recipe> {
-        const url = new URL(URI.recipes.get);
+        const url = new URL(URI.recipes.getById);
         url.searchParams.append('id', id);
 
         return this.get(url.toString());
     }
 
     public getRandomRecipe(): Promise<Recipe> {
-        const url = new URL(URI.recipes.get);
-        url.searchParams.append('random', 'true');
-
-        return this.get(url.toString());
+        return this.get(URI.recipes.getRandom);
     }
 
     public deleteRecipe(recipe: Recipe): Promise<Recipe> {
