@@ -11,6 +11,7 @@ export const URI = {
         get: `${proxy}/recipes/get`,
         getById: `${proxy}/recipes/getById`,
         getRandom: `${proxy}/recipes/getRandom`,
+        getByUser: `${proxy}/recipes/getByUser`,
         add: `${proxy}/recipes/add`,
         update: `${proxy}/recipes/update`,
         delete: `${proxy}/recipes/delete`,

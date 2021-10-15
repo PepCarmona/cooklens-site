@@ -56,11 +56,36 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/profile',
-        name: 'Profile',
         component: () =>
             import(
-                /* webpackChunkName: "profile" */ '../components/Profile.vue'
+                /* webpackChunkName: "profileWrapper" */ '../components/profile/ProfileWrapper.vue'
             ),
+        children: [
+            {
+                path: '',
+                name: 'Profile',
+                component: () =>
+                    import(
+                        /* webpackChunkName: "profile" */ '../components/profile/Profile.vue'
+                    ),
+            },
+            {
+                path: 'myRecipes',
+                name: 'myRecipes',
+                component: () =>
+                    import(
+                        /* webpackChunkName: "myRecipes" */ '../components/profile/MyRecipes.vue'
+                    ),
+            },
+            {
+                path: 'favRecipes',
+                name: 'favRecipes',
+                component: () =>
+                    import(
+                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyFavRecipes.vue'
+                    ),
+            },
+        ],
     },
 ];
 

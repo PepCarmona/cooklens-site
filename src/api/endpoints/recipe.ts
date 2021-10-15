@@ -73,6 +73,19 @@ export class RecipesEndpoint
         return this.get(URI.recipes.getRandom);
     }
 
+    public getRecipesByUsername(
+        userId: string,
+        page: number,
+        limit: number
+    ): Promise<PaginatedRecipes> {
+        const url = new URL(URI.recipes.getByUser);
+        url.searchParams.append('userId', userId);
+        url.searchParams.append('page', page.toString());
+        url.searchParams.append('limit', limit.toString());
+
+        return this.get(url.toString());
+    }
+
     public deleteRecipe(recipe: Recipe): Promise<Recipe> {
         const url = new URL(URI.recipes.delete);
         url.searchParams.append('id', recipe._id!);
