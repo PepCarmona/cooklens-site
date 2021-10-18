@@ -41,7 +41,7 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
             return new Promise((resolve) => resolve(null));
         }
 
-        return this.post(URI.auth.login, { token: token.value }).catch(
+        return this.post(URI.auth.loginFromToken, { token: token.value }).catch(
             (err) => {
                 if (err === 'Token expired') {
                     // TODO: handle refreshToken

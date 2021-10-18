@@ -57,7 +57,7 @@ function getMyRecipes(page = 1, limit = 10) {
     isLoading.value = true;
 
     return recipeService
-        .getRecipesByUsername(user.value!._id!, page, limit)
+        .getRecipesByUser(user.value!._id!, page, limit)
         .then((paginatedRecipes) => {
             goToPage(page);
 

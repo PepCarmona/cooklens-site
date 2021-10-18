@@ -21,6 +21,7 @@ export const URI = {
     auth: {
         register: `${proxy}/auth/signup`,
         login: `${proxy}/auth/signin`,
+        loginFromToken: `${proxy}/auth/signinFromToken`,
     },
     user: {
         addFavRecipe: `${proxy}/user/addFavRecipe`,

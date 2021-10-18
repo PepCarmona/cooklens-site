@@ -73,13 +73,13 @@ export class RecipesEndpoint
         return this.get(URI.recipes.getRandom);
     }
 
-    public getRecipesByUsername(
+    public getRecipesByUser(
         userId: string,
         page: number,
         limit: number
     ): Promise<PaginatedRecipes> {
         const url = new URL(URI.recipes.getByUser);
-        url.searchParams.append('userId', userId);
+        url.searchParams.append('id', userId);
         url.searchParams.append('page', page.toString());
         url.searchParams.append('limit', limit.toString());
 
