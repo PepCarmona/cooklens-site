@@ -1,17 +1,29 @@
 <template>
-    <div class="row align-center justify-center">
-        <button @click="back" class="back"><ArrowBackIcon size="l" /></button>
-        <h2>My Recipes</h2>
-    </div>
     <LoadingModal v-if="isLoading" />
-    <RecipeList v-else :recipes="myRecipes" />
+    <template v-else>
+        <div class="title">
+            <button @click="back" class="back">
+                <ArrowBackIcon size="l" />
+            </button>
+            <h2>My Recipes</h2>
+        </div>
+        <div class="createRecipe">
+            <router-link :to="{ name: 'CreateRecipe' }">
+                <button>
+                    <span>Create Recipe</span>
+                    <AddIcon />
+                </button>
+            </router-link>
+        </div>
+        <RecipeList :recipes="myRecipes" />
+    </template>
 </template>
 
 <script lang="ts">
 import { defineComponent, onBeforeMount } from 'vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
-import { EOS_WEST as ArrowBackIcon } from 'eos-icons-vue3';
+import { EOS_WEST as ArrowBackIcon, EOS_ADD as AddIcon } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useUserState from '@/store/user-state';
 
@@ -22,6 +34,7 @@ export default defineComponent({
         LoadingModal,
         RecipeList,
         ArrowBackIcon,
+        AddIcon,
     },
 
     setup() {
@@ -51,5 +64,23 @@ export default defineComponent({
     padding: 0.5rem 1rem;
     position: absolute;
     left: 1rem;
+}
+
+.title,
+.createRecipe {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+.createRecipe > a {
+    margin: 0 0.5rem;
+}
+.createRecipe button {
+    padding: 0.5rem 1rem;
+    border: 1px solid grey;
+}
+.createRecipe button > *:last-child {
+    margin-left: 0.5rem;
 }
 </style>
