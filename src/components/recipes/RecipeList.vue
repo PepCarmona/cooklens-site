@@ -110,8 +110,8 @@ export default defineComponent({
 <style scoped>
 .seeAll {
     position: absolute;
-    background-color: black;
-    color: white;
+    background-color: var(--main-dark-color);
+    color: var(--main-light-color);
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
     padding-left: 0.6rem;

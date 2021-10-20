@@ -230,7 +230,7 @@ input {
     max-width: 80px;
 }
 input:focus {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--main-dark-color);
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -251,7 +251,7 @@ label {
 }
 
 .input-container {
-    background-color: lightgrey;
+    background-color: var(--secondary-color);
     height: 40px;
     width: 100%;
     display: flex;
@@ -268,7 +268,7 @@ label {
     align-items: center;
     cursor: pointer;
     width: fit-content;
-    background-color: grey;
+    background-color: var(--main-color);
     height: 100%;
 }
 .arrow.disabled {

@@ -142,7 +142,7 @@ export default defineComponent({
 
 <style scoped>
 .search {
-    background-color: lightgrey;
+    background-color: var(--secondary-color);
     padding: 2rem;
     padding-top: calc(2rem + 50px);
     padding-bottom: 1rem;

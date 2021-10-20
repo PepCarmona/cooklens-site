@@ -532,14 +532,14 @@ export default defineComponent({
     height: 20px;
     width: 20px;
     line-height: 20px;
-    background-color: grey;
+    background-color: var(--main-color);
     border-radius: 50px;
-    color: white;
+    color: var(--main-light-color);
     font-size: 0.8rem;
 }
 
 button.import.active {
-    background-color: lightgrey;
+    background-color: var(--secondary-color);
 }
 button.close {
     display: flex;
@@ -583,18 +583,18 @@ button.add:focus > .hover {
     display: flex;
 }
 button.save {
-    background-color: grey;
-    color: white;
-    border: 1px solid black;
+    background-color: var(--main-color);
+    color: var(--main-light-color);
+    border: 1px solid var(--main-dark-color);
     border-radius: 2px;
     padding: 0.6rem;
     width: 100%;
     font-size: 1.2rem;
 }
 button.cancel {
-    background-color: lightgrey;
-    color: black;
-    border: 1px solid black;
+    background-color: var(--secondary-color);
+    color: var(--main-dark-color);
+    border: 1px solid var(--main-dark-color);
     border-radius: 2px;
     padding: 0.6rem;
     width: 20%;
@@ -602,9 +602,9 @@ button.cancel {
     margin-left: 2rem;
 }
 button.delete {
-    background-color: rgb(255 192 192);
-    color: rgb(168, 0, 0);
-    border: 1px solid rgb(168, 0, 0);
+    background-color: var(--light-error-color);
+    color: var(--error-color);
+    border: 1px solid var(--error-color);
     border-radius: 2px;
     padding: 0.6rem;
     font-size: 1.1rem;
@@ -638,7 +638,7 @@ button.delete {
 
 .pill {
     display: flex;
-    background-color: grey;
+    background-color: var(--main-color);
     border-radius: 50px;
     padding: 0.5rem;
 }
@@ -646,15 +646,15 @@ button.delete {
     background-color: transparent;
     border: none;
     outline: none;
-    color: white;
+    color: var(--main-light-color);
     width: 1ch;
 }
 .pill input:focus {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--main-light-color);
 }
 
 .errors {
-    color: red;
+    color: var(--error-color);
     font-size: 0.8rem;
 }
 
@@ -683,7 +683,7 @@ button.delete {
     .ingredients {
         width: calc(60% - 1rem) !important;
         height: fit-content;
-        background-color: lightgrey;
+        background-color: var(--secondary-color);
         margin-left: 1rem;
     }
     .ingredients .row {

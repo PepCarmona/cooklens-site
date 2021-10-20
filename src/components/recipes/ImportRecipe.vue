@@ -151,22 +151,22 @@ export default defineComponent({
 
 <style scoped>
 .import-container {
-    background-color: lightgrey;
+    background-color: var(--secondary-color);
 }
 
 span {
     font-size: 0.95rem;
 }
 span.dotted {
-    border-bottom: 1px dotted black;
+    border-bottom: 1px dotted var(--main-dark-color);
     cursor: help;
 }
 span.dotted.loading {
     cursor: progress;
 }
 input {
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 1px solid black;
+    background-color: var(--third-transparent-color);
+    border: 1px solid var(--main-dark-color);
     outline: none;
 }
 input:focus {
@@ -174,9 +174,9 @@ input:focus {
     border-radius: 2px;
 }
 button {
-    background-color: grey;
-    color: white;
-    border: 1px solid black;
+    background-color: var(--main-color);
+    color: var(--main-light-color);
+    border: 1px solid var(--main-dark-color);
     border-radius: 2px;
     padding: 1rem;
 }
@@ -189,8 +189,8 @@ button {
     position: absolute;
     bottom: -100%;
     right: 0;
-    background-color: black;
-    color: white;
+    background-color: var(--main-dark-color);
+    color: var(--main-light-color);
     padding: 0.4rem;
     border-radius: 5px;
     z-index: 11;
@@ -202,7 +202,7 @@ button {
     right: 50%;
     border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent black transparent;
+    border-color: transparent transparent var(--main-dark-color) transparent;
 }
 .tooltip > span::before {
     content: '· ';
@@ -224,7 +224,7 @@ button {
 
 .errors {
     margin-top: 0.5rem;
-    color: red;
+    color: var(--error-color);
     font-size: 0.8rem;
 }
 
@@ -241,7 +241,7 @@ button {
     .tooltip::after {
         bottom: 50%;
         right: 99%;
-        border-color: transparent black transparent transparent;
+        border-color: transparent var(--main-dark-color) transparent transparent;
     }
 }
 @media only screen and (min-width: 769px) {

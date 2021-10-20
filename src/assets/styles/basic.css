@@ -1,3 +1,23 @@
+:root {
+    --main-color: grey;
+    --secondary-color: lightgrey;
+    --terciary-color: gray;
+    
+    --main-light-color: white;
+    --secondary-light-color: rgb(236, 236, 236);
+    
+    --main-dark-color: black;
+
+    --main-transparent-color: rgba(212, 212, 212, 0.815);
+    --secondary-transparent-color: rgba(255, 255, 255, 0.75);
+    --third-transparent-color: rgba(255, 255, 255, 0.5);
+    
+    --text-main-color: #2c3e50;
+    
+    --error-color: #d00000;
+    --light-error-color: rgb(255, 192, 192);
+}
+
 * {
     -webkit-tap-highlight-color: transparent;
 }
@@ -286,7 +306,7 @@ button {
 }
 button:focus,
 button:hover {
-    background-color: lightgrey;
+    background-color: var(--secondary-color);
 }
 
 ul {
@@ -297,7 +317,7 @@ ul {
 
 a {
     text-decoration: none;
-    color: gray;
+    color: var(--terciary-color);
 }
 
 @media only screen and (min-width: 769px) {

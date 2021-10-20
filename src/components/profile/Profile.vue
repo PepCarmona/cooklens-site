@@ -57,7 +57,7 @@ export default defineComponent({
 }
 .links button {
     padding: 0.5rem 1rem;
-    border: 1px solid grey;
+    border: 1px solid var(--main-color);
 }
 .links button > *:last-child {
     margin-left: 0.5rem;

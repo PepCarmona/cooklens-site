@@ -39,7 +39,7 @@ export default defineComponent({
     width: 100vw;
     top: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: var(--third-transparent-color);
     z-index: 15;
 }
 .modal {
@@ -53,8 +53,8 @@ export default defineComponent({
     width: 90vw;
     padding: 2rem;
     border-radius: 5px;
-    border: 1px solid black;
-    background-color: white;
+    border: 1px solid var(--main-dark-color);
+    background-color: var(--main-light-color);
     z-index: 16;
 }
 .modal.transparent {

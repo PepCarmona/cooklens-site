@@ -180,13 +180,13 @@ input {
     outline: none;
 }
 input:focus {
-    box-shadow: 0 0 5px black;
+    box-shadow: 0 0 5px var(--main-dark-color);
 }
 input:focus + button {
-    box-shadow: 0 0 4px black;
+    box-shadow: 0 0 4px var(--main-dark-color);
 }
 .searchButton {
-    background-color: grey !important;
+    background-color: var(--main-color) !important;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }

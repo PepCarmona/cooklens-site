@@ -51,8 +51,12 @@
                             />
                             <FavIcon v-else size="l" color="grey" />
                         </button>
-                        <button><CalendarIcon size="l" color="grey" /></button>
-                        <button><ShareIcon size="l" color="grey" /></button>
+                        <button>
+                            <CalendarIcon size="l" color="grey" />
+                        </button>
+                        <button>
+                            <ShareIcon size="l" color="grey" />
+                        </button>
                     </div>
                 </div>
                 <div class="mt-1">{{ recipe.description }}</div>
@@ -375,7 +379,7 @@ export default defineComponent({
     display: flex;
 }
 .icons > button {
-    border: 1px solid grey;
+    border: 1px solid var(--main-color);
     border-radius: 2px;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -389,7 +393,7 @@ export default defineComponent({
 
 .time {
     position: relative;
-    border: 2px solid lightgrey;
+    border: 2px solid var(--secondary-color);
     border-radius: 2px;
     padding-left: 1.5rem !important;
 }
@@ -404,7 +408,7 @@ export default defineComponent({
     top: -10px;
     right: -10px;
     padding: 5px;
-    background-color: white;
+    background-color: var(--main-light-color);
     width: 42px;
     height: 42px;
 }
@@ -414,7 +418,7 @@ export default defineComponent({
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    border-top: 2px solid lightgrey;
+    border-top: 2px solid var(--secondary-color);
     padding-top: 2rem;
     margin-bottom: 1rem;
     margin-top: 3rem;
@@ -447,10 +451,10 @@ export default defineComponent({
     height: 25px;
     width: 25px;
     line-height: 25px;
-    /* background-color: grey;
-    color: white; */
-    border: 1px solid grey;
-    color: grey;
+    /* background-color: var(--main-color);
+    color: var(--main-light-color); */
+    border: 1px solid var(--main-color);
+    color: var(--main-color);
     border-radius: 2px;
     /* font-size: 0.8rem; */
 }
@@ -460,8 +464,8 @@ export default defineComponent({
 }
 
 .pill {
-    background-color: grey;
-    color: white;
+    background-color: var(--main-color);
+    color: var(--main-light-color);
     border-radius: 50px;
     width: fit-content;
     padding-top: 0.2rem;
@@ -472,7 +476,7 @@ export default defineComponent({
 
 @media only screen and (min-width: 350px) {
     .icons > button {
-        border: 1px solid grey;
+        border: 1px solid var(--main-color);
         border-radius: 2px;
         padding-top: 0.6rem;
         padding-bottom: 0.6rem;

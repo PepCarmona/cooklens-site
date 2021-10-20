@@ -15,9 +15,9 @@
 
 .login-container button {
     height: 40px;
-    background-color: grey;
+    background-color: var(--main-color);
     border-radius: 2px;
-    color: white;
+    color: var(--main-light-color);
     font-size: 1.2rem;
 }
 
@@ -26,7 +26,7 @@
     text-align: left;
     font-size: 0.8rem;
     padding: 0.2rem 0;
-    color: #d00000;
+    color: var(--error-color);
 }
 
 .login-container .alternative {
@@ -36,5 +36,5 @@
 }
 .login-container a {
     text-decoration: none;
-    color: gray;
+    color: var(--terciary-color);
 }

@@ -169,7 +169,7 @@ header {
     width: fit-content;
 }
 #title > a {
-    color: black;
+    color: var(--main-dark-color);
     text-decoration: none;
 }
 
@@ -183,10 +183,10 @@ header {
 }
 .menu a {
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--text-main-color);
 }
 .menu a.router-link-exact-active {
-    color: #42b983;
+    color: var(--main-light-color);
 }
 .menu > span {
     cursor: pointer;
@@ -195,7 +195,7 @@ header {
     display: block;
     font-size: 1.3rem;
     font-weight: 600;
-    color: white;
+    color: var(--main-light-color);
     margin-top: 3rem;
     margin-bottom: 1rem;
 }
@@ -212,7 +212,7 @@ header {
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: var(--secondary-transparent-color);
     z-index: 9;
 }
 
@@ -224,7 +224,7 @@ header {
     height: 100vh;
     width: 75vw;
     z-index: 10;
-    background-color: gray;
+    background-color: var(--terciary-color);
 }
 .slideMenu > div {
     height: fit-content;
@@ -240,12 +240,12 @@ header {
 .slideMenu .items > * {
     width: 100%;
     padding: 1rem;
-    border-bottom: 1px solid lightgrey;
+    border-bottom: 1px solid var(--secondary-color);
     text-align: left;
     font-size: 1rem;
     font-weight: 100;
     text-decoration: none;
-    color: rgb(236, 236, 236);
+    color: var(--secondary-light-color);
     background-color: transparent;
     outline: none;
 }
@@ -283,7 +283,7 @@ header {
     font-size: 1rem;
     font-weight: 100;
     text-decoration: none;
-    color: black;
+    color: var(--main-dark-color);
     text-align: center;
     border: none;
     outline: none;

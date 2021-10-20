@@ -96,7 +96,7 @@ export default defineComponent({
     position: fixed;
     left: 50%;
     bottom: 50px;
-    background-color: grey;
+    background-color: var(--main-color);
     border-radius: 50px;
     height: 40px;
     width: 40px;
@@ -124,7 +124,7 @@ export default defineComponent({
     bottom: 0;
     left: 0;
     box-shadow: 0 0 3px 1px grey;
-    background-color: rgba(212, 212, 212, 0.815);
+    background-color: var(--main-transparent-color);
     /* border-top-right-radius: 20px;
     border-top-left-radius: 20px; */
 }

@@ -115,7 +115,7 @@ export default defineComponent({
 <style scoped>
 .card {
     max-width: 400px;
-    border: 1px solid grey;
+    border: 1px solid var(--main-color);
     margin-top: 1rem;
     margin-bottom: 1rem;
     cursor: pointer;
@@ -139,8 +139,8 @@ export default defineComponent({
     padding-right: 1rem;
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
-    background: grey;
+    background: var(--main-color);
     border-radius: 20px;
-    color: white;
+    color: var(--main-light-color);
 }
 </style>

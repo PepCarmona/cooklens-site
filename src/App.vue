@@ -38,7 +38,7 @@ body * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
-    color: #2c3e50;
+    color: var(--text-main-color);
     padding-bottom: 80px;
 }
 @media only screen and (min-width: 769px) {
