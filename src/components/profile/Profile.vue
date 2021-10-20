@@ -16,6 +16,12 @@
                 <ArrowIcon />
             </button>
         </router-link>
+        <router-link :to="{ name: 'myWeekPlan' }">
+            <button>
+                <span>My Week Plans</span>
+                <ArrowIcon />
+            </button>
+        </router-link>
     </div>
 </template>
 

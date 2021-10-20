@@ -1,22 +1,20 @@
 <template>
-    <LoadingModal v-if="isLoading" />
-    <template v-else>
-        <div class="title">
-            <button @click="back" class="back">
-                <ArrowBackIcon size="l" />
+    <div class="title">
+        <button @click="back" class="back">
+            <ArrowBackIcon size="l" />
+        </button>
+        <h2>My Recipes</h2>
+    </div>
+    <div class="createRecipe">
+        <router-link :to="{ name: 'CreateRecipe' }">
+            <button>
+                <span>Create Recipe</span>
+                <AddIcon />
             </button>
-            <h2>My Recipes</h2>
-        </div>
-        <div class="createRecipe">
-            <router-link :to="{ name: 'CreateRecipe' }">
-                <button>
-                    <span>Create Recipe</span>
-                    <AddIcon />
-                </button>
-            </router-link>
-        </div>
-        <RecipeList :recipes="myRecipes" />
-    </template>
+        </router-link>
+    </div>
+    <LoadingModal v-if="isLoading" />
+    <RecipeList :recipes="myRecipes" />
 </template>
 
 <script lang="ts">

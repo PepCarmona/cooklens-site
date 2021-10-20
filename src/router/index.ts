@@ -85,6 +85,14 @@ const routes: Array<RouteRecordRaw> = [
                         /* webpackChunkName: "favRecipes" */ '../components/profile/MyFavRecipes.vue'
                     ),
             },
+            {
+                path: 'myWeekPlan',
+                name: 'myWeekPlan',
+                component: () =>
+                    import(
+                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyWeekPlan.vue'
+                    ),
+            },
         ],
     },
 ];
