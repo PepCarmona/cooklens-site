@@ -8,9 +8,11 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@types/moment": "^2.13.0",
     "axios": "^0.21.3",
     "core-js": "^3.6.5",
     "eos-icons-vue3": "^1.0.0",
+    "moment": "^2.29.1",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.5",
     "vue-class-component": "^8.0.0-0",
