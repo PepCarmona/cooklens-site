@@ -28,14 +28,14 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="w-50 text-left">
+                <div class="w-50 d-flex align-center">
                     <Rating
                         onlyDisplay
                         :recipeRating="recipe.rating"
                         :size="'l'"
                     />
                 </div>
-                <div class="mt-2 w-50 d-flex justify-end align-center">
+                <div class="w-50 d-flex justify-end align-center">
                     <ClockIcon size="l" />
                     <span class="ml-05">{{ formattedTime }}</span>
                 </div>

@@ -1,6 +1,6 @@
 <template>
     <div class="modalOverlay" @click="close">
-        <div class="modal" :class="{ transparent }">
+        <div class="modal" :class="{ transparent, thin }">
             <slot></slot>
         </div>
     </div>
@@ -14,6 +14,7 @@ export default defineComponent({
 
     props: {
         transparent: Boolean,
+        thin: Boolean,
     },
 
     emits: ['close'],
@@ -50,6 +51,7 @@ export default defineComponent({
     position: fixed;
     height: fit-content;
     max-height: 90vh;
+    overflow: auto;
     width: 90vw;
     padding: 2rem;
     border-radius: 5px;
@@ -60,6 +62,10 @@ export default defineComponent({
 .modal.transparent {
     border: none;
     background-color: transparent;
+}
+
+.modal.thin {
+    padding: 1rem;
 }
 
 @media only screen and (min-width: 767px) {

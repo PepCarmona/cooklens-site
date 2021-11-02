@@ -72,8 +72,12 @@
             </div>
         </div>
     </div>
-    <CustomModal v-if="selectedDay" @close="selectedDay = null">
+    <CustomModal :thin="true" v-if="selectedDay" @close="selectedDay = null">
         {{ weekDays[selectedDay] }} {{ selectedMeal }}
+        <div v-if="isLoading">Loading...</div>
+        <div v-else>
+            <RecipeList :recipes="recipes" @goToPage="goToPage" />
+        </div>
     </CustomModal>
 </template>
 
@@ -85,8 +89,10 @@ import {
     EOS_ADD as AddIcon,
 } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
+import useRecipeState from '@/store/recipe-state';
 import { weekDays, fakeWeekPlans, newWeekPlan } from '@/store/weekPlan-state';
 import CustomModal from '@/components/shared/CustomModal.vue';
+import RecipeList from '@/components/recipes/RecipeList.vue';
 
 type Meals = 'lunch' | 'dinner';
 
@@ -98,10 +104,13 @@ export default defineComponent({
         ArrowDropDownIcon,
         AddIcon,
         CustomModal,
+        RecipeList,
     },
 
     setup() {
         const router = useRouter();
+
+        const { searchRecipes, recipes, isLoading } = useRecipeState();
 
         const isDropped = ref(false);
 
@@ -122,6 +131,11 @@ export default defineComponent({
         function showModal(meal: Meals, day: number) {
             selectedMeal.value = meal;
             selectedDay.value = day;
+            searchRecipes();
+        }
+
+        function goToPage(page: number) {
+            searchRecipes(page);
         }
 
         function back() {
@@ -136,9 +150,12 @@ export default defineComponent({
             selectedMeal,
             selectedDay,
             selectedWeekPlan,
+            recipes,
+            isLoading,
             weekPlans: fakeWeekPlans,
             weekPlanNames,
             showModal,
+            goToPage,
             back,
         };
     },
@@ -217,6 +234,7 @@ export default defineComponent({
 
 .weekPlan {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     padding: 20px;
     border: 1px solid var(--main-color);
@@ -226,6 +244,7 @@ export default defineComponent({
 }
 
 .day {
+    width: 100%;
     border: 1px solid var(--main-color);
     border-radius: 5px;
     background-color: var(--secondary-light-color);
@@ -296,6 +315,7 @@ export default defineComponent({
 
 @media only screen and (min-width: 768px) {
     .weekPlan {
+        flex-wrap: nowrap;
         overflow-x: auto;
         min-height: 550px;
     }
