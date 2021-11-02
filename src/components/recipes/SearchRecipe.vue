@@ -1,147 +1,98 @@
 <template>
-    <CustomModal v-if="isLoading">
-        <LoadingModal>Searching ...</LoadingModal>
-    </CustomModal>
     <div class="d-flex w-100 searchRow">
         <input
+            @input="updateSearchQuery"
             @keypress="autoSearch"
             ref="searchInput"
             type="text"
             id="search"
             class="w-100"
-            :placeholder="'Search by ' + search.type"
+            :placeholder="'Search by ' + searchQuery.type"
+            :value="searchQuery.text"
         />
-        <button
-            @click="doSearch()"
-            class="searchButton p-05"
-            ref="searchButton"
-        >
+        <button @click="doSearch()" class="searchButton p-05">
             <SearchIcon size="xl" color="white" />
         </button>
     </div>
 
     <div class="switchSearch">
-        <button v-if="search.type !== 'title'" @click="changeSearch('title')">
+        <button
+            v-if="searchQuery.type !== 'title'"
+            @click="changeSearch('title')"
+        >
             Search by title
         </button>
         <button
-            v-if="search.type !== 'ingredient'"
+            v-if="searchQuery.type !== 'ingredient'"
             @click="changeSearch('ingredient')"
         >
             Search by ingredient
         </button>
-        <button v-if="search.type !== 'tag'" @click="changeSearch('tag')">
+        <button v-if="searchQuery.type !== 'tag'" @click="changeSearch('tag')">
             Search by tag
         </button>
     </div>
 </template>
 
 <script lang="ts">
-import { Recipe, SearchType } from '@/api/types/recipe';
-import { defineComponent, onMounted, PropType, ref } from 'vue';
+import { SearchType } from '@/api/types/recipe';
+import { defineComponent, onMounted, ref } from 'vue';
 import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
-import { useRoute, useRouter } from 'vue-router';
-import CustomModal from '@/components/shared/CustomModal.vue';
-import LoadingModal from '@/components/shared/LoadingModal.vue';
+import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'SearchRecipe',
 
-    props: {
-        recipes: {
-            type: Array as PropType<Recipe[]>,
-            required: true,
-        },
-    },
-
     components: {
         SearchIcon,
-        CustomModal,
-        LoadingModal,
     },
 
-    emits: ['searchResult'],
+    emits: ['doSearch'],
 
     setup(_, { emit }) {
-        const { isLoading, recipes, search, setSearch, searchRecipes } =
-            useRecipeState();
+        const { setSearch, searchQuery } = useRecipeState();
 
         const router = useRouter();
-        const route = useRoute();
-
-        const searchResult = ref<Recipe[]>([]);
 
         const searchInput = ref<HTMLInputElement>();
-        const searchButton = ref<HTMLButtonElement>();
 
         onMounted(() => {
-            if (searchInput.value) {
-                searchInput.value.value =
-                    route.query.searchText?.toString() || '';
-
-                if (
-                    route.query.searchBy !== undefined &&
-                    route.query.searchText !== undefined
-                ) {
-                    searchInput.value!.value =
-                        route.query.searchText!.toString();
-                    if (route.query.page) {
-                        doSearch(parseInt(route.query.page.toString()));
-                        return;
-                    }
-                    doSearch();
-                }
-            }
-
             searchInput.value?.focus();
         });
 
         function doSearch(page?: number) {
-            if (searchInput.value!.value === '') {
-                router.push({
-                    name: 'RecipesMainView',
-                });
-
-                emit('searchResult', []);
-
-                return;
-            }
-
-            updateQueryString(page);
-
-            searchRecipes(page)
-                .then(() => {
-                    emit('searchResult', recipes);
-                })
-                .catch(() => {
-                    emit('searchResult', []);
-                });
+            emit('doSearch', {
+                page,
+                searchQuery: searchQuery.value,
+            });
         }
 
         function changeSearch(type: SearchType) {
-            setSearch(type, search.value.text);
+            setSearch(type, searchQuery.value.text);
 
-            if (searchInput.value!.value.length > 0) {
-                setTimeout(() => doSearch(), 10);
+            if (searchQuery.value.text.length > 0) {
+                doSearch();
             }
         }
 
         function updateQueryString(page?: number) {
-            const searchBy = search.value.type;
+            router.push({
+                name: 'RecipesMainView',
+                query: {
+                    searchBy: searchQuery.value.type,
+                    searchText: searchQuery.value.text,
+                    page: page && page > 1 ? page : undefined,
+                },
+            });
+        }
+
+        function updateSearchQuery() {
+            const searchBy = searchQuery.value.type;
             const searchText =
                 searchInput.value!.value.length > 0
                     ? searchInput.value!.value
                     : undefined;
-
-            router.push({
-                name: 'RecipesMainView',
-                query: {
-                    searchBy,
-                    searchText,
-                    page: page && page > 1 ? page : undefined,
-                },
-            });
 
             setSearch(searchBy || 'title', searchText || '');
         }
@@ -153,15 +104,13 @@ export default defineComponent({
         }
 
         return {
-            searchResult,
             doSearch,
-            search,
             changeSearch,
             updateQueryString,
             searchInput,
-            searchButton,
             autoSearch,
-            isLoading,
+            searchQuery,
+            updateSearchQuery,
         };
     },
 });

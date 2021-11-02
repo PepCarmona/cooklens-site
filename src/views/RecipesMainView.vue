@@ -5,9 +5,7 @@
     <div>
         <div class="search">
             <SearchRecipe
-                @searchResult="showSearchRecipes"
-                :recipes="recipes"
-                ref="searchComponent"
+                @doSearch="doSearch($event.page, $event.searchQuery)"
             />
         </div>
         <RecipeList
@@ -20,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
@@ -28,8 +26,8 @@ import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
 
-import useRecipeState from '@/store/recipe-state';
-import usePaginationState from '@/store/pagination-state';
+import useRecipeState, { SearchQuery } from '@/store/recipe-state';
+import { SearchType } from '@/api/types/recipe';
 
 export default defineComponent({
     name: 'RecipesMainView',
@@ -42,8 +40,8 @@ export default defineComponent({
     },
 
     setup() {
-        const { isLoading, recipes } = useRecipeState();
-        const { currentPage, nextPageExists } = usePaginationState();
+        const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
+            useRecipeState();
 
         const router = useRouter();
         const route = useRoute();
@@ -52,88 +50,70 @@ export default defineComponent({
 
         // const cachedRecipes = ref<Recipe[]>([]);
 
-        const searchComponent = ref<InstanceType<typeof SearchRecipe>>();
-
         const data = {
-            currentPage,
-            nextPageExists,
             isLoading,
             showFilteredRecipes,
-            searchComponent,
         };
 
         onMounted(() => {
-            if (!route.query.searchBy) {
-                if (
-                    searchComponent.value &&
-                    searchComponent.value.searchInput
-                ) {
-                    searchComponent.value.searchInput.value = '';
-                }
-                getRecipesPage(parseInt(route.query.page?.toString() ?? '1'));
+            if (route.query.searchBy && route.query.searchText) {
+                setSearch(
+                    route.query.searchBy.toString() as SearchType,
+                    route.query.searchText.toString()
+                );
+
+                doSearch(
+                    parseInt(route.query.page?.toString() ?? '1'),
+                    searchQuery.value
+                );
             }
+
+            doSearch(parseInt(route.query.page?.toString() ?? '1'));
         });
 
-        function getRecipesPage(page?: number) {
-            showFilteredRecipes.value = false;
-
+        function updateQueryString(page?: number, searchQuery?: SearchQuery) {
             router.push({
                 name: 'RecipesMainView',
                 query: {
+                    searchBy: searchQuery ? searchQuery.type : undefined,
+                    searchText: searchQuery ? searchQuery.text : undefined,
                     page: page && page > 1 ? page : undefined,
                 },
             });
-
-            useRecipeState()
-                .searchRecipes(page)
-                .then(() => {
-                    if (route.query.searchText) {
-                        nextTick(() => searchComponent.value?.doSearch());
-                    }
-                });
         }
 
-        function showSearchRecipes() {
-            if (
-                searchComponent.value &&
-                searchComponent.value.searchInput &&
-                searchComponent.value.searchInput.value === ''
-            ) {
-                return;
-            }
+        function doSearch(page?: number, searchQuery?: SearchQuery) {
+            showFilteredRecipes.value =
+                !!searchQuery && searchQuery.text.length > 0;
 
-            showFilteredRecipes.value = true;
+            updateQueryString(page, searchQuery);
+
+            searchRecipes(page);
         }
 
         function showAllRecipes() {
-            router.push({
-                name: 'RecipesMainView',
-            });
+            updateQueryString();
 
-            if (searchComponent.value && searchComponent.value.searchInput) {
-                searchComponent.value.searchInput.value = '';
-            }
+            setSearch('title', '');
 
-            useRecipeState().setSearch('title', '');
-
-            getRecipesPage();
+            doSearch();
         }
 
         function goToPage(page: number) {
             window.scrollTo({ top: 0 });
             if (showFilteredRecipes.value) {
-                searchComponent.value?.doSearch(page);
+                doSearch(page, searchQuery.value);
                 return;
             }
-            getRecipesPage(page);
+            doSearch(page);
         }
 
         return {
             ...data,
-            getRecipesPage,
-            showSearchRecipes,
+            doSearch,
             showAllRecipes,
             recipes,
+            searchQuery,
             goToPage,
         };
     },

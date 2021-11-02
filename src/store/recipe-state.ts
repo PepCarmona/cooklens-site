@@ -9,7 +9,7 @@ import { computed, reactive, readonly, ref, Ref } from 'vue';
 import usePaginationState from '@/store/pagination-state';
 import useAuthState from './auth-state';
 
-interface Search {
+export interface SearchQuery {
     type: SearchType;
     text: string;
 }
@@ -20,7 +20,7 @@ interface RecipeState {
     canModifyServings: Readonly<Ref<boolean>>;
     modifiedServings: Readonly<Ref<number | null>>;
     recipes: Readonly<Ref<Recipe[]>>;
-    search: Readonly<Ref<Search>>;
+    searchQuery: Readonly<Ref<SearchQuery>>;
 
     integratedSites: Readonly<Ref<IntegratedSite[]>>;
 
@@ -46,7 +46,7 @@ const recipe = ref<Recipe>(new RecipeClass());
 const canModifyServings = ref(false);
 const modifiedServings = ref<number | null>(null);
 const recipes = ref<Recipe[]>([]);
-const search = reactive<Search>({ type: 'title', text: '' });
+const searchQuery = reactive<SearchQuery>({ type: 'title', text: '' });
 
 const integratedSites = ref<IntegratedSite[]>([]);
 
@@ -91,15 +91,15 @@ function importRecipe(url: string) {
 }
 
 function setSearch(type: SearchType, text: string) {
-    search.type = type;
-    search.text = text;
+    searchQuery.type = type;
+    searchQuery.text = text;
 }
 
 function searchRecipes(page = 1, limit = 5) {
     isLoading.value = true;
 
     return recipeService
-        .searchRecipes(page, limit, search.type, search.text)
+        .searchRecipes(page, limit, searchQuery.type, searchQuery.text)
         .then((paginatedRecipes) => {
             goToPage(page);
 
@@ -175,7 +175,7 @@ export default function useRecipeState(): RecipeState {
         canModifyServings: readonly(canModifyServings),
         modifiedServings: readonly(modifiedServings),
         recipes: computed(() => recipes.value),
-        search: computed(() => search),
+        searchQuery: computed(() => searchQuery),
 
         integratedSites: computed(() => integratedSites.value),
 
