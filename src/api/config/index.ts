@@ -4,7 +4,9 @@ const backend = {
 };
 
 const proxy =
-    process.env.VUE_APP_API === 'local' ? backend.local : backend.production;
+    window.location.host.indexOf('localhost') > -1
+        ? backend.local
+        : backend.production;
 
 export const URI = {
     recipes: {
@@ -27,5 +29,15 @@ export const URI = {
         addFavRecipe: `${proxy}/user/addFavRecipe`,
         removeFavRecipe: `${proxy}/user/removeFavRecipe`,
         getFavRecipes: `${proxy}/user/getFavRecipes`,
+    },
+    mealPlan: {
+        getAll: `${proxy}/plans/getAll`,
+        getById: `${proxy}/plans/getById`,
+        getMyWeekPlans: `${proxy}/plans/getMyWeekPlans`,
+        add: `${proxy}/plans/createWeekPlan`,
+        update: `${proxy}/plans/updateWeekPlan`,
+        delete: `${proxy}/plans/deleteWeekPlan`,
+        subscribe: `${proxy}/plans/subscribeToWeekPlan`,
+        unsubscribe: `${proxy}/plans/unsubscribeToWeekPlan`,
     },
 };

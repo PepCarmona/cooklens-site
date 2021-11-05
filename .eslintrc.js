@@ -19,9 +19,6 @@ module.exports = {
         'prettier/prettier': ['warn', { singleQuote: true, tabWidth: 4 }],
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': [
-            'warn',
-            { allowArgumentsExplicitlyTypedAsAny: true },
-        ],
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
     },
 };

@@ -1,5 +1,5 @@
 <template>
-    <div class="modalOverlay" @click="close">
+    <div class="modalOverlay" :class="mode" @click.self="close">
         <div class="modal" :class="{ transparent, thin }">
             <slot></slot>
         </div>
@@ -7,7 +7,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+
+export type modalLateralMode = 'left' | 'right' | 'bottom' | 'full' | 'center';
 
 export default defineComponent({
     name: 'CustomModal',
@@ -15,6 +17,10 @@ export default defineComponent({
     props: {
         transparent: Boolean,
         thin: Boolean,
+        mode: {
+            type: String as PropType<modalLateralMode>,
+            default: 'center',
+        },
     },
 
     emits: ['close'],
@@ -33,8 +39,6 @@ export default defineComponent({
 .modalOverlay {
     display: none;
     display: flex;
-    align-items: center;
-    justify-content: center;
     position: fixed;
     height: 100vh;
     width: 100vw;
@@ -43,6 +47,24 @@ export default defineComponent({
     background-color: var(--third-transparent-color);
     z-index: 15;
 }
+.modalOverlay.center {
+    align-items: center;
+    justify-content: center;
+}
+.modalOverlay.right {
+    justify-content: flex-end;
+}
+.modalOverlay.right > .modal {
+    height: 100vh;
+    max-height: 100vh;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
 .modal {
     display: flex;
     flex-wrap: wrap;
@@ -63,7 +85,6 @@ export default defineComponent({
     border: none;
     background-color: transparent;
 }
-
 .modal.thin {
     padding: 1rem;
 }

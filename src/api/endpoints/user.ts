@@ -2,6 +2,7 @@ import { Endpoint } from '.';
 import { URI } from '../config';
 import { PaginatedRecipes, Recipe } from '../types/recipe';
 import { User } from '../types/user';
+import { WeekPlan } from '../types/weekPlan';
 
 interface UserEndpointInterface {
     addFavRecipe(recipe: Recipe): Promise<User>;
@@ -29,5 +30,9 @@ export class UserEndpoint extends Endpoint implements UserEndpointInterface {
         url.searchParams.append('limit', limit.toString());
 
         return this.get(url.toString());
+    }
+
+    public getMyWeekPlans(): Promise<WeekPlan[]> {
+        return this.get(URI.mealPlan.getMyWeekPlans);
     }
 }

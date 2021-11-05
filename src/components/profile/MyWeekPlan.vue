@@ -8,26 +8,27 @@
     <div class="body">
         <div class="selectWeekPlan">
             <div class="input" @click="isDropped = !isDropped">
-                <span v-if="selectedWeekPlanIndex === null">New week plan</span>
-                <span v-else>{{ weekPlanNames[selectedWeekPlanIndex] }}</span>
+                <span>{{ selectedWeekPlan.name }}</span>
                 <ArrowDropDownIcon />
             </div>
             <div class="dropDown" v-if="isDropped">
                 <ul>
                     <li
-                        v-for="(name, index) in weekPlanNames"
+                        v-for="(weekPlan, index) in myWeekPlans"
                         :key="index"
                         @click="
-                            selectedWeekPlanIndex = index;
+                            selectWeekPlan(weekPlan._id);
                             isDropped = false;
                         "
-                        :class="{ selected: index === selectedWeekPlanIndex }"
+                        :class="{
+                            selected: weekPlan._id === selectedWeekPlan._id,
+                        }"
                     >
-                        {{ name }}
+                        {{ weekPlan.name }}
                     </li>
                     <li
                         @click="
-                            selectedWeekPlanIndex = null;
+                            selectWeekPlan(null);
                             isDropped = false;
                         "
                     >
@@ -46,43 +47,76 @@
                     {{ weekDays[index] }}
                 </div>
                 <div class="meals">
-                    <div
-                        class="lunch"
-                        :class="{ free: !dailyPlan.lunch }"
-                        @click="showModal('lunch', index)"
-                    >
+                    <div class="lunch" :class="{ free: !dailyPlan.lunch }">
                         <span class="label">Lunch</span>
-                        <div class="text" v-if="dailyPlan.lunch">
-                            {{ dailyPlan.lunch }}
+                        <div
+                            v-if="dailyPlan.lunch"
+                            class="text"
+                            @click="showRecipeDetails = dailyPlan.lunch"
+                        >
+                            {{ dailyPlan.lunch.title }}
                         </div>
-                        <template v-else> <AddIcon size="xl" /> </template>
+                        <div
+                            v-else
+                            class="add"
+                            @click="showModal('lunch', index)"
+                        >
+                            <AddIcon size="xl" />
+                        </div>
                     </div>
-                    <div
-                        class="dinner"
-                        :class="{ free: !dailyPlan.dinner }"
-                        @click="showModal('dinner', index)"
-                    >
+                    <div class="dinner" :class="{ free: !dailyPlan.dinner }">
                         <span class="label">Dinner</span>
-                        <div class="text" v-if="dailyPlan.dinner">
-                            {{ dailyPlan.dinner }}
+                        <div
+                            v-if="dailyPlan.dinner"
+                            class="text"
+                            @click="showRecipeDetails = dailyPlan.lunch"
+                        >
+                            {{ dailyPlan.dinner.title }}
                         </div>
-                        <template v-else> <AddIcon size="xl" /> </template>
+                        <div
+                            v-else
+                            class="add"
+                            @click="showModal('dinner', index)"
+                        >
+                            <AddIcon size="xl" />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <CustomModal :thin="true" v-if="selectedDay" @close="selectedDay = null">
-        {{ weekDays[selectedDay] }} {{ selectedMeal }}
-        <div v-if="isLoading">Loading...</div>
-        <div v-else>
-            <RecipeList :recipes="recipes" @goToPage="goToPage" />
+    <CustomModal
+        :thin="true"
+        :mode="'right'"
+        v-if="!!selectedDay"
+        @close="selectedDay = null"
+    >
+        <div class="selectedDay">
+            {{ weekDays[selectedDay] }} {{ selectedMeal }}
         </div>
+        <div class="recipeListContainer">
+            <RecipeList
+                :recipes="recipes"
+                :isWeekPlan="true"
+                @goToPage="goToPage"
+                @selectedRecipe="
+                    addRecipeToWeekPlan(recipe, selectedDay, selectedMeal)
+                "
+            />
+        </div>
+    </CustomModal>
+    <CustomModal
+        :thin="true"
+        :mode="'right'"
+        v-if="!!showRecipeDetails"
+        @close="showRecipeDetails = null"
+    >
+        {{ showRecipeDetails }}
     </CustomModal>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import {
     EOS_WEST as ArrowBackIcon,
     EOS_ARROW_DROP_DOWN as ArrowDropDownIcon,
@@ -90,11 +124,14 @@ import {
 } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
-import { weekDays, fakeWeekPlans, newWeekPlan } from '@/store/weekPlan-state';
+import useWeekPlanState, {
+    weekDays,
+    // fakeWeekPlans as myWeekPlans,
+} from '@/store/weekPlan-state';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
-
-type Meals = 'lunch' | 'dinner';
+import { Meals } from '@/api/types/weekPlan';
+import { Recipe } from '@/api/types/recipe';
 
 export default defineComponent({
     name: 'MyWeekPlan',
@@ -111,22 +148,16 @@ export default defineComponent({
         const router = useRouter();
 
         const { searchRecipes, recipes, isLoading } = useRecipeState();
+        const weekPlanState = useWeekPlanState();
 
         const isDropped = ref(false);
 
-        const selectedWeekPlanIndex = ref<number | null>(null);
         const selectedMeal = ref<Meals>();
         const selectedDay = ref<number | null>(null);
 
-        const selectedWeekPlan = computed(() =>
-            selectedWeekPlanIndex.value === null
-                ? newWeekPlan
-                : fakeWeekPlans[selectedWeekPlanIndex.value]
-        );
+        const showRecipeDetails = ref<Recipe | null>(null);
 
-        const weekPlanNames = computed(() =>
-            fakeWeekPlans.map((weekplan) => weekplan.name)
-        );
+        onMounted(() => weekPlanState.getMyWeekPlans());
 
         function showModal(meal: Meals, day: number) {
             selectedMeal.value = meal;
@@ -144,16 +175,14 @@ export default defineComponent({
             });
         }
         return {
+            ...weekPlanState,
             weekDays,
             isDropped,
-            selectedWeekPlanIndex,
             selectedMeal,
             selectedDay,
-            selectedWeekPlan,
+            showRecipeDetails,
             recipes,
             isLoading,
-            weekPlans: fakeWeekPlans,
-            weekPlanNames,
             showModal,
             goToPage,
             back,
@@ -303,6 +332,13 @@ export default defineComponent({
     );
     color: var(--main-light-color);
 }
+.meals .add {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 .modal {
     height: 100vh;
@@ -311,6 +347,16 @@ export default defineComponent({
     top: 0;
     background-color: var(--third-transparent-color);
     z-index: 99;
+}
+
+/* .selectedDay {
+    width: 100%;
+} */
+
+.recipeListContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 @media only screen and (min-width: 768px) {

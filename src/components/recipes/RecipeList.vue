@@ -1,7 +1,12 @@
 <template>
-    <div class="card-container">
-        <template v-for="(recipe, index) in recipes" :key="recipe._id">
-            <RecipeCard :recipe="recipe" @click="openRecipeDetails(index)" />
+    <div class="card-container" :class="{ column: isWeekPlan }">
+        <div v-if="isLoading" class="loadingCard">Loading...</div>
+        <template v-else v-for="recipe in recipes" :key="recipe._id">
+            <RecipeCard
+                :recipe="recipe"
+                :isWeekPlan="isWeekPlan"
+                @selectedRecipe="selectRecipe"
+            />
         </template>
         <button
             v-if="showFilteredRecipes"
@@ -12,7 +17,7 @@
         </button>
         <div v-if="recipes.length === 0">No recipes match this search</div>
         <Pagination
-            v-if="!(currentPage === 1 && !nextPageExists)"
+            v-if="!(currentPage === 1 && !nextPageExists) && !isLoading"
             class="mt-1"
             :nextPageExists="nextPageExists"
             @previousPage="goToPreviousPage"
@@ -22,12 +27,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import { Recipe } from '@/api/types/recipe';
 import RecipeCard from '@/components/recipes/RecipeCard.vue';
 import Pagination from '@/components/shared/Pagination.vue';
-import { useRouter } from 'vue-router';
 import usePaginationState from '@/store/pagination-state';
+import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -41,6 +46,10 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        isWeekPlan: {
+            type: Boolean,
+            default: false,
+        },
     },
 
     components: {
@@ -48,40 +57,11 @@ export default defineComponent({
         Pagination,
     },
 
-    emits: ['showAllRecipes', 'goToPage'],
+    emits: ['showAllRecipes', 'goToPage', 'selectedRecipe'],
 
-    setup(props, { emit }) {
+    setup(_, { emit }) {
         const { currentPage, nextPageExists } = usePaginationState();
-
-        const router = useRouter();
-
-        const selectedIndex = ref<number | null>(null);
-
-        const selectedRecipe = computed<Recipe | null>(() => {
-            if (selectedIndex.value === null) {
-                return null;
-            }
-            return props.recipes[selectedIndex.value];
-        });
-
-        function openRecipeDetails(index: number) {
-            selectedIndex.value = index;
-
-            if (selectedIndex.value === null || selectedRecipe.value === null) {
-                console.error('No selected recipe');
-                return;
-            }
-
-            const formattedTitle = selectedRecipe.value.title
-                .toLowerCase()
-                .replaceAll(' ', '-');
-
-            router.push({
-                name: 'RecipeDetails',
-                params: { title: formattedTitle },
-                query: { id: selectedRecipe.value._id! },
-            });
-        }
+        const { isLoading } = useRecipeState();
 
         function goToPreviousPage() {
             emit('goToPage', currentPage.value - 1);
@@ -95,13 +75,18 @@ export default defineComponent({
             emit('showAllRecipes');
         }
 
+        function selectRecipe(recipe: Recipe) {
+            emit('selectedRecipe', recipe);
+        }
+
         return {
             currentPage,
             nextPageExists,
-            openRecipeDetails,
+            isLoading,
             goToPreviousPage,
             goToNextPage,
             showAllRecipes,
+            selectRecipe,
         };
     },
 });
@@ -131,8 +116,19 @@ export default defineComponent({
     margin-left: auto;
     margin-right: auto;
 }
+.card-container.column {
+    flex-direction: column;
+    width: fit-content;
+    flex-wrap: nowrap;
+}
 .card-container > .card:first-child {
     margin-top: 0;
+}
+
+.loadingCard {
+    width: 400px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 @media only screen and (min-width: 906px) {

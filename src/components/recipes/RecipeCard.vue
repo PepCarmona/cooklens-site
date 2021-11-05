@@ -1,6 +1,10 @@
 <template>
-    <div class="card">
-        <div class="image">
+    <div
+        class="card"
+        :class="{ pointer: !isWeekPlan }"
+        @click="!isWeekPlan && openRecipeDetails"
+    >
+        <div v-if="!isWeekPlan" class="image">
             <img
                 v-if="!recipe.images || !recipe.images.length > 0"
                 src="https://via.placeholder.com/400x300.webp"
@@ -10,11 +14,8 @@
         </div>
         <div class="content d-flex p-1">
             <div class="row">
-                <div class="title w-80 text-left">{{ recipe.title }}</div>
-                <div
-                    v-if="authenticatedUser"
-                    class="w-20 d-flex align-items-center justify-end"
-                >
+                <div class="title">{{ recipe.title }}</div>
+                <div v-if="authenticatedUser" class="fav">
                     <FavFilledIcon
                         v-if="isFavoriteRecipe(recipe)"
                         @click.stop="toggleFavRecipe(recipe)"
@@ -28,7 +29,7 @@
                 </div>
             </div>
             <div class="row mt-2">
-                <div class="w-50 d-flex align-center">
+                <div class="rating">
                     <Rating
                         onlyDisplay
                         :recipeRating="recipe.rating"
@@ -50,6 +51,13 @@
                 </div>
             </div>
         </div>
+        <div v-if="isWeekPlan" class="weekPlanButtons">
+            <button class="seeMore" @click="openRecipeDetails">See more</button>
+            <button class="addToWeekPlan" @click="selectRecipe">
+                Add to this week plan
+                <ArrowIcon />
+            </button>
+        </div>
     </div>
 </template>
 
@@ -60,11 +68,13 @@ import {
     EOS_FAVORITE_OUTLINED as FavIcon,
     EOS_FAVORITE_FILLED as FavFilledIcon,
     EOS_SCHEDULE_OUTLINED as ClockIcon,
+    EOS_ARROW_FORWARD as ArrowIcon,
 } from 'eos-icons-vue3';
 import Rating from '@/components/shared/Rating.vue';
 import useAuthState from '@/store/auth-state';
 import useUserState from '@/store/user-state';
 import useRecipeState from '@/store/recipe-state';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'RecipeCard',
@@ -73,6 +83,7 @@ export default defineComponent({
         FavIcon,
         FavFilledIcon,
         ClockIcon,
+        ArrowIcon,
         Rating,
     },
 
@@ -81,9 +92,17 @@ export default defineComponent({
             type: Object as PropType<Recipe>,
             required: true,
         },
+        isWeekPlan: {
+            type: Boolean,
+            default: false,
+        },
     },
 
-    setup(props) {
+    emits: ['selectedRecipe'],
+
+    setup(props, { emit }) {
+        const router = useRouter();
+
         const { authenticatedUser } = useAuthState();
         const { toggleFavRecipe } = useUserState();
         const { isFavoriteRecipe } = useRecipeState();
@@ -102,11 +121,29 @@ export default defineComponent({
             return formattedTime;
         });
 
+        function openRecipeDetails() {
+            const formattedTitle = props.recipe.title
+                .toLowerCase()
+                .replaceAll(' ', '-');
+
+            router.push({
+                name: 'RecipeDetails',
+                params: { title: formattedTitle },
+                query: { id: props.recipe._id! },
+            });
+        }
+
+        function selectRecipe() {
+            emit('selectedRecipe', props.recipe);
+        }
+
         return {
             authenticatedUser,
             isFavoriteRecipe,
             formattedTime,
             toggleFavRecipe,
+            openRecipeDetails,
+            selectRecipe,
         };
     },
 });
@@ -118,6 +155,8 @@ export default defineComponent({
     border: 1px solid var(--main-color);
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+.card.pointer {
     cursor: pointer;
 }
 
@@ -128,8 +167,29 @@ export default defineComponent({
     flex-wrap: wrap;
 }
 .title {
+    width: 80%;
+    text-align: left;
     font-size: 1.2rem;
     font-weight: 600;
+}
+
+.fav {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.fav > * {
+    cursor: pointer;
+}
+
+.rating {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+.rating > * {
+    cursor: pointer;
 }
 
 .pill {
@@ -142,5 +202,18 @@ export default defineComponent({
     background: var(--main-color);
     border-radius: 20px;
     color: var(--main-light-color);
+}
+
+.weekPlanButtons {
+    display: flex;
+    margin-top: 1rem;
+}
+.weekPlanButtons > * {
+    width: 50%;
+    padding: 0.5rem;
+    background-color: var(--secondary-light-color);
+}
+.weekPlanButtons > *:hover {
+    background-color: var(--secondary-color);
 }
 </style>
