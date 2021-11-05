@@ -147,11 +147,12 @@ function addRecipeToWeekPlan(
     meal: keyof DailyPlan
 ) {
     if (day < 0 || day > 6) {
-        console.warn('No valid day');
+        console.error('Not valid day');
         return;
     }
     selectedWeekPlan.value.dailyPlans[day][meal] = recipe;
 }
+
 export default function useWeekPlanState() {
     return {
         isLoading: computed(() => isLoading.value),

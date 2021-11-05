@@ -7,9 +7,11 @@
     </div>
     <div class="body">
         <div class="selectWeekPlan">
-            <div class="input" @click="isDropped = !isDropped">
-                <span>{{ selectedWeekPlan.name }}</span>
-                <ArrowDropDownIcon />
+            <div class="dropDown__selected">
+                <input type="text" v-model="selectedWeekPlan.name" />
+                <div class="dropDown__button" @click="isDropped = !isDropped">
+                    <ArrowDropDownIcon />
+                </div>
             </div>
             <div class="dropDown" v-if="isDropped">
                 <ul>
@@ -88,7 +90,7 @@
     <CustomModal
         :thin="true"
         :mode="'right'"
-        v-if="!!selectedDay"
+        v-if="selectedDay !== null"
         @close="selectedDay = null"
     >
         <div class="selectedDay">
@@ -100,7 +102,8 @@
                 :isWeekPlan="true"
                 @goToPage="goToPage"
                 @selectedRecipe="
-                    addRecipeToWeekPlan(recipe, selectedDay, selectedMeal)
+                    addRecipeToWeekPlan($event, selectedDay, selectedMeal);
+                    selectedDay = null;
                 "
             />
         </div>
@@ -108,7 +111,7 @@
     <CustomModal
         :thin="true"
         :mode="'right'"
-        v-if="!!showRecipeDetails"
+        v-if="showRecipeDetails !== null"
         @close="showRecipeDetails = null"
     >
         {{ showRecipeDetails }}
@@ -220,20 +223,25 @@ export default defineComponent({
     text-align: right;
     cursor: pointer;
 }
-.selectWeekPlan > .input {
+.dropDown__selected {
     position: relative;
     display: flex;
     align-items: center;
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
-    padding: 5px 5px 5px 15px;
     z-index: 9;
     background-color: var(--main-light-color);
 }
-.selectWeekPlan > .input > span {
-    margin-right: 10px;
+.dropDown__selected > input {
+    padding: 5px 5px 3px 15px;
+    border: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-size: 1.2rem;
 }
-.selectWeekPlan > .dropDown {
+.dropDown__button {
+    border: 1px solid var(--main-color);
+    border-radius: 5px;
+}
+.dropDown {
     position: absolute;
     right: 0;
     background-color: var(--secondary-color);
