@@ -55,6 +55,15 @@
                             v-if="dailyPlan.lunch"
                             class="text"
                             @click="showRecipeDetails = dailyPlan.lunch"
+                            :style="`background: 
+                                linear-gradient(
+                                    0deg,
+                                    var(--main-color) 0%,
+                                    var(--third-transparent-color) 100%
+                                ),
+                                url(${getMainImageUrl(
+                                    dailyPlan.lunch
+                                )}) center center / cover;`"
                         >
                             {{ dailyPlan.lunch.title }}
                         </div>
@@ -168,7 +177,8 @@ export default defineComponent({
     setup() {
         const router = useRouter();
 
-        const { searchRecipes, recipes, isLoading } = useRecipeState();
+        const { searchRecipes, recipes, isLoading, getMainImageUrl } =
+            useRecipeState();
         const weekPlanState = useWeekPlanState();
 
         const isDropped = ref(false);
@@ -195,6 +205,7 @@ export default defineComponent({
                 name: 'Profile',
             });
         }
+
         return {
             ...weekPlanState,
             weekDays,
@@ -207,6 +218,7 @@ export default defineComponent({
             showModal,
             goToPage,
             back,
+            getMainImageUrl,
         };
     },
 });
@@ -350,12 +362,13 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     padding: 20px 10px;
-    background: linear-gradient(
+    /* background: linear-gradient(
         0deg,
         var(--main-color) 0%,
         var(--secondary-color) 40%,
         var(--third-transparent-color) 100%
-    );
+    ); */
+    background-size: cover;
     color: var(--main-light-color);
 }
 .meals .add {

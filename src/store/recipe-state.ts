@@ -35,6 +35,7 @@ interface RecipeState {
     getRandomRecipe(): Promise<void>;
     deleteRecipe(recipe: Recipe): Promise<Recipe>;
     getIntegratedSites(): Promise<IntegratedSite[]>;
+    getMainImageUrl(recipe: Recipe | undefined): string;
 }
 
 const recipeService = new RecipesEndpoint();
@@ -168,6 +169,12 @@ function getIntegratedSites() {
         .finally(() => (isLoading.value = false));
 }
 
+function getMainImageUrl(recipe: Recipe | undefined): string {
+    return recipe && recipe.images && recipe.images?.length > 0
+        ? recipe.images[0]
+        : '';
+}
+
 export default function useRecipeState(): RecipeState {
     return {
         isLoading: readonly(isLoading),
@@ -190,5 +197,6 @@ export default function useRecipeState(): RecipeState {
         getRandomRecipe,
         deleteRecipe,
         getIntegratedSites,
+        getMainImageUrl,
     };
 }
