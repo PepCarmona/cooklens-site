@@ -2,7 +2,7 @@
     <div
         class="card"
         :class="{ pointer: !isWeekPlan }"
-        @click="!isWeekPlan && openRecipeDetails"
+        @click="checkOpenRecipeDetails"
     >
         <div v-if="!isWeekPlan" class="image">
             <img
@@ -52,7 +52,9 @@
             </div>
         </div>
         <div v-if="isWeekPlan" class="weekPlanButtons">
-            <button class="seeMore" @click="openRecipeDetails">See more</button>
+            <button class="seeMore" @click="seeMoreInfoAboutRecipe">
+                See more
+            </button>
             <button class="addToWeekPlan" @click="selectRecipe">
                 Add to this week plan
                 <ArrowIcon />
@@ -98,7 +100,7 @@ export default defineComponent({
         },
     },
 
-    emits: ['selectedRecipe'],
+    emits: ['selectedRecipe', 'seeMoreInfoAboutRecipe'],
 
     setup(props, { emit }) {
         const router = useRouter();
@@ -133,8 +135,18 @@ export default defineComponent({
             });
         }
 
+        function checkOpenRecipeDetails() {
+            if (!props.isWeekPlan) {
+                openRecipeDetails();
+            }
+        }
+
         function selectRecipe() {
             emit('selectedRecipe', props.recipe);
+        }
+
+        function seeMoreInfoAboutRecipe() {
+            emit('seeMoreInfoAboutRecipe', props.recipe);
         }
 
         return {
@@ -143,7 +155,9 @@ export default defineComponent({
             formattedTime,
             toggleFavRecipe,
             openRecipeDetails,
+            checkOpenRecipeDetails,
             selectRecipe,
+            seeMoreInfoAboutRecipe,
         };
     },
 });

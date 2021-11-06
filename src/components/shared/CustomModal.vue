@@ -57,6 +57,7 @@ export default defineComponent({
 .modalOverlay.right > .modal {
     height: 100vh;
     max-height: 100vh;
+    width: 450px;
     border-right: none;
     border-top: none;
     border-bottom: none;

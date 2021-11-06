@@ -6,6 +6,7 @@
                 :recipe="recipe"
                 :isWeekPlan="isWeekPlan"
                 @selectedRecipe="selectRecipe"
+                @seeMoreInfoAboutRecipe="seeMoreInfoAboutRecipe"
             />
         </template>
         <button
@@ -57,7 +58,12 @@ export default defineComponent({
         Pagination,
     },
 
-    emits: ['showAllRecipes', 'goToPage', 'selectedRecipe'],
+    emits: [
+        'showAllRecipes',
+        'goToPage',
+        'selectedRecipe',
+        'seeMoreInfoAboutRecipe',
+    ],
 
     setup(_, { emit }) {
         const { currentPage, nextPageExists } = usePaginationState();
@@ -79,6 +85,10 @@ export default defineComponent({
             emit('selectedRecipe', recipe);
         }
 
+        function seeMoreInfoAboutRecipe(recipe: Recipe) {
+            emit('seeMoreInfoAboutRecipe', recipe);
+        }
+
         return {
             currentPage,
             nextPageExists,
@@ -87,6 +97,7 @@ export default defineComponent({
             goToNextPage,
             showAllRecipes,
             selectRecipe,
+            seeMoreInfoAboutRecipe,
         };
     },
 });

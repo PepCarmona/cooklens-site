@@ -93,6 +93,11 @@
         v-if="selectedDay !== null"
         @close="selectedDay = null"
     >
+        <div class="closeModal-container">
+            <button class="closeModal" @click="selectedDay = null">
+                <CloseIcon size="l" />
+            </button>
+        </div>
         <div class="selectedDay">
             {{ weekDays[selectedDay] }} {{ selectedMeal }}
         </div>
@@ -105,6 +110,7 @@
                     addRecipeToWeekPlan($event, selectedDay, selectedMeal);
                     selectedDay = null;
                 "
+                @seeMoreInfoAboutRecipe="showRecipeDetails = $event"
             />
         </div>
     </CustomModal>
@@ -112,9 +118,17 @@
         :thin="true"
         :mode="'right'"
         v-if="showRecipeDetails !== null"
-        @close="showRecipeDetails = null"
+        @close="
+            showRecipeDetails = null;
+            selectedDay = null;
+        "
     >
-        {{ showRecipeDetails }}
+        <div class="closeModal-container">
+            <button class="closeModal" @click="showRecipeDetails = null">
+                <CloseIcon size="l" />
+            </button>
+        </div>
+        <RecipeDetails :id="showRecipeDetails._id" />
     </CustomModal>
 </template>
 
@@ -124,6 +138,7 @@ import {
     EOS_WEST as ArrowBackIcon,
     EOS_ARROW_DROP_DOWN as ArrowDropDownIcon,
     EOS_ADD as AddIcon,
+    EOS_CLOSE as CloseIcon,
 } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
@@ -135,6 +150,7 @@ import CustomModal from '@/components/shared/CustomModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
 import { Meals } from '@/api/types/weekPlan';
 import { Recipe } from '@/api/types/recipe';
+import RecipeDetails from '@/views/RecipeDetails.vue';
 
 export default defineComponent({
     name: 'MyWeekPlan',
@@ -143,8 +159,10 @@ export default defineComponent({
         ArrowBackIcon,
         ArrowDropDownIcon,
         AddIcon,
+        CloseIcon,
         CustomModal,
         RecipeList,
+        RecipeDetails,
     },
 
     setup() {
@@ -365,6 +383,17 @@ export default defineComponent({
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.closeModal-container {
+    width: 100%;
+}
+.closeModal {
+    margin-left: auto;
+    margin-right: 0;
+}
+.closeModal:hover {
+    background-color: transparent;
 }
 
 @media only screen and (min-width: 768px) {
