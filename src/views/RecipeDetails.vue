@@ -55,6 +55,7 @@
                             />
                         </div>
                         <div
+                            v-if="!minified"
                             class="icons"
                             :class="{ responsive: recipeHasImages }"
                         >
@@ -74,7 +75,21 @@
                             </button>
                         </div>
                     </div>
-                    <div class="mt-1">{{ recipe.description }}</div>
+                    <div v-if="!minified" class="mt-1">
+                        {{ recipe.description }}
+                    </div>
+                    <router-link
+                        v-else
+                        :to="{
+                            name: 'RecipeDetails',
+                            params: { title: 'getFormattedTitle(recipe)' },
+                            query: { id: recipe._id },
+                        }"
+                        target="_blank"
+                        class="goToPageLink"
+                    >
+                        Go to recipe page
+                    </router-link>
                     <ul class="time mt-3 p-2">
                         <li v-if="recipe.time.preparation">
                             <b>Prep:</b>
@@ -146,7 +161,7 @@
                             {{ tag.value }}
                         </li>
                     </ul>
-                    <div class="mt-4 d-flex-center">
+                    <div v-if="!minified" class="mt-4 d-flex-center">
                         <Rating
                             :recipeRating="recipe.rating"
                             @rate="editRating"
@@ -159,7 +174,7 @@
 </template>
 
 <script lang="ts">
-import { Ingredient } from '@/api/types/recipe';
+import { Ingredient, Recipe } from '@/api/types/recipe';
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
@@ -180,11 +195,16 @@ import useUserState from '@/store/user-state';
 import useAuthState from '@/store/auth-state';
 import { User } from '@/api/types/user';
 
+export function getFormattedTitle(recipe: Recipe): string {
+    return recipe.title.toLowerCase().replaceAll(' ', '-');
+}
+
 export default defineComponent({
     name: 'RecipeDetails',
 
     props: {
         id: String,
+        minified: Boolean,
     },
 
     components: {
@@ -371,6 +391,7 @@ export default defineComponent({
             recipeHasImages,
             editRating,
             hideEdit,
+            getFormattedTitle,
         };
     },
 });

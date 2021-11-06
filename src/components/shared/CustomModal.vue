@@ -57,10 +57,9 @@ export default defineComponent({
 .modalOverlay.right > .modal {
     height: 100vh;
     max-height: 100vh;
-    width: 450px;
-    border-right: none;
-    border-top: none;
-    border-bottom: none;
+    width: 100%;
+    border: none;
+    border-radius: 0;
     flex-direction: column;
     justify-content: flex-start;
     flex-wrap: nowrap;
@@ -91,6 +90,10 @@ export default defineComponent({
 }
 
 @media only screen and (min-width: 767px) {
+    .modalOverlay.right > .modal {
+        width: 450px;
+        border-left: 1px solid var(--main-dark-color);
+    }
     .modal {
         width: fit-content;
         max-width: 90vw;

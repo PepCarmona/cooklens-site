@@ -88,7 +88,7 @@
         </div>
     </div>
     <CustomModal
-        :thin="true"
+        thin
         :mode="'right'"
         v-if="selectedDay !== null"
         @close="selectedDay = null"
@@ -115,7 +115,7 @@
         </div>
     </CustomModal>
     <CustomModal
-        :thin="true"
+        thin
         :mode="'right'"
         v-if="showRecipeDetails !== null"
         @close="
@@ -128,7 +128,7 @@
                 <CloseIcon size="l" />
             </button>
         </div>
-        <RecipeDetails :id="showRecipeDetails._id" />
+        <RecipeDetails :id="showRecipeDetails._id" minified />
     </CustomModal>
 </template>
 
