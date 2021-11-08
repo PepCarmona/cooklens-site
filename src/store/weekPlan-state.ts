@@ -3,7 +3,7 @@ import { WeekPlanEndpoint } from '@/api/endpoints/weekPlan';
 import { Recipe } from '@/api/types/recipe';
 import { DailyPlan, WeekPlan } from '@/api/types/weekPlan';
 import moment from 'moment';
-import { computed, Ref, ref } from 'vue';
+import { computed, nextTick, Ref, ref, watch } from 'vue';
 import useAuthState from './auth-state';
 moment.updateLocale('en', {
     week: {
@@ -94,6 +94,9 @@ const userService = new UserEndpoint();
 const weekPlanService = new WeekPlanEndpoint();
 
 const isLoading = ref(false);
+const isNewWeekPlan = ref(true);
+const isNewSelectedWeekPlan = ref(false);
+const hasSelectedWeekPlanChanged = ref(false);
 
 const user = useAuthState().authenticatedUser;
 
@@ -105,8 +108,6 @@ function defaultWeekPlan(): WeekPlan {
     };
 }
 
-const isNewWeekPlan = ref(true);
-
 const selectedWeekPlan = ref(defaultWeekPlan()) as Ref<WeekPlan>;
 const myWeekPlans = ref<WeekPlan[]>([]);
 
@@ -117,6 +118,9 @@ function getMyWeekPlans() {
         .getMyWeekPlans()
         .then((weekPlans) => {
             myWeekPlans.value = weekPlans;
+            if (weekPlans.length > 0) {
+                // selectWeekPlan(weekPlans[0]);
+            }
         })
         .finally(() => (isLoading.value = false));
 }
@@ -129,16 +133,38 @@ function getWeekPlan(id: string) {
         .finally(() => (isLoading.value = false));
 }
 
-function selectWeekPlan(id: string | null) {
-    if (!id) {
-        selectedWeekPlan.value = defaultWeekPlan();
-        isNewWeekPlan.value = true;
-        return;
+function selectWeekPlan(weekPlan: WeekPlan | string | undefined) {
+    let matched = true;
+
+    switch (typeof weekPlan) {
+        case 'undefined':
+            selectedWeekPlan.value = defaultWeekPlan();
+            isNewWeekPlan.value = true;
+            break;
+
+        case 'object':
+            selectedWeekPlan.value = weekPlan;
+            isNewWeekPlan.value = false;
+            break;
+
+        case 'string':
+            getWeekPlan(weekPlan).then(async (weekPlan) => {
+                selectedWeekPlan.value = weekPlan;
+                isNewWeekPlan.value = false;
+            });
+            break;
+
+        default:
+            matched = false;
     }
-    getWeekPlan(id).then((weekPlan) => {
-        selectedWeekPlan.value = weekPlan;
-        isNewWeekPlan.value = true;
-    });
+
+    if (matched) {
+        hasSelectedWeekPlanChanged.value = false;
+
+        isNewSelectedWeekPlan.value = true;
+
+        setTimeout(() => (isNewSelectedWeekPlan.value = false), 300);
+    }
 }
 
 function addRecipeToWeekPlan(
@@ -151,11 +177,25 @@ function addRecipeToWeekPlan(
         return;
     }
     selectedWeekPlan.value.dailyPlans[day][meal] = recipe;
+    hasSelectedWeekPlanChanged.value = true;
 }
+
+watch(
+    () => selectedWeekPlan.value.name,
+    () => {
+        if (!isNewSelectedWeekPlan.value) {
+            hasSelectedWeekPlanChanged.value = true;
+        }
+    }
+);
 
 export default function useWeekPlanState() {
     return {
         isLoading: computed(() => isLoading.value),
+        isNewWeekPlan: computed(() => isNewWeekPlan.value),
+        hasSelectedWeekPlanChanged: computed(
+            () => hasSelectedWeekPlanChanged.value
+        ),
         selectedWeekPlan: computed(() => selectedWeekPlan.value),
         myWeekPlans: computed(() => myWeekPlans.value),
 
