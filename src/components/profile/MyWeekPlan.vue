@@ -354,6 +354,7 @@ export default defineComponent({
     border-radius: 3px;
 }
 .dropDown__selected > input {
+    width: 100%;
     padding: 5px 5px 3px 15px;
     border: none;
     border-radius: 3px;
@@ -371,6 +372,7 @@ export default defineComponent({
     border: 1px solid var(--main-color);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    z-index: 9;
 }
 .selectWeekPlan > .dropDown li {
     padding: 4px 6px;
