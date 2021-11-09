@@ -102,7 +102,7 @@ const user = useAuthState().authenticatedUser;
 
 function defaultWeekPlan(): WeekPlan {
     return {
-        name: 'New Week Plan',
+        name: '',
         dailyPlans: [{}, {}, {}, {}, {}, {}, {}],
         author: user.value?._id ?? '',
     };
@@ -110,6 +110,18 @@ function defaultWeekPlan(): WeekPlan {
 
 const selectedWeekPlan = ref(defaultWeekPlan()) as Ref<WeekPlan>;
 const myWeekPlans = ref<WeekPlan[]>([]);
+
+const isNameValid = computed<boolean>(
+    () =>
+        !myWeekPlans.value.some(
+            (weekPlan) =>
+                weekPlan._id !== selectedWeekPlan.value._id &&
+                weekPlan.name ===
+                    selectedWeekPlan.value.name.replace(/\s*$/, '')
+        ) &&
+        selectedWeekPlan.value.name.replace(/\s*$/, '') !== 'New Week Plan' &&
+        selectedWeekPlan.value.name.length > 0
+);
 
 function getMyWeekPlans(): Promise<WeekPlan[]> {
     isLoading.value = true;
@@ -184,28 +196,7 @@ function saveWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
 
     weekPlan.author = user.value?._id;
 
-    if (
-        myWeekPlans.value.findIndex(
-            (myWeekPlan) => weekPlan.name === myWeekPlan.name
-        ) > -1 ||
-        weekPlan.name === defaultWeekPlan().name
-    ) {
-        const sanitizedMyWeekPlanNames = myWeekPlans.value.map(
-            (originalWeekPlan) =>
-                originalWeekPlan.name.replace(/\s*\(\d+\)$|\s*$/, '')
-        );
-
-        sanitizedMyWeekPlanNames.push(defaultWeekPlan().name);
-
-        let numberOfSameNames = 0;
-        sanitizedMyWeekPlanNames.forEach((name) => {
-            if (weekPlan.name === name) {
-                numberOfSameNames++;
-            }
-        });
-
-        weekPlan.name = `${weekPlan.name} (${numberOfSameNames})`;
-    }
+    weekPlan.name = weekPlan.name.replace(/\s*$/, '');
 
     return isNewWeekPlan.value
         ? weekPlanService
@@ -263,6 +254,7 @@ export default function useWeekPlanState() {
         ),
         selectedWeekPlan: computed(() => selectedWeekPlan.value),
         myWeekPlans: computed(() => myWeekPlans.value),
+        isNameValid,
 
         getMyWeekPlans,
         getWeekPlan,

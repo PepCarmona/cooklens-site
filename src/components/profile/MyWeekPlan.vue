@@ -8,10 +8,20 @@
     <div class="header">
         <div class="selectWeekPlan">
             <div class="dropDown__selected">
-                <input type="text" v-model="selectedWeekPlan.name" />
+                <input
+                    type="text"
+                    v-model="selectedWeekPlan.name"
+                    placeholder="New Week Plan"
+                />
                 <div class="dropDown__button" @click="isDropped = !isDropped">
                     <ArrowDropDownIcon size="l" />
                 </div>
+            </div>
+            <div
+                v-if="!isNameValid && hasSelectedWeekPlanChanged"
+                class="errors"
+            >
+                * Invalid Name
             </div>
             <div class="dropDown" v-if="isDropped">
                 <ul>
@@ -41,7 +51,7 @@
         </div>
         <button
             class="save"
-            :class="{ disabled: !hasSelectedWeekPlanChanged }"
+            :class="{ disabled: !hasSelectedWeekPlanChanged || !isNameValid }"
             @click="saveWeekPlan(selectedWeekPlan)"
         >
             <SaveIcon />
@@ -314,6 +324,15 @@ export default defineComponent({
 }
 .remove:hover {
     background-color: var(--light-error-color);
+}
+
+.errors {
+    color: var(--error-color);
+    font-size: 0.7rem;
+    position: absolute;
+    bottom: -14px;
+    left: 15px;
+    cursor: default;
 }
 
 .selectWeekPlan {
