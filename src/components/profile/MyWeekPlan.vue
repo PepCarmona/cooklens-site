@@ -5,13 +5,23 @@
         </button>
         <h2>My Week Plan</h2>
     </div>
-    <div class="body">
+    <div class="header">
         <div class="selectWeekPlan">
             <div class="dropDown__selected">
-                <input type="text" v-model="selectedWeekPlan.name" />
+                <input
+                    type="text"
+                    v-model="selectedWeekPlan.name"
+                    placeholder="New Week Plan"
+                />
                 <div class="dropDown__button" @click="isDropped = !isDropped">
-                    <ArrowDropDownIcon />
+                    <ArrowDropDownIcon size="l" />
                 </div>
+            </div>
+            <div
+                v-if="!isNameValid && hasSelectedWeekPlanChanged"
+                class="errors"
+            >
+                * Invalid Name
             </div>
             <div class="dropDown" v-if="isDropped">
                 <ul>
@@ -19,7 +29,7 @@
                         v-for="(weekPlan, index) in myWeekPlans"
                         :key="index"
                         @click="
-                            selectWeekPlan(weekPlan._id);
+                            selectWeekPlan(weekPlan);
                             isDropped = false;
                         "
                         :class="{
@@ -30,7 +40,7 @@
                     </li>
                     <li
                         @click="
-                            selectWeekPlan(null);
+                            selectWeekPlan(undefined);
                             isDropped = false;
                         "
                     >
@@ -39,6 +49,24 @@
                 </ul>
             </div>
         </div>
+        <button
+            class="save"
+            :class="{ disabled: !hasSelectedWeekPlanChanged || !isNameValid }"
+            @click="saveWeekPlan(selectedWeekPlan)"
+        >
+            <SaveIcon />
+            <span>Save</span>
+        </button>
+        <button
+            class="remove"
+            :class="{ disabled: isNewWeekPlan }"
+            @click="deleteWeekPlan(selectedWeekPlan)"
+        >
+            <DeleteIcon color="#d00000" />
+            <span>Delete</span>
+        </button>
+    </div>
+    <div class="body">
         <div class="weekPlan">
             <div
                 class="day"
@@ -81,6 +109,15 @@
                             v-if="dailyPlan.dinner"
                             class="text"
                             @click="showRecipeDetails = dailyPlan.lunch"
+                            :style="`background: 
+                                linear-gradient(
+                                    0deg,
+                                    var(--main-color) 0%,
+                                    var(--third-transparent-color) 100%
+                                ),
+                                url(${getMainImageUrl(
+                                    dailyPlan.dinner
+                                )}) center center / cover;`"
                         >
                             {{ dailyPlan.dinner.title }}
                         </div>
@@ -148,6 +185,8 @@ import {
     EOS_ARROW_DROP_DOWN as ArrowDropDownIcon,
     EOS_ADD as AddIcon,
     EOS_CLOSE as CloseIcon,
+    EOS_SAVE_OUTLINED as SaveIcon,
+    EOS_DELETE_OUTLINED as DeleteIcon,
 } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
@@ -169,6 +208,8 @@ export default defineComponent({
         ArrowDropDownIcon,
         AddIcon,
         CloseIcon,
+        SaveIcon,
+        DeleteIcon,
         CustomModal,
         RecipeList,
         RecipeDetails,
@@ -188,7 +229,13 @@ export default defineComponent({
 
         const showRecipeDetails = ref<Recipe | null>(null);
 
-        onMounted(() => weekPlanState.getMyWeekPlans());
+        onMounted(() =>
+            weekPlanState.getMyWeekPlans().then((weekPlans) => {
+                if (weekPlans.length > 0) {
+                    weekPlanState.selectWeekPlan(weekPlans[0]);
+                }
+            })
+        );
 
         function showModal(meal: Meals, day: number) {
             selectedMeal.value = meal;
@@ -238,18 +285,61 @@ export default defineComponent({
     justify-content: center;
 }
 
-.body {
+.body,
+.header {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
 
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.save,
+.remove {
+    padding: 5px 5px 3px 5px;
+    margin-left: 1rem;
+    border: 1px solid var(--main-color);
+    border-radius: 3px;
+}
+.save > span,
+.remove > span {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+}
+
+.save.disabled,
+.remove.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.remove {
+    color: var(--error-color);
+    border-color: var(--error-color);
+}
+.remove:hover {
+    background-color: var(--light-error-color);
+}
+
+.errors {
+    color: var(--error-color);
+    font-size: 0.7rem;
+    position: absolute;
+    bottom: -14px;
+    left: 15px;
+    cursor: default;
+}
+
 .selectWeekPlan {
     position: relative;
     width: fit-content;
-    max-width: 80%;
-    margin-left: auto;
-    margin-bottom: 1rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
     text-align: right;
     cursor: pointer;
 }
@@ -257,19 +347,21 @@ export default defineComponent({
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     z-index: 9;
     background-color: var(--main-light-color);
+    border: 1px solid var(--main-color);
+    border-radius: 3px;
 }
 .dropDown__selected > input {
+    width: 100%;
     padding: 5px 5px 3px 15px;
     border: none;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-radius: 3px;
     font-size: 1.2rem;
 }
-.dropDown__button {
-    border: 1px solid var(--main-color);
-    border-radius: 5px;
+.dropDown__selected > input:focus {
+    outline: none;
 }
 .dropDown {
     position: absolute;
@@ -280,6 +372,7 @@ export default defineComponent({
     border: 1px solid var(--main-color);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    z-index: 9;
 }
 .selectWeekPlan > .dropDown li {
     padding: 4px 6px;
@@ -410,6 +503,17 @@ export default defineComponent({
 }
 
 @media only screen and (min-width: 768px) {
+    .header {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+    }
+
+    .selectWeekPlan {
+        width: auto;
+        margin-bottom: 0;
+    }
+
     .weekPlan {
         flex-wrap: nowrap;
         overflow-x: auto;

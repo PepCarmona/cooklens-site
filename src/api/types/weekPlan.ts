@@ -20,5 +20,5 @@ export interface WeekPlan {
         DailyPlan,
         DailyPlan
     ];
-    author: string | User;
+    author: string | User | undefined;
 }
