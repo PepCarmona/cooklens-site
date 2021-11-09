@@ -29,7 +29,7 @@
                         v-for="(weekPlan, index) in myWeekPlans"
                         :key="index"
                         @click="
-                            selectWeekPlan(weekPlan._id);
+                            selectWeekPlan(weekPlan);
                             isDropped = false;
                         "
                         :class="{

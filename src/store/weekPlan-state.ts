@@ -154,7 +154,7 @@ function selectWeekPlan(weekPlan: WeekPlan | string | undefined) {
             break;
 
         case 'object':
-            selectedWeekPlan.value = weekPlan;
+            Object.assign(selectedWeekPlan.value, weekPlan);
             isNewWeekPlan.value = false;
             break;
 
