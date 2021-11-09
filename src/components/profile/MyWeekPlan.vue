@@ -39,11 +39,19 @@
                 </ul>
             </div>
         </div>
-        <button class="save" :class="{ disabled: !hasSelectedWeekPlanChanged }">
+        <button
+            class="save"
+            :class="{ disabled: !hasSelectedWeekPlanChanged }"
+            @click="saveWeekPlan(selectedWeekPlan)"
+        >
             <SaveIcon />
             <span>Save</span>
         </button>
-        <button class="remove" :class="{ disabled: isNewWeekPlan }">
+        <button
+            class="remove"
+            :class="{ disabled: isNewWeekPlan }"
+            @click="deleteWeekPlan(selectedWeekPlan)"
+        >
             <DeleteIcon color="#d00000" />
             <span>Delete</span>
         </button>
@@ -211,7 +219,13 @@ export default defineComponent({
 
         const showRecipeDetails = ref<Recipe | null>(null);
 
-        onMounted(() => weekPlanState.getMyWeekPlans());
+        onMounted(() =>
+            weekPlanState.getMyWeekPlans().then((weekPlans) => {
+                if (weekPlans.length > 0) {
+                    weekPlanState.selectWeekPlan(weekPlans[0]);
+                }
+            })
+        );
 
         function showModal(meal: Meals, day: number) {
             selectedMeal.value = meal;

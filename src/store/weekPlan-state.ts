@@ -3,7 +3,7 @@ import { WeekPlanEndpoint } from '@/api/endpoints/weekPlan';
 import { Recipe } from '@/api/types/recipe';
 import { DailyPlan, WeekPlan } from '@/api/types/weekPlan';
 import moment from 'moment';
-import { computed, nextTick, Ref, ref, watch } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import useAuthState from './auth-state';
 moment.updateLocale('en', {
     week: {
@@ -111,16 +111,15 @@ function defaultWeekPlan(): WeekPlan {
 const selectedWeekPlan = ref(defaultWeekPlan()) as Ref<WeekPlan>;
 const myWeekPlans = ref<WeekPlan[]>([]);
 
-function getMyWeekPlans() {
+function getMyWeekPlans(): Promise<WeekPlan[]> {
     isLoading.value = true;
 
     return userService
         .getMyWeekPlans()
         .then((weekPlans) => {
             myWeekPlans.value = weekPlans;
-            if (weekPlans.length > 0) {
-                // selectWeekPlan(weekPlans[0]);
-            }
+
+            return weekPlans;
         })
         .finally(() => (isLoading.value = false));
 }
@@ -180,6 +179,72 @@ function addRecipeToWeekPlan(
     hasSelectedWeekPlanChanged.value = true;
 }
 
+function saveWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
+    isLoading.value = true;
+
+    weekPlan.author = user.value?._id;
+
+    if (
+        myWeekPlans.value.findIndex(
+            (myWeekPlan) => weekPlan.name === myWeekPlan.name
+        ) > -1 ||
+        weekPlan.name === defaultWeekPlan().name
+    ) {
+        const sanitizedMyWeekPlanNames = myWeekPlans.value.map(
+            (originalWeekPlan) =>
+                originalWeekPlan.name.replace(/\s*\(\d+\)$|\s*$/, '')
+        );
+
+        sanitizedMyWeekPlanNames.push(defaultWeekPlan().name);
+
+        let numberOfSameNames = 0;
+        sanitizedMyWeekPlanNames.forEach((name) => {
+            if (weekPlan.name === name) {
+                numberOfSameNames++;
+            }
+        });
+
+        weekPlan.name = `${weekPlan.name} (${numberOfSameNames})`;
+    }
+
+    return isNewWeekPlan.value
+        ? weekPlanService
+              .createWeekPlan(weekPlan)
+              .then((weekPlan) => {
+                  hasSelectedWeekPlanChanged.value = false;
+                  myWeekPlans.value.push(weekPlan);
+                  selectWeekPlan(weekPlan);
+                  isNewWeekPlan.value = false;
+                  return weekPlan;
+              })
+              .finally(() => (isLoading.value = false))
+        : weekPlanService
+              .updateWeekPlan(weekPlan)
+              .then((weekPlan) => {
+                  hasSelectedWeekPlanChanged.value = false;
+                  myWeekPlans.value.splice(
+                      myWeekPlans.value.indexOf(weekPlan),
+                      1,
+                      weekPlan
+                  );
+                  return weekPlan;
+              })
+              .finally(() => (isLoading.value = false));
+}
+
+function deleteWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
+    isLoading.value = true;
+
+    return weekPlanService
+        .deleteWeekPlan(weekPlan)
+        .then((weekPlan) => {
+            selectWeekPlan(undefined);
+            myWeekPlans.value.splice(myWeekPlans.value.indexOf(weekPlan), 1);
+            return weekPlan;
+        })
+        .finally(() => (isLoading.value = false));
+}
+
 watch(
     () => selectedWeekPlan.value.name,
     () => {
@@ -203,5 +268,7 @@ export default function useWeekPlanState() {
         getWeekPlan,
         selectWeekPlan,
         addRecipeToWeekPlan,
+        saveWeekPlan,
+        deleteWeekPlan,
     };
 }
