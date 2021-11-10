@@ -1,6 +1,10 @@
 <template>
-    <div class="container">
-        <ImportRecipe v-if="!recipe" @importedRecipe="importRecipe" />
+    <div class="container" :class="{ thin }">
+        <ImportRecipe
+            :thin="!!thin"
+            v-if="!recipe"
+            @importedRecipe="importRecipe"
+        />
 
         <div class="row justify-center">
             <h2
@@ -254,6 +258,7 @@ export default defineComponent({
 
     props: {
         recipe: Object as PropType<Recipe>,
+        thin: Boolean,
     },
 
     components: {
@@ -264,7 +269,7 @@ export default defineComponent({
         ImportRecipe,
     },
 
-    emits: ['saved', 'cancel'],
+    emits: ['saved', 'cancel', 'newRecipeSaved'],
 
     setup(props, { emit }) {
         const router = useRouter();
@@ -389,10 +394,12 @@ export default defineComponent({
 
             useRecipeState()
                 .addRecipe(sanitizedRecipe.value)
-                .then(() => {
+                .then((savedRecipe) => {
                     router.push({
                         name: 'RecipesMainView',
                     });
+
+                    emit('newRecipeSaved', savedRecipe);
                 })
                 .catch((err: AxiosError) => {
                     saveErrors.value = err.response?.data;
@@ -665,7 +672,7 @@ button.delete {
 }
 
 @media only screen and (min-width: 769px) {
-    .numberInputs {
+    .container:not(.thin) .numberInputs {
         width: 40% !important;
         padding-right: 1rem;
         height: fit-content;
@@ -680,7 +687,7 @@ button.delete {
         margin-top: 0 !important;
     }
 
-    .ingredients {
+    .container:not(.thin) .ingredients {
         width: calc(60% - 1rem) !important;
         height: fit-content;
         background-color: var(--secondary-color);

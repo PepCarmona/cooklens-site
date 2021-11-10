@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex w-100 searchRow">
         <input
-            @input="updateSearchQuery"
+            @input="changeSearchText"
             @keypress="autoSearch"
             ref="searchInput"
             type="text"
@@ -18,17 +18,20 @@
     <div class="switchSearch">
         <button
             v-if="searchQuery.type !== 'title'"
-            @click="changeSearch('title')"
+            @click="changeSearchType('title')"
         >
             Search by title
         </button>
         <button
             v-if="searchQuery.type !== 'ingredient'"
-            @click="changeSearch('ingredient')"
+            @click="changeSearchType('ingredient')"
         >
             Search by ingredient
         </button>
-        <button v-if="searchQuery.type !== 'tag'" @click="changeSearch('tag')">
+        <button
+            v-if="searchQuery.type !== 'tag'"
+            @click="changeSearchType('tag')"
+        >
             Search by tag
         </button>
     </div>
@@ -68,12 +71,22 @@ export default defineComponent({
             });
         }
 
-        function changeSearch(type: SearchType) {
+        function changeSearchType(type: SearchType) {
             setSearch(type, searchQuery.value.text);
 
             if (searchQuery.value.text.length > 0) {
                 doSearch();
             }
+        }
+
+        function changeSearchText() {
+            const searchBy = searchQuery.value.type;
+            const searchText =
+                searchInput.value!.value.length > 0
+                    ? searchInput.value!.value
+                    : undefined;
+
+            setSearch(searchBy || 'title', searchText || '');
         }
 
         function updateQueryString(page?: number) {
@@ -87,16 +100,6 @@ export default defineComponent({
             });
         }
 
-        function updateSearchQuery() {
-            const searchBy = searchQuery.value.type;
-            const searchText =
-                searchInput.value!.value.length > 0
-                    ? searchInput.value!.value
-                    : undefined;
-
-            setSearch(searchBy || 'title', searchText || '');
-        }
-
         function autoSearch(event: KeyboardEvent) {
             if (event.key === 'Enter') {
                 doSearch();
@@ -105,12 +108,12 @@ export default defineComponent({
 
         return {
             doSearch,
-            changeSearch,
+            changeSearchType,
             updateQueryString,
             searchInput,
             autoSearch,
             searchQuery,
-            updateSearchQuery,
+            changeSearchText,
         };
     },
 });

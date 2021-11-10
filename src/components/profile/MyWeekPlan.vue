@@ -89,7 +89,7 @@
                         <div
                             v-if="dailyPlan.lunch"
                             class="text"
-                            @click="showRecipeDetails = dailyPlan.lunch"
+                            @click="showRecipeDetails(dailyPlan.lunch)"
                             :style="`background: 
                                 linear-gradient(
                                     0deg,
@@ -105,7 +105,7 @@
                         <div
                             v-else
                             class="add"
-                            @click="showModal('lunch', index)"
+                            @click="showRecipeList('lunch', index)"
                         >
                             <AddIcon size="xl" />
                         </div>
@@ -122,7 +122,7 @@
                         <div
                             v-if="dailyPlan.dinner"
                             class="text"
-                            @click="showRecipeDetails = dailyPlan.lunch"
+                            @click="showRecipeDetails(dailyPlan.lunch)"
                             :style="`background: 
                                 linear-gradient(
                                     0deg,
@@ -138,7 +138,7 @@
                         <div
                             v-else
                             class="add"
-                            @click="showModal('dinner', index)"
+                            @click="showRecipeList('dinner', index)"
                         >
                             <AddIcon size="xl" />
                         </div>
@@ -150,45 +150,64 @@
     <CustomModal
         thin
         :mode="'right'"
-        v-if="selectedDay !== null"
-        @close="selectedDay = null"
+        v-if="modalMode !== null"
+        @close="modalMode = null"
     >
-        <div class="closeModal-container">
-            <button class="closeModal" @click="selectedDay = null">
-                <CloseIcon size="l" />
+        <div class="recipeList" v-if="modalMode === 'recipeList'">
+            <div class="closeModal-container">
+                <button class="closeModal" @click="modalMode = null">
+                    <CloseIcon size="l" />
+                </button>
+            </div>
+            <button
+                class="createRecipeButon"
+                @click="modalMode = 'createRecipe'"
+            >
+                Add new recipe
             </button>
+            <div class="recipeListContainer">
+                <!-- <SearchRecipe /> -->
+                <RecipeList
+                    thin
+                    :recipes="recipes"
+                    :isWeekPlan="true"
+                    @goToPage="goToPage"
+                    @selectedRecipe="
+                        addRecipeToWeekPlan($event, selectedDay, selectedMeal);
+                        modalMode = null;
+                    "
+                    @seeMoreInfoAboutRecipe="showRecipeDetails($event, true)"
+                />
+            </div>
         </div>
-        <div class="selectedDay">
-            {{ weekDays[selectedDay] }} {{ selectedMeal }}
+        <div class="recipeDetails" v-if="modalMode === 'recipeDetails'">
+            <div class="closeModal-container">
+                <button
+                    v-if="canGoBack"
+                    class="closeModal"
+                    @click="modalMode = 'recipeList'"
+                >
+                    <ArrowBackIcon size="l" />
+                </button>
+                <button v-else class="closeModal" @click="modalMode = null">
+                    <CloseIcon size="l" />
+                </button>
+            </div>
+            <RecipeDetails :id="detailedRecipe._id" minified />
         </div>
-        <div class="recipeListContainer">
-            <RecipeList
-                :recipes="recipes"
-                :isWeekPlan="true"
-                @goToPage="goToPage"
-                @selectedRecipe="
-                    addRecipeToWeekPlan($event, selectedDay, selectedMeal);
-                    selectedDay = null;
+        <div class="createRecipe" v-if="modalMode === 'createRecipe'">
+            <div class="closeModal-container">
+                <button class="closeModal" @click="modalMode = 'recipeList'">
+                    <CloseIcon size="l" />
+                </button>
+            </div>
+            <CreateRecipe
+                thin
+                @newRecipeSaved="
+                    addRecipeToWeekPlan($event, selectedDay, selectedMeal)
                 "
-                @seeMoreInfoAboutRecipe="showRecipeDetails = $event"
             />
         </div>
-    </CustomModal>
-    <CustomModal
-        thin
-        :mode="'right'"
-        v-if="showRecipeDetails !== null"
-        @close="
-            showRecipeDetails = null;
-            selectedDay = null;
-        "
-    >
-        <div class="closeModal-container">
-            <button class="closeModal" @click="showRecipeDetails = null">
-                <CloseIcon size="l" />
-            </button>
-        </div>
-        <RecipeDetails :id="showRecipeDetails._id" minified />
     </CustomModal>
 </template>
 
@@ -204,15 +223,16 @@ import {
 } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
-import useWeekPlanState, {
-    weekDays,
-    // fakeWeekPlans as myWeekPlans,
-} from '@/store/weekPlan-state';
+import useWeekPlanState, { weekDays } from '@/store/weekPlan-state';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
 import { Meals } from '@/api/types/weekPlan';
 import { Recipe } from '@/api/types/recipe';
 import RecipeDetails from '@/views/RecipeDetails.vue';
+import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
+import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
+
+type modalModes = 'recipeList' | 'recipeDetails' | 'createRecipe' | null;
 
 export default defineComponent({
     name: 'MyWeekPlan',
@@ -227,6 +247,8 @@ export default defineComponent({
         CustomModal,
         RecipeList,
         RecipeDetails,
+        CreateRecipe,
+        // SearchRecipe,
     },
 
     setup() {
@@ -241,7 +263,10 @@ export default defineComponent({
         const selectedMeal = ref<Meals>();
         const selectedDay = ref<number | null>(null);
 
-        const showRecipeDetails = ref<Recipe | null>(null);
+        const detailedRecipe = ref<Recipe>();
+
+        const modalMode = ref<modalModes>(null);
+        const canGoBack = ref(false);
 
         onMounted(() =>
             weekPlanState.getMyWeekPlans().then((weekPlans) => {
@@ -251,10 +276,18 @@ export default defineComponent({
             })
         );
 
-        function showModal(meal: Meals, day: number) {
+        function showRecipeList(meal: Meals, day: number) {
+            modalMode.value = 'recipeList';
             selectedMeal.value = meal;
             selectedDay.value = day;
             searchRecipes();
+        }
+
+        function showRecipeDetails(recipe: Recipe, back?: boolean) {
+            modalMode.value = 'recipeDetails';
+            detailedRecipe.value = recipe;
+
+            canGoBack.value = !!back;
         }
 
         function goToPage(page: number) {
@@ -273,10 +306,13 @@ export default defineComponent({
             isDropped,
             selectedMeal,
             selectedDay,
-            showRecipeDetails,
+            detailedRecipe,
+            modalMode,
+            canGoBack,
             recipes,
             isLoading,
-            showModal,
+            showRecipeList,
+            showRecipeDetails,
             goToPage,
             back,
             getMainImageUrl,
@@ -503,12 +539,7 @@ export default defineComponent({
     z-index: 99;
 }
 
-/* .selectedDay {
-    width: 100%;
-} */
-
 .recipeListContainer {
-    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -567,5 +598,17 @@ export default defineComponent({
     .meals > div:not(:last-child) {
         margin-bottom: 0px;
     }
+}
+.recipeList {
+    height: 100%;
+}
+
+.createRecipeButon {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--main-color);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
 }
 </style>

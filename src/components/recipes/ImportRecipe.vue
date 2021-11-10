@@ -2,7 +2,10 @@
     <CustomModal v-if="isLoading">
         <LoadingModal>Importing Recipe ...</LoadingModal>
     </CustomModal>
-    <div class="import-container mt-1 w-100 p-1 justify-center">
+    <div
+        class="import-container mt-1 w-100 p-1 justify-center"
+        :class="{ thin }"
+    >
         <div class="import-inner-container row mt-0 justify-center">
             <div class="tooltip-container">
                 <span class="row justify-center mb-05"
@@ -59,6 +62,10 @@ import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'ImportRecipe',
+
+    props: {
+        thin: Boolean,
+    },
 
     components: {
         CustomModal,
@@ -245,7 +252,7 @@ button {
     }
 }
 @media only screen and (min-width: 769px) {
-    .import-inner-container {
+    .import-container:not(.thin) .import-inner-container {
         width: 60%;
         margin-left: auto;
         margin-right: auto;

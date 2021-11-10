@@ -1,5 +1,5 @@
 <template>
-    <div class="card-container" :class="{ column: isWeekPlan }">
+    <div class="card-container" :class="{ column: isWeekPlan, thin }">
         <div v-if="isLoading" class="loadingCard">Loading...</div>
         <template v-else v-for="recipe in recipes" :key="recipe._id">
             <RecipeCard
@@ -51,6 +51,7 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
+        thin: Boolean,
     },
 
     components: {
@@ -143,12 +144,12 @@ export default defineComponent({
 }
 
 @media only screen and (min-width: 906px) {
-    .card-container > .card:nth-child(2) {
+    .card-container:not(.thin) > .card:nth-child(2) {
         margin-top: 0;
     }
 }
 @media only screen and (min-width: 1350px) {
-    .card-container > .card:nth-child(3) {
+    .card-container:not(.thin) > .card:nth-child(3) {
         margin-top: 0;
     }
 }

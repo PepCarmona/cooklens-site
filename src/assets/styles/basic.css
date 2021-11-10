@@ -293,6 +293,10 @@
     display: flex;
     flex-wrap: wrap;
 }
+.container.thin {
+    width: 100%;
+    margin: 0;
+}
 
 button {
     display: flex;
