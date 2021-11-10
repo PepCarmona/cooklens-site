@@ -79,6 +79,13 @@
                 <div class="meals">
                     <div class="lunch" :class="{ free: !dailyPlan.lunch }">
                         <span class="label">Lunch</span>
+                        <span
+                            v-if="dailyPlan.lunch"
+                            class="remove-label"
+                            @click="removeRecipeFromWeekPlan(index, 'lunch')"
+                        >
+                            <DeleteIcon color="white" />
+                        </span>
                         <div
                             v-if="dailyPlan.lunch"
                             class="text"
@@ -105,6 +112,13 @@
                     </div>
                     <div class="dinner" :class="{ free: !dailyPlan.dinner }">
                         <span class="label">Dinner</span>
+                        <span
+                            v-if="dailyPlan.dinner"
+                            class="remove-label"
+                            @click="removeRecipeFromWeekPlan(index, 'dinner')"
+                        >
+                            <DeleteIcon color="white" />
+                        </span>
                         <div
                             v-if="dailyPlan.dinner"
                             class="text"
@@ -439,15 +453,23 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
 }
-.meals .label {
+.meals .label,
+.meals .remove-label {
     position: absolute;
     top: 0.5rem;
-    left: 0.5rem;
     background-color: var(--main-color);
     color: var(--main-light-color);
-    padding: 4px 8px;
     border-radius: 5px;
     font-size: 0.8rem;
+}
+.meals .label {
+    left: 0.5rem;
+    padding: 4px 8px;
+}
+.meals .remove-label {
+    display: flex;
+    right: 0.5rem;
+    padding: 2px;
 }
 .meals .text {
     display: flex;

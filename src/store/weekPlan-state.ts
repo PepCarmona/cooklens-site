@@ -183,11 +183,12 @@ function addRecipeToWeekPlan(
     day: number,
     meal: keyof DailyPlan
 ) {
-    if (day < 0 || day > 6) {
-        console.error('Not valid day');
-        return;
-    }
     selectedWeekPlan.value.dailyPlans[day][meal] = recipe;
+    hasSelectedWeekPlanChanged.value = true;
+}
+
+function removeRecipeFromWeekPlan(day: number, meal: keyof DailyPlan) {
+    selectedWeekPlan.value.dailyPlans[day][meal] = undefined;
     hasSelectedWeekPlanChanged.value = true;
 }
 
@@ -226,7 +227,15 @@ function saveWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
               .finally(() => (isLoading.value = false));
 }
 
-function deleteWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
+function deleteWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> | undefined {
+    if (
+        !confirm(
+            'Are you sure you want to delete weekplan "' + weekPlan.name + '"?'
+        )
+    ) {
+        return;
+    }
+
     isLoading.value = true;
 
     return weekPlanService
@@ -268,6 +277,7 @@ export default function useWeekPlanState() {
         getWeekPlan,
         selectWeekPlan,
         addRecipeToWeekPlan,
+        removeRecipeFromWeekPlan,
         saveWeekPlan,
         deleteWeekPlan,
     };
