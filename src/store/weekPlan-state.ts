@@ -201,24 +201,27 @@ function saveWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
     return isNewWeekPlan.value
         ? weekPlanService
               .createWeekPlan(weekPlan)
-              .then((weekPlan) => {
+              .then((savedWeekPlan) => {
                   hasSelectedWeekPlanChanged.value = false;
-                  myWeekPlans.value.push(weekPlan);
-                  selectWeekPlan(weekPlan);
+                  myWeekPlans.value.push(savedWeekPlan);
+                  selectWeekPlan(savedWeekPlan);
                   isNewWeekPlan.value = false;
-                  return weekPlan;
+                  return savedWeekPlan;
               })
               .finally(() => (isLoading.value = false))
         : weekPlanService
               .updateWeekPlan(weekPlan)
-              .then((weekPlan) => {
+              .then((updatedWeekPlan) => {
                   hasSelectedWeekPlanChanged.value = false;
                   myWeekPlans.value.splice(
-                      myWeekPlans.value.indexOf(weekPlan),
+                      myWeekPlans.value.findIndex(
+                          (myWeekPlan) => myWeekPlan._id === updatedWeekPlan._id
+                      ),
                       1,
-                      weekPlan
+                      updatedWeekPlan
                   );
-                  return weekPlan;
+                  selectWeekPlan(updatedWeekPlan);
+                  return updatedWeekPlan;
               })
               .finally(() => (isLoading.value = false));
 }
@@ -228,10 +231,15 @@ function deleteWeekPlan(weekPlan: WeekPlan): Promise<WeekPlan> {
 
     return weekPlanService
         .deleteWeekPlan(weekPlan)
-        .then((weekPlan) => {
+        .then((deletedWeekPlan) => {
             selectWeekPlan(undefined);
-            myWeekPlans.value.splice(myWeekPlans.value.indexOf(weekPlan), 1);
-            return weekPlan;
+            myWeekPlans.value.splice(
+                myWeekPlans.value.findIndex(
+                    (myWeekPlan) => myWeekPlan._id === deletedWeekPlan._id
+                ),
+                1
+            );
+            return deletedWeekPlan;
         })
         .finally(() => (isLoading.value = false));
 }
