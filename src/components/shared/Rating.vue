@@ -7,8 +7,8 @@
                 @click="rate(rating)"
                 :class="{ disabled: onlyDisplay }"
             >
-                <FilledStar v-if="recipeRating >= rating" :size="size" />
-                <EmptyStar v-else :size="size" />
+                <i v-if="recipeRating >= rating" class="las la-star"></i>
+                <i v-else class="lar la-star"></i>
             </button>
         </div>
         <div v-if="clicked && showComment" class="comment">
@@ -23,10 +23,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import {
-    EOS_STAR_FILLED as FilledStar,
-    EOS_STAR_OUTLINED as EmptyStar,
-} from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'Rating',
@@ -46,11 +42,6 @@ export default defineComponent({
         },
         onlyDisplay: Boolean,
         showComment: Boolean,
-    },
-
-    components: {
-        FilledStar,
-        EmptyStar,
     },
 
     emits: ['rate'],

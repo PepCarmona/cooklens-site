@@ -1,20 +1,15 @@
 <template>
     <div class="modalContent">
         <span class="mb-1"><slot /></span>
-        <LoadingSpinner class="m-auto" size="xxxl" />
+        <i class="las la-circle-notch m-auto"></i>
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'LoadingModal',
-
-    components: {
-        LoadingSpinner,
-    },
 
     setup() {
         return {};

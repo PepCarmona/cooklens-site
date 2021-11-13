@@ -7,19 +7,19 @@
         <router-link :to="{ name: 'myRecipes' }">
             <button>
                 <span>My Recipes</span>
-                <ArrowIcon />
+                <i class="las la-arrow-right"></i>
             </button>
         </router-link>
         <router-link :to="{ name: 'favRecipes' }">
             <button>
                 <span>Favorite Recipes</span>
-                <ArrowIcon />
+                <i class="las la-arrow-right"></i>
             </button>
         </router-link>
         <router-link :to="{ name: 'myWeekPlan' }">
             <button>
                 <span>My Week Plans</span>
-                <ArrowIcon />
+                <i class="las la-arrow-right"></i>
             </button>
         </router-link>
     </div>
@@ -28,14 +28,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import useAuthState from '@/store/auth-state';
-import { EOS_ARROW_FORWARD_OUTLINED as ArrowIcon } from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'Profile',
-
-    components: {
-        ArrowIcon,
-    },
 
     setup() {
         const { authenticatedUser } = useAuthState();
@@ -61,5 +56,8 @@ export default defineComponent({
 }
 .links button > *:last-child {
     margin-left: 0.5rem;
+}
+.la-arrow-right {
+    font-size: 16px;
 }
 </style>

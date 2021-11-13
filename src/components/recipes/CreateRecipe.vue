@@ -123,8 +123,7 @@
                                 class="close"
                                 @click="deleteIngredient(index)"
                             >
-                                <CloseIcon class="default" />
-                                <CloseIcon class="hover" color="red" />
+                                <i class="las la-times"></i>
                             </button>
                         </div>
                     </div>
@@ -132,8 +131,7 @@
 
                 <div class="row d-flex-center">
                     <button class="add" @click="addIngredient">
-                        <AddCircleIcon class="default" size="l" />
-                        <AddCircleFilledIcon class="hover" size="l" />
+                        <i class="las la-plus-circle"></i>
                     </button>
                 </div>
             </div>
@@ -161,16 +159,14 @@
                     />
                     <div class="w-10 d-flex-center">
                         <button class="close" @click="deleteStep(index)">
-                            <CloseIcon class="default" />
-                            <CloseIcon class="hover" color="red" />
+                            <i class="las la-times"></i>
                         </button>
                     </div>
                 </div>
             </div>
             <div class="row d-flex-center">
                 <button class="add" @click="addStep">
-                    <AddCircleIcon class="default" size="l" />
-                    <AddCircleFilledIcon class="hover" size="l" />
+                    <i class="las la-plus-circle"></i>
                 </button>
             </div>
         </div>
@@ -188,16 +184,14 @@
                         v-model="tag.value"
                         type="text"
                     />
-                    <button class="close" @click="deleteTag(index)">
-                        <CloseIcon class="default" color="white" />
-                        <CloseIcon class="hover" color="red" />
+                    <button class="close tag" @click="deleteTag(index)">
+                        <i class="las la-times"></i>
                     </button>
                 </div>
             </div>
             <div class="ml-05">
                 <button class="add" @click="addTag">
-                    <AddCircleIcon class="default" size="l" />
-                    <AddCircleFilledIcon class="hover" size="l" />
+                    <i class="las la-plus-circle"></i>
                 </button>
             </div>
         </div>
@@ -243,11 +237,6 @@ import {
     reactive,
     ref,
 } from 'vue';
-import {
-    EOS_CLOSE_OUTLINED as CloseIcon,
-    EOS_ADD_CIRCLE_OUTLINED as AddCircleIcon,
-    EOS_ADD_CIRCLE_FILLED as AddCircleFilledIcon,
-} from 'eos-icons-vue3';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/recipes/ImportRecipe.vue';
 import useRecipeState from '@/store/recipe-state';
@@ -262,9 +251,6 @@ export default defineComponent({
     },
 
     components: {
-        CloseIcon,
-        AddCircleIcon,
-        AddCircleFilledIcon,
         CustomNumberInput,
         ImportRecipe,
     },
@@ -559,16 +545,12 @@ button.close:hover,
 button.close:focus {
     background-color: transparent;
 }
-button.close > .hover {
-    display: none;
+button.close.tag > i {
+    color: white;
 }
-button.close:hover > .default,
-button.close:focus > .default {
-    display: none;
-}
-button.close:hover > .hover,
-button.close:focus > .hover {
-    display: flex;
+button.close:hover > i,
+button.close:focus > i {
+    color: var(--error-color);
 }
 
 button.add {
@@ -577,17 +559,6 @@ button.add {
 button.add:hover,
 button.add:focus {
     background-color: transparent;
-}
-button.add > .hover {
-    display: none;
-}
-button.add:hover > .default,
-button.add:focus > .default {
-    display: none;
-}
-button.add:hover > .hover,
-button.add:focus > .hover {
-    display: flex;
 }
 button.save {
     background-color: var(--main-color);

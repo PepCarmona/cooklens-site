@@ -1,6 +1,8 @@
 <template>
     <div class="row align-center justify-center">
-        <button @click="back" class="back"><ArrowBackIcon size="l" /></button>
+        <button @click="back" class="back">
+            <i class="las la-arrow-left"></i>
+        </button>
         <h2>My Favorite Recipes</h2>
     </div>
     <LoadingModal v-if="isLoading" />
@@ -12,7 +14,6 @@ import { defineComponent, onBeforeMount } from 'vue';
 
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
-import { EOS_WEST as ArrowBackIcon } from 'eos-icons-vue3';
 
 import useUserState from '@/store/user-state';
 import { useRouter } from 'vue-router';
@@ -23,7 +24,6 @@ export default defineComponent({
     components: {
         LoadingModal,
         RecipeList,
-        ArrowBackIcon,
     },
 
     setup() {

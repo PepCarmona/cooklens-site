@@ -1,7 +1,7 @@
 <template>
     <div class="title">
         <button @click="back" class="back">
-            <ArrowBackIcon size="l" />
+            <i class="las la-arrow-left"></i>
         </button>
         <h2>My Recipes</h2>
     </div>
@@ -9,7 +9,7 @@
         <router-link :to="{ name: 'CreateRecipe' }">
             <button>
                 <span>Create Recipe</span>
-                <AddIcon />
+                <i class="las la-plus"></i>
             </button>
         </router-link>
     </div>
@@ -21,7 +21,6 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
-import { EOS_WEST as ArrowBackIcon, EOS_ADD as AddIcon } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useUserState from '@/store/user-state';
 
@@ -31,8 +30,6 @@ export default defineComponent({
     components: {
         LoadingModal,
         RecipeList,
-        ArrowBackIcon,
-        AddIcon,
     },
 
     setup() {

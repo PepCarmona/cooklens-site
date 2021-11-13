@@ -1,43 +1,46 @@
 <template>
     <footer>
         <div class="slide-footer" :class="{ hidden: !showFooter }">
-            <ArrowDownIcon
+            <i
                 v-if="showFooter"
+                class="las la-angle-down"
+                style="color: white"
                 @click="
                     selectedShowFooter = false;
                     showFooter = false;
                 "
-                color="white"
-                size="xl"
-            />
-            <ArrowUpIcon
+            ></i>
+            <i
                 v-else
-                class="mb-05 pt-05"
+                class="las la-angle-up mb-05 pt-05"
+                style="color: white"
                 @click="
                     selectedShowFooter = true;
                     showFooter = true;
                 "
-                color="white"
-                size="xl"
-            />
+            ></i>
         </div>
 
         <transition name="slide">
             <div v-if="showFooter" id="mobile-sticky-footer">
                 <div>
                     <router-link to="/">
-                        <HomeIcon size="xl" />
+                        <i class="las la-home"></i>
                     </router-link>
                 </div>
                 <div>
-                    <FavIcon size="xl" />
+                    <router-link to="/profile/favRecipes">
+                        <i class="lar la-heart"></i>
+                    </router-link>
                 </div>
                 <div>
-                    <MealPlanIcon size="xl" />
+                    <router-link to="/profile/myWeekPlan">
+                        <i class="las la-calendar-week"></i>
+                    </router-link>
                 </div>
                 <div>
                     <router-link to="/profile">
-                        <ProfileIcon size="xl" />
+                        <i class="las la-user-circle"></i>
                     </router-link>
                 </div>
             </div>
@@ -47,26 +50,9 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import {
-    EOS_HOME_OUTLINED as HomeIcon,
-    EOS_FAVORITE_OUTLINED as FavIcon,
-    EOS_DATE_RANGE_OUTLINED as MealPlanIcon,
-    EOS_PERSON_PIN_OUTLINED as ProfileIcon,
-    EOS_KEYBOARD_ARROW_UP_OUTLINED as ArrowUpIcon,
-    EOS_KEYBOARD_ARROW_DOWN_OUTLINED as ArrowDownIcon,
-} from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'Footer',
-
-    components: {
-        HomeIcon,
-        FavIcon,
-        MealPlanIcon,
-        ProfileIcon,
-        ArrowUpIcon,
-        ArrowDownIcon,
-    },
 
     setup() {
         const showFooter = ref(true);

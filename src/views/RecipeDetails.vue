@@ -19,7 +19,7 @@
                             v-if="isOwnedRecipe"
                             @click="showEditRecipe = true"
                         >
-                            <EditIcon size="l" color="grey" />
+                            <i class="las la-pen" style="color: grey"></i>
                         </button>
                     </div>
                     <div
@@ -60,18 +60,28 @@
                             :class="{ responsive: recipeHasImages }"
                         >
                             <button @click="toggleFavRecipe(recipe)">
-                                <FavFilledIcon
+                                <i
                                     v-if="isFavoriteRecipe(recipe)"
-                                    size="l"
-                                    color="grey"
-                                />
-                                <FavIcon v-else size="l" color="grey" />
+                                    class="las la-heart"
+                                    style="color: grey"
+                                ></i>
+                                <i
+                                    v-else
+                                    class="lar la-heart"
+                                    style="color: grey"
+                                ></i>
                             </button>
                             <button>
-                                <CalendarIcon size="l" color="grey" />
+                                <i
+                                    class="las la-calendar-week"
+                                    style="color: grey"
+                                ></i>
                             </button>
                             <button>
-                                <ShareIcon size="l" color="grey" />
+                                <i
+                                    class="las la-share-alt"
+                                    style="color: grey"
+                                ></i>
                             </button>
                         </div>
                     </div>
@@ -105,7 +115,7 @@
                         </li>
                         <li><b>Servings:</b> {{ recipe.servings }}</li>
                         <div class="icon">
-                            <ClockIcon size="xl" color="grey" />
+                            <i class="las la-clock" style="color: grey"></i>
                         </div>
                     </ul>
                     <div class="section-title">
@@ -180,14 +190,6 @@ import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
-import {
-    EOS_MODE_EDIT_OUTLINED as EditIcon,
-    EOS_FAVORITE_OUTLINED as FavIcon,
-    EOS_FAVORITE_FILLED as FavFilledIcon,
-    EOS_SHARE as ShareIcon,
-    EOS_TODAY_OUTLINED as CalendarIcon,
-    EOS_SCHEDULE_OUTLINED as ClockIcon,
-} from 'eos-icons-vue3';
 import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
@@ -211,12 +213,6 @@ export default defineComponent({
         CustomModal,
         LoadingModal,
         CustomNumberInput,
-        EditIcon,
-        FavIcon,
-        FavFilledIcon,
-        CalendarIcon,
-        ShareIcon,
-        ClockIcon,
         CreateRecipe,
         Rating,
     },

@@ -7,7 +7,7 @@
             <router-link to="/">Cooklens</router-link>
         </div>
         <div v-if="isMobile" id="menu-mobile" class="menu">
-            <span @click="showMenu = true"><MenuIcon size="l" /></span>
+            <span @click="showMenu = true"><i class="las la-bars"></i></span>
             <div class="slide-menu-mobile">
                 <transition name="fade">
                     <div v-if="showMenu" class="overlay"></div>
@@ -19,9 +19,9 @@
                     >
                         <div>
                             <span class="menuTitle">MENU</span>
-                            <span class="menuClose" @click="showMenu = false"
-                                ><CloseIcon size="xl"
-                            /></span>
+                            <span class="menuClose" @click="showMenu = false">
+                                <i class="las la-times"></i>
+                            </span>
                             <div class="items">
                                 <!-- <router-link @click="showMenu = false" to="/"
                                     >Home</router-link
@@ -89,20 +89,11 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from 'vue';
-import {
-    EOS_MENU as MenuIcon,
-    EOS_CLOSE_OUTLINED as CloseIcon,
-} from 'eos-icons-vue3';
 import useAuthState from '@/store/auth-state';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Header',
-
-    components: {
-        MenuIcon,
-        CloseIcon,
-    },
 
     setup() {
         const router = useRouter();

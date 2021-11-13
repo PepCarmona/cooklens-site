@@ -1,7 +1,11 @@
 <template>
     <div class="input-container" :class="{ slim }">
         <div class="arrow" :class="{ disabled: valueIsMin }">
-            <ArrowLeftIcon @click="removeToValue" color="white" />
+            <i
+                @click="removeToValue"
+                class="las la-angle-left"
+                style="color: white"
+            ></i>
         </div>
         <div class="input-container inner" :class="{ slim }">
             <input
@@ -20,18 +24,17 @@
             <label v-if="label" :for="id">{{ label }}</label>
         </div>
         <div class="arrow" :class="{ disabled: valueIsMax }">
-            <ArrowRightIcon @click="addToValue" color="white" />
+            <i
+                @click="addToValue"
+                class="las la-angle-right"
+                style="color: white"
+            ></i>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue';
-
-import {
-    EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
-    EOS_KEYBOARD_ARROW_LEFT_OUTLINED as ArrowLeftIcon,
-} from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'CustomNumberInput',
@@ -55,11 +58,6 @@ export default defineComponent({
         label: String,
         slim: Boolean,
         emptyIf0: Boolean,
-    },
-
-    components: {
-        ArrowRightIcon,
-        ArrowLeftIcon,
     },
 
     emits: ['update:modelValue'],

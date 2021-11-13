@@ -1,7 +1,7 @@
 <template>
     <div class="title">
         <button @click="back" class="back">
-            <ArrowBackIcon size="l" />
+            <i class="las la-arrow-left"></i>
         </button>
         <h2>My Week Plan</h2>
     </div>
@@ -14,7 +14,7 @@
                     placeholder="New Week Plan"
                 />
                 <div class="dropDown__button" @click="isDropped = !isDropped">
-                    <ArrowDropDownIcon size="l" />
+                    <i class="las la-caret-down" style="font-size: 16px"></i>
                 </div>
             </div>
             <div
@@ -54,7 +54,7 @@
             :class="{ disabled: !hasSelectedWeekPlanChanged || !isNameValid }"
             @click="saveWeekPlan(selectedWeekPlan)"
         >
-            <SaveIcon />
+            <i class="las la-save"></i>
             <span>Save</span>
         </button>
         <button
@@ -62,7 +62,7 @@
             :class="{ disabled: isNewWeekPlan }"
             @click="deleteWeekPlan(selectedWeekPlan)"
         >
-            <DeleteIcon color="#d00000" />
+            <i class="las la-trash-alt"></i>
             <span>Delete</span>
         </button>
     </div>
@@ -84,7 +84,10 @@
                             class="remove-label"
                             @click="removeRecipeFromWeekPlan(index, 'lunch')"
                         >
-                            <DeleteIcon color="white" />
+                            <i
+                                class="las la-trash-alt"
+                                style="color: white"
+                            ></i>
                         </span>
                         <div
                             v-if="dailyPlan.lunch"
@@ -107,7 +110,7 @@
                             class="add"
                             @click="showRecipeList('lunch', index)"
                         >
-                            <AddIcon size="xl" />
+                            <i class="las la-plus" style="font-size: 48px"></i>
                         </div>
                     </div>
                     <div class="dinner" :class="{ free: !dailyPlan.dinner }">
@@ -117,7 +120,10 @@
                             class="remove-label"
                             @click="removeRecipeFromWeekPlan(index, 'dinner')"
                         >
-                            <DeleteIcon color="white" />
+                            <i
+                                class="las la-trash-alt"
+                                style="color: white"
+                            ></i>
                         </span>
                         <div
                             v-if="dailyPlan.dinner"
@@ -140,7 +146,7 @@
                             class="add"
                             @click="showRecipeList('dinner', index)"
                         >
-                            <AddIcon size="xl" />
+                            <i class="las la-plus" style="font-size: 48px"></i>
                         </div>
                     </div>
                 </div>
@@ -156,7 +162,7 @@
         <div class="recipeList" v-if="modalMode === 'recipeList'">
             <div class="closeModal-container">
                 <button class="closeModal" @click="modalMode = null">
-                    <CloseIcon size="l" />
+                    <i class="las la-times"></i>
                 </button>
             </div>
             <button
@@ -187,10 +193,10 @@
                     class="closeModal"
                     @click="modalMode = 'recipeList'"
                 >
-                    <ArrowBackIcon size="l" />
+                    <i class="las la-arrow-left"></i>
                 </button>
                 <button v-else class="closeModal" @click="modalMode = null">
-                    <CloseIcon size="l" />
+                    <i class="las la-times"></i>
                 </button>
             </div>
             <RecipeDetails :id="detailedRecipe._id" minified />
@@ -198,7 +204,7 @@
         <div class="createRecipe" v-if="modalMode === 'createRecipe'">
             <div class="closeModal-container">
                 <button class="closeModal" @click="modalMode = 'recipeList'">
-                    <CloseIcon size="l" />
+                    <i class="las la-times"></i>
                 </button>
             </div>
             <CreateRecipe
@@ -213,14 +219,6 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import {
-    EOS_WEST as ArrowBackIcon,
-    EOS_ARROW_DROP_DOWN as ArrowDropDownIcon,
-    EOS_ADD as AddIcon,
-    EOS_CLOSE as CloseIcon,
-    EOS_SAVE_OUTLINED as SaveIcon,
-    EOS_DELETE_OUTLINED as DeleteIcon,
-} from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
 import useWeekPlanState, { weekDays } from '@/store/weekPlan-state';
@@ -230,7 +228,6 @@ import { Meals } from '@/api/types/weekPlan';
 import { Recipe } from '@/api/types/recipe';
 import RecipeDetails from '@/views/RecipeDetails.vue';
 import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
-import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
 
 type modalModes = 'recipeList' | 'recipeDetails' | 'createRecipe' | null;
 
@@ -238,12 +235,6 @@ export default defineComponent({
     name: 'MyWeekPlan',
 
     components: {
-        ArrowBackIcon,
-        ArrowDropDownIcon,
-        AddIcon,
-        CloseIcon,
-        SaveIcon,
-        DeleteIcon,
         CustomModal,
         RecipeList,
         RecipeDetails,
@@ -374,6 +365,9 @@ export default defineComponent({
 }
 .remove:hover {
     background-color: var(--light-error-color);
+}
+.remove > i {
+    color: var(--error-color);
 }
 
 .errors {

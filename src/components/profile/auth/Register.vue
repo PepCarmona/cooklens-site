@@ -28,7 +28,7 @@
 
         <button @click="register" :disabled="isLoading">
             <span v-if="isLoading">
-                <LoadingSpinner />
+                <i class="las la-circle-notch"></i>
             </span>
             <span v-else>Register</span>
         </button>
@@ -44,15 +44,10 @@
 import { defineComponent, ref } from 'vue';
 import { User, UserClass } from '@/api/types/user';
 import useAuthState from '@/store/auth-state';
-import { EOS_LOADING_ANIMATED as LoadingSpinner } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Register',
-
-    components: {
-        LoadingSpinner,
-    },
 
     setup() {
         const router = useRouter();

@@ -16,16 +16,16 @@
             <div class="row">
                 <div class="title">{{ recipe.title }}</div>
                 <div v-if="authenticatedUser" class="fav">
-                    <FavFilledIcon
+                    <i
                         v-if="isFavoriteRecipe(recipe)"
                         @click.stop="toggleFavRecipe(recipe)"
-                        size="l"
-                    />
-                    <FavIcon
+                        class="las la-heart"
+                    ></i>
+                    <i
                         v-else
                         @click.stop="toggleFavRecipe(recipe)"
-                        size="l"
-                    />
+                        class="lar la-heart"
+                    ></i>
                 </div>
             </div>
             <div class="row mt-2">
@@ -37,7 +37,7 @@
                     />
                 </div>
                 <div class="w-50 d-flex justify-end align-center">
-                    <ClockIcon size="l" />
+                    <i class="las la-clock"></i>
                     <span class="ml-05">{{ formattedTime }}</span>
                 </div>
             </div>
@@ -57,7 +57,7 @@
             </button>
             <button class="addToWeekPlan" @click="selectRecipe">
                 Add to this week plan
-                <ArrowIcon />
+                <i class="las la-arrow-right" style="font-size: 16px"></i>
             </button>
         </div>
     </div>
@@ -66,12 +66,6 @@
 <script lang="ts">
 import { Recipe } from '@/api/types/recipe';
 import { computed, defineComponent, PropType } from 'vue';
-import {
-    EOS_FAVORITE_OUTLINED as FavIcon,
-    EOS_FAVORITE_FILLED as FavFilledIcon,
-    EOS_SCHEDULE_OUTLINED as ClockIcon,
-    EOS_ARROW_FORWARD as ArrowIcon,
-} from 'eos-icons-vue3';
 import Rating from '@/components/shared/Rating.vue';
 import useAuthState from '@/store/auth-state';
 import useUserState from '@/store/user-state';
@@ -82,10 +76,6 @@ export default defineComponent({
     name: 'RecipeCard',
 
     components: {
-        FavIcon,
-        FavFilledIcon,
-        ClockIcon,
-        ArrowIcon,
         Rating,
     },
 

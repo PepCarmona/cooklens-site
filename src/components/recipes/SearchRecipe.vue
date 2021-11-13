@@ -11,7 +11,7 @@
             :value="searchQuery.text"
         />
         <button @click="doSearch()" class="searchButton p-05">
-            <SearchIcon size="xl" color="white" />
+            <i class="las la-search" style="color: white"></i>
         </button>
     </div>
 
@@ -40,16 +40,11 @@
 <script lang="ts">
 import { SearchType } from '@/api/types/recipe';
 import { defineComponent, onMounted, ref } from 'vue';
-import { EOS_SEARCH as SearchIcon } from 'eos-icons-vue3';
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
 
 export default defineComponent({
     name: 'SearchRecipe',
-
-    components: {
-        SearchIcon,
-    },
 
     emits: ['doSearch'],
 

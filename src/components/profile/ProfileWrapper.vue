@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoading"><LoadingIcon size="xxl" /></div>
+    <div v-if="isLoading"><i class="las la-circle-notch"></i></div>
     <div v-else-if="authenticatedUser">
         <router-view></router-view>
     </div>
@@ -9,14 +9,9 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import useAuthState from '@/store/auth-state';
 import { useRouter } from 'vue-router';
-import { EOS_LOADING_ANIMATED as LoadingIcon } from 'eos-icons-vue3';
 
 export default defineComponent({
     name: 'ProfileWrapper',
-
-    components: {
-        LoadingIcon,
-    },
 
     setup() {
         const router = useRouter();

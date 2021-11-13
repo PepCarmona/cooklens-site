@@ -7,7 +7,7 @@
                 class="mr-05"
                 title="previous page"
             >
-                <ArrowLeftIcon size="xl" />
+                <i class="las la-angle-left"></i>
             </button>
             <div
                 v-if="currentPage"
@@ -31,7 +31,7 @@
                 class="ml-05"
                 title="next page"
             >
-                <ArrowRightIcon size="xl" />
+                <i class="las la-angle-right"></i>
             </button>
         </div>
     </div>
@@ -39,10 +39,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import {
-    EOS_KEYBOARD_ARROW_RIGHT_OUTLINED as ArrowRightIcon,
-    EOS_KEYBOARD_ARROW_LEFT_OUTLINED as ArrowLeftIcon,
-} from 'eos-icons-vue3';
 import usePaginationState from '@/store/pagination-state';
 
 export default defineComponent({
@@ -50,11 +46,6 @@ export default defineComponent({
 
     props: {
         nextPageExists: Boolean,
-    },
-
-    components: {
-        ArrowRightIcon,
-        ArrowLeftIcon,
     },
 
     emits: ['previousPage', 'nextPage'],
@@ -75,6 +66,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+i {
+    font-size: 16px;
+}
 .pagination-container {
     width: 100%;
     display: flex;
