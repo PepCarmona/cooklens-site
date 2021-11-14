@@ -124,7 +124,9 @@ export default defineComponent({
     flex-wrap: wrap;
     justify-content: space-around;
     padding: 1rem;
-    background-color: var(--background-color);
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .card-container.column {
     flex-direction: column;
@@ -143,11 +145,6 @@ export default defineComponent({
 
 @media only screen and (min-width: 906px) {
     .card-container:not(.thin) > .card:nth-child(2) {
-        margin-top: 0;
-    }
-}
-@media only screen and (min-width: 1350px) {
-    .card-container:not(.thin) > .card:nth-child(3) {
         margin-top: 0;
     }
 }

@@ -25,7 +25,8 @@
     --border-color: #E1E2E3;
 
     --main-text-color: #000000;
-    --secondary-text-color: #636773;
+    --grey-600: #B3B4BA;
+    --grey-800: #636773;
 
     --title-font: 'Roboto Slab', serif;
     --main-text-font: 'Roboto', sans-serif;

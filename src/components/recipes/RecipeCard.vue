@@ -194,7 +194,6 @@ export default defineComponent({
     margin-top: 2rem;
     justify-content: flex-end;
     align-self: flex-end;
-    color: var(--secondary-text-color);
 }
 .fav {
     margin-left: 2rem;
@@ -218,6 +217,10 @@ export default defineComponent({
 .details span {
     font-size: 18px;
     margin-left: 0.5rem;
+    color: var(--grey-800);
+}
+.details i {
+    color: var(--grey-600);
 }
 .time {
     display: flex;

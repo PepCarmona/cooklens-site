@@ -122,10 +122,8 @@ export default defineComponent({
 
 <style scoped>
 .search {
-    background-color: var(--secondary-color);
-    padding: 2rem;
+    padding: 1rem;
     padding-top: calc(2rem + 50px);
-    padding-bottom: 1rem;
     margin-top: -50px;
 }
 

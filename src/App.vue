@@ -40,6 +40,8 @@ body * {
     text-align: center;
     color: var(--text-main-color);
     padding-bottom: 50px;
+    background-color: var(--background-color);
+    min-height: 100vh;
 }
 @media only screen and (min-width: 769px) {
     #app {

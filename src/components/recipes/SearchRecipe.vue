@@ -1,17 +1,20 @@
 <template>
-    <div class="d-flex w-100 searchRow">
+    <div class="d-flex w-100 searchRow" :class="{ focus: isFocus }">
         <input
             @input="changeSearchText"
             @keypress="autoSearch"
+            @focus="isFocus = true"
+            @blur="isFocus = false"
             ref="searchInput"
             type="text"
             id="search"
             class="w-100"
             :placeholder="'Search by ' + searchQuery.type"
             :value="searchQuery.text"
+            autocomplete="off"
         />
-        <button @click="doSearch()" class="searchButton p-05">
-            <i class="las la-search" style="color: white"></i>
+        <button @click="doSearch()" class="searchButton">
+            <i class="las la-search"></i>
         </button>
     </div>
 
@@ -54,6 +57,8 @@ export default defineComponent({
         const router = useRouter();
 
         const searchInput = ref<HTMLInputElement>();
+
+        const isFocus = ref(false);
 
         onMounted(() => {
             searchInput.value?.focus();
@@ -106,6 +111,7 @@ export default defineComponent({
             changeSearchType,
             updateQueryString,
             searchInput,
+            isFocus,
             autoSearch,
             searchQuery,
             changeSearchText,
@@ -115,27 +121,32 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.searchRow {
+    position: relative;
+    background-color: var(--background-contrast-color);
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    /* background: linear-gradient(45deg, #f9fffd 20%, #c8f5e6 100%); */
+}
 input {
     /* background: rgba(255, 255, 255, 0.4);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px); */
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-    padding: 0.5rem;
+    background-color: transparent;
+    padding: 1rem;
     border: none;
     outline: none;
 }
-input:focus {
-    box-shadow: 0 0 5px var(--main-dark-color);
-}
-input:focus + button {
-    box-shadow: 0 0 4px var(--main-dark-color);
-}
 .searchButton {
-    background-color: var(--main-color) !important;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.searchButton > i {
+    color: var(--accent-color);
+    font-size: 24px;
 }
 
 .switchSearch {
@@ -145,11 +156,23 @@ input:focus + button {
     margin-top: 0.5rem;
 }
 .switchSearch > button {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
     text-decoration: underline;
+    font-size: 14px;
+    color: var(--grey-800);
 }
 .switchSearch > button:first-child {
     margin-right: 2rem;
+    margin-left: 1rem;
+}
+
+@media only screen and (min-width: 768px) {
+    .searchRow {
+        width: 600px;
+    }
+    .searchRow,
+    .switchSearch {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 </style>
