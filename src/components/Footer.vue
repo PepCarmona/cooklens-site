@@ -1,118 +1,95 @@
 <template>
     <footer>
-        <div class="slide-footer" :class="{ hidden: !showFooter }">
-            <i
-                v-if="showFooter"
-                class="las la-angle-down"
-                style="color: white"
-                @click="
-                    selectedShowFooter = false;
-                    showFooter = false;
-                "
-            ></i>
-            <i
-                v-else
-                class="las la-angle-up mb-05 pt-05"
-                style="color: white"
-                @click="
-                    selectedShowFooter = true;
-                    showFooter = true;
-                "
-            ></i>
+        <div class="add-recipe">
+            <i class="las la-plus mb-05 pt-05" style="color: white"></i>
         </div>
-
-        <transition name="slide">
-            <div v-if="showFooter" id="mobile-sticky-footer">
-                <div>
-                    <router-link to="/">
-                        <i class="las la-home"></i>
-                    </router-link>
-                </div>
-                <div>
-                    <router-link to="/profile/favRecipes">
-                        <i class="lar la-heart"></i>
-                    </router-link>
-                </div>
-                <div>
-                    <router-link to="/profile/myWeekPlan">
-                        <i class="las la-calendar-week"></i>
-                    </router-link>
-                </div>
-                <div>
-                    <router-link to="/profile">
-                        <i class="las la-user-circle"></i>
-                    </router-link>
-                </div>
+        <div id="mobile-sticky-footer">
+            <div>
+                <router-link to="/">
+                    <i
+                        class="las la-home"
+                        :class="{ current: routeName === 'Home' }"
+                    ></i>
+                </router-link>
             </div>
-        </transition>
+            <div class="mr-2">
+                <router-link to="/recipes">
+                    <i
+                        class="las la-search"
+                        :class="{ current: routeName === 'RecipesMainView' }"
+                    ></i>
+                </router-link>
+            </div>
+            <div class="ml-2">
+                <router-link to="/profile/myWeekPlan">
+                    <i
+                        class="las la-calendar-week"
+                        :class="{ current: routeName === 'myWeekPlan' }"
+                    ></i>
+                </router-link>
+            </div>
+            <div>
+                <router-link to="/profile">
+                    <i
+                        class="las la-user-circle"
+                        :class="{ current: routeName === 'Profile' }"
+                    ></i>
+                </router-link>
+            </div>
+        </div>
     </footer>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
     name: 'Footer',
 
     setup() {
-        const showFooter = ref(true);
-
-        const selectedShowFooter = ref(true);
-
-        onMounted(() =>
-            window.addEventListener('resize', () => {
-                if (window.innerHeight < 450) {
-                    showFooter.value = false;
-                }
-                if (window.innerHeight >= 450 && selectedShowFooter.value) {
-                    showFooter.value = true;
-                }
-            })
-        );
+        const route = useRoute();
+        const routeName = computed(() => route.name);
         return {
-            showFooter,
-            selectedShowFooter,
+            routeName,
         };
     },
 });
 </script>
 
 <style scoped>
-.slide-footer {
+i {
+    color: black;
+}
+i.current {
+    color: var(--accent-color);
+}
+.add-recipe {
     position: fixed;
+    bottom: 1rem;
     left: 50%;
-    bottom: 50px;
-    background-color: var(--main-color);
-    border-radius: 50px;
-    height: 40px;
-    width: 40px;
+    transform: translateX(-50%);
+    background-color: var(--accent-color);
+    border-radius: 60px;
+    height: 60px;
+    width: 60px;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    transform: translate(-50%, 50%);
-    z-index: 11;
-}
-.slide-footer.hidden {
-    bottom: 0;
-    transform: translate(-50%, 0);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    height: 25px;
+    z-index: 9;
 }
 
 #mobile-sticky-footer {
     display: flex;
     width: 100%;
-    height: 50px;
+    height: 55px;
     align-items: center;
     position: fixed;
     bottom: 0;
     left: 0;
-    box-shadow: 0 0 3px 1px grey;
-    background-color: var(--main-transparent-color);
-    /* border-top-right-radius: 20px;
-    border-top-left-radius: 20px; */
+    background-color: var(--background-contrast-color);
+    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
 }
 #mobile-sticky-footer > div {
     display: flex;
@@ -126,18 +103,9 @@ export default defineComponent({
     width: 100%;
 }
 
-.slide-enter-active,
-.slide-leave-active {
-    transition: transform 0.6s;
-}
-.slide-leave-to,
-.slide-enter-from {
-    transform: translateY(60px);
-}
-
 @media only screen and (min-width: 769px) {
     #mobile-sticky-footer,
-    .slide-footer {
+    .add-recipe {
         display: none;
     }
 }

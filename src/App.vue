@@ -39,7 +39,7 @@ body * {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: var(--text-main-color);
-    padding-bottom: 50px;
+    padding-bottom: 100px;
     background-color: var(--background-color);
     min-height: 100vh;
 }
