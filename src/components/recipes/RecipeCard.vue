@@ -4,17 +4,25 @@
         :class="{ pointer: !isWeekPlan }"
         @click="checkOpenRecipeDetails"
     >
-        <div v-if="!isWeekPlan" class="image">
-            <img
+        <template v-if="!isWeekPlan">
+            <!-- <div
                 v-if="!recipe.images || !recipe.images.length > 0"
-                src="https://via.placeholder.com/400x300.webp"
+                class="image"
+                :style="`background: url(https://via.placeholder.com/400x300.webp) center center / cover;`"
                 :alt="recipe.title"
-            />
-            <img v-else :src="recipe.images[0]" height="300" width="400" />
-        </div>
+            ></div> -->
+            <div
+                v-if="recipe.images && recipe.images.length > 0"
+                class="image"
+                :style="`background: url(${recipe.images[0]}) center center / cover;`"
+                :alt="recipe.title"
+            ></div>
+        </template>
         <div class="content d-flex p-1">
-            <div class="row">
-                <div class="title">{{ recipe.title }}</div>
+            <div class="head">
+                <div class="title">
+                    {{ recipe.title }}
+                </div>
                 <div v-if="authenticatedUser" class="fav">
                     <i
                         v-if="isFavoriteRecipe(recipe)"
@@ -28,20 +36,17 @@
                     ></i>
                 </div>
             </div>
-            <div class="row mt-2">
+
+            <div class="details">
                 <div class="rating">
-                    <Rating
-                        onlyDisplay
-                        :recipeRating="recipe.rating"
-                        :size="'l'"
-                    />
+                    <i class="lar la-star"></i> <span>{{ recipe.rating }}</span>
                 </div>
-                <div class="w-50 d-flex justify-end align-center">
+                <div class="time">
                     <i class="las la-clock"></i>
-                    <span class="ml-05">{{ formattedTime }}</span>
+                    <span>{{ formattedTime }}</span>
                 </div>
             </div>
-            <div class="row">
+            <div v-if="recipe.tags && recipe.tags.length > 0" class="row">
                 <div
                     class="pill mx-05"
                     v-for="tag in recipe.tags"
@@ -66,7 +71,6 @@
 <script lang="ts">
 import { Recipe } from '@/api/types/recipe';
 import { computed, defineComponent, PropType } from 'vue';
-import Rating from '@/components/shared/Rating.vue';
 import useAuthState from '@/store/auth-state';
 import useUserState from '@/store/user-state';
 import useRecipeState from '@/store/recipe-state';
@@ -74,10 +78,6 @@ import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'RecipeCard',
-
-    components: {
-        Rating,
-    },
 
     props: {
         recipe: {
@@ -156,44 +156,74 @@ export default defineComponent({
 <style scoped>
 .card {
     max-width: 400px;
-    border: 1px solid var(--main-color);
     margin-top: 1rem;
     margin-bottom: 1rem;
+    background-color: var(--background-contrast-color);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    height: fit-content;
 }
 .card.pointer {
     cursor: pointer;
 }
 
-.image > img {
-    width: 100%;
+.image {
+    height: 280px;
+    border-radius: 1rem;
+    margin: 1rem;
+    margin-bottom: 0;
 }
 .content {
     flex-wrap: wrap;
+    min-height: 180px;
+}
+.head {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
 }
 .title {
-    width: 80%;
+    width: 100%;
     text-align: left;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-family: var(--title-font);
+    font-size: 24px;
+}
+.details {
+    display: flex;
+    width: 100%;
+    margin-top: 2rem;
+    justify-content: flex-end;
+    align-self: flex-end;
+    color: var(--secondary-text-color);
+}
+.fav {
+    margin-left: 2rem;
 }
 
 .fav {
-    width: 20%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-}
-.fav > * {
     cursor: pointer;
+}
+.fav > i {
+    font-size: 32px;
+    color: var(--accent-color);
 }
 
 .rating {
-    width: 50%;
     display: flex;
-    align-items: center;
-}
-.rating > * {
     cursor: pointer;
+}
+.details span {
+    font-size: 18px;
+    margin-left: 0.5rem;
+}
+.time {
+    display: flex;
+    margin-left: 2rem;
+    min-width: 130px;
+    justify-content: flex-end;
 }
 
 .pill {

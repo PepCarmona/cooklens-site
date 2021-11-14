@@ -39,11 +39,11 @@ body * {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: var(--text-main-color);
-    padding-bottom: 80px;
+    padding-bottom: 50px;
 }
 @media only screen and (min-width: 769px) {
     #app {
-        padding-bottom: 20px;
+        padding-bottom: 0;
     }
 }
 </style>

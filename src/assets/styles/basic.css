@@ -6,7 +6,7 @@
     --main-light-color: white;
     --secondary-light-color: rgb(236, 236, 236);
     
-    --main-dark-color: black;
+    --main-dark-color: #000000;
 
     --main-transparent-color: rgba(212, 212, 212, 0.815);
     --secondary-transparent-color: rgba(255, 255, 255, 0.75);
@@ -16,10 +16,26 @@
     
     --error-color: #d00000;
     --light-error-color: rgb(255, 192, 192);
+
+
+
+    --background-color: #F2F3F4;
+    --background-contrast-color: #FFFFFF;
+    --accent-color: #12b886;
+    --border-color: #E1E2E3;
+
+    --main-text-color: #000000;
+    --secondary-text-color: #636773;
+
+    --title-font: 'Roboto Slab', serif;
+    --main-text-font: 'Roboto', sans-serif;
 }
 
 * {
     -webkit-tap-highlight-color: transparent;
+    font-family: var(--main-text-font);
+    font-size: 16px;
+    line-height: 1.5em;
 }
 
 .row {

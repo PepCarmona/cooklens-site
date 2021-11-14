@@ -123,10 +123,8 @@ export default defineComponent({
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    width: 90%;
-    margin-top: 1rem;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 1rem;
+    background-color: var(--background-color);
 }
 .card-container.column {
     flex-direction: column;
