@@ -70,6 +70,7 @@ i.current {
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--accent-color);
+    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
     border-radius: 60px;
     height: 60px;
     width: 60px;
