@@ -13,14 +13,81 @@
             <div class="container" :class="{ thin: !!id }" v-else>
                 <div v-if="isLoading & !!id">Loading...</div>
                 <template v-else>
-                    <div class="recipe-title">
-                        <h1 class="w-100 m-0">{{ recipe.title }}</h1>
-                        <button
-                            v-if="isOwnedRecipe"
-                            @click="showEditRecipe = true"
+                    <div class="gallery-and-icons">
+                        <div class="back">
+                            <i class="las la-angle-left"></i>
+                        </div>
+                        <div
+                            v-if="recipeHasImages"
+                            class="gallery"
+                            ref="gallery"
                         >
-                            <i class="las la-pen" style="color: grey"></i>
-                        </button>
+                            <div
+                                class="image"
+                                :style="`background: url(${recipe.images[0]}) center center / cover;`"
+                            ></div>
+                        </div>
+                        <div
+                            class="icons"
+                            :class="{ 'no-image': !recipeHasImages }"
+                        >
+                            <button
+                                class="editButton"
+                                v-if="isOwnedRecipe"
+                                @click="showEditRecipe = true"
+                            >
+                                <i class="las la-pen"></i>
+                            </button>
+                            <button @click="toggleFavRecipe(recipe)">
+                                <i
+                                    v-if="isFavoriteRecipe(recipe)"
+                                    class="las la-heart"
+                                ></i>
+                                <i v-else class="lar la-heart"></i>
+                            </button>
+                            <button>
+                                <i class="las la-calendar-week"></i>
+                            </button>
+                            <button>
+                                <i class="las la-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="brief"
+                        :class="{ 'no-image': !recipeHasImages }"
+                    >
+                        <div class="title">
+                            <h1>{{ recipe.title }}</h1>
+                        </div>
+                        <div v-if="recipe.url" class="imported-url">
+                            Imported from
+                            <a
+                                :href="recipe.url"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{{ formattedURL }}</a
+                            >
+                        </div>
+                        <div v-if="recipe.author" class="author">
+                            By: {{ recipe.author.username }}
+                        </div>
+                        <div class="basic-info">
+                            <div class="time">
+                                <i class="las la-clock"></i>
+                                <span>{{ totalTime }}</span>
+                            </div>
+                            <div class="vertical-separator"></div>
+                            <div class="difficulty">
+                                <i class="las la-concierge-bell"></i>
+                                <span>Easy</span>
+                            </div>
+                            <div class="vertical-separator"></div>
+                            <div class="servings">
+                                <i class="las la-utensils"></i>
+                                <span>Serves {{ recipe.servings }}</span>
+                            </div>
+                        </div>
                     </div>
                     <div
                         class="recipe-info"
@@ -39,52 +106,6 @@
                             >
                         </div>
                     </div>
-                    <div
-                        class="gallery-and-icons"
-                        :class="{ 'mb-2': !recipeHasImages }"
-                    >
-                        <div
-                            v-if="recipeHasImages"
-                            class="gallery"
-                            ref="gallery"
-                        >
-                            <img
-                                :src="recipe.images[0]"
-                                :alt="recipe.title"
-                                height="350"
-                            />
-                        </div>
-                        <div
-                            v-if="!minified"
-                            class="icons"
-                            :class="{ responsive: recipeHasImages }"
-                        >
-                            <button @click="toggleFavRecipe(recipe)">
-                                <i
-                                    v-if="isFavoriteRecipe(recipe)"
-                                    class="las la-heart"
-                                    style="color: grey"
-                                ></i>
-                                <i
-                                    v-else
-                                    class="lar la-heart"
-                                    style="color: grey"
-                                ></i>
-                            </button>
-                            <button>
-                                <i
-                                    class="las la-calendar-week"
-                                    style="color: grey"
-                                ></i>
-                            </button>
-                            <button>
-                                <i
-                                    class="las la-share-alt"
-                                    style="color: grey"
-                                ></i>
-                            </button>
-                        </div>
-                    </div>
                     <div v-if="!minified" class="mt-1">
                         {{ recipe.description }}
                     </div>
@@ -100,24 +121,6 @@
                     >
                         Go to recipe page
                     </router-link>
-                    <ul class="time mt-3 p-2">
-                        <li v-if="recipe.time.preparation">
-                            <b>Prep:</b>
-                            {{ getFormattedTime(recipe.time.preparation) }}
-                        </li>
-                        <li>
-                            <b>Cook :</b>
-                            {{ getFormattedTime(recipe.time.cooking) }}
-                        </li>
-                        <li>
-                            <b>Total:</b>
-                            {{ totalTime }}
-                        </li>
-                        <li><b>Servings:</b> {{ recipe.servings }}</li>
-                        <div class="icon">
-                            <i class="las la-clock" style="color: grey"></i>
-                        </div>
-                    </ul>
                     <div class="section-title">
                         <span>Ingredients</span>
                         <CustomNumberInput
@@ -401,17 +404,54 @@ export default defineComponent({
     text-align: left;
 }
 
-.recipe-title {
+.brief {
+    background-color: var(--background-contrast-color);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 1rem;
+    margin-top: -50px;
+    z-index: 9;
+}
+.brief.no-image {
+    margin-top: calc(2rem + 50px);
+}
+.title,
+.author,
+.imported-url {
+    width: 100%;
+}
+.author,
+.imported-url,
+.imported-url a {
+    font-size: 12px;
+}
+.title > h1 {
+    font-family: var(--title-font);
+    font-size: 24px;
+    margin: 0;
+}
+.basic-info {
     display: flex;
+    justify-content: space-between;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    padding-bottom: 0.5rem;
     margin-top: 2rem;
 }
-.container.thin > .recipe-title {
-    margin-top: 0;
+.basic-info > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
-.recipe-title > button {
-    height: fit-content;
-    padding: 0.5rem;
-    margin-top: 10px;
+.basic-info i {
+    color: var(--accent-color);
+}
+.basic-info span {
+    width: 100%;
+    text-align: center;
+}
+.vertical-separator {
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .recipe-info {
@@ -424,42 +464,48 @@ export default defineComponent({
 .gallery-and-icons {
     position: relative;
 }
-.icons {
+.image {
+    width: 100%;
+    height: 400px;
+    margin-top: -50px;
+}
+.back {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-contrast-color);
+    border-radius: 50px;
+    height: 50px;
+    width: 50px;
+}
+.icons {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: 1rem;
+    top: 1rem;
+}
+.icons.no-image {
+    flex-direction: row;
 }
 .icons > button {
-    border: 1px solid var(--main-color);
-    border-radius: 2px;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 1.6rem;
-    padding-right: 1.6rem;
-    margin: 0.5rem;
+    background-color: var(--background-contrast-color);
+    border-radius: 50px;
+    height: 50px;
+    width: 50px;
+    margin-bottom: 1rem;
 }
-.icons > button:first-child {
-    margin-left: 0;
+.icons.no-image > button:not(:last-child) {
+    margin-right: 1rem;
 }
-
-.time {
-    position: relative;
-    border: 2px solid var(--secondary-color);
-    border-radius: 2px;
-    padding-left: 1.5rem !important;
+.icons i {
+    color: var(--accent-color);
 }
-.time > li {
-    margin-top: 2rem;
-}
-.time > li:first-child {
-    margin-top: 0;
-}
-.time > .icon {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    padding: 5px;
-    background-color: var(--main-light-color);
-    width: 42px;
-    height: 42px;
+.editButton > i {
+    color: var(--main-text-color);
 }
 
 .section-title {
@@ -500,12 +546,9 @@ export default defineComponent({
     height: 25px;
     width: 25px;
     line-height: 25px;
-    /* background-color: var(--main-color);
-    color: var(--main-light-color); */
     border: 1px solid var(--main-color);
     color: var(--main-color);
     border-radius: 2px;
-    /* font-size: 0.8rem; */
 }
 .stepContent {
     width: calc(100% - 20px - 1rem);
@@ -523,22 +566,6 @@ export default defineComponent({
     padding-right: 0.6rem;
 }
 
-@media only screen and (min-width: 350px) {
-    .icons > button {
-        border: 1px solid var(--main-color);
-        border-radius: 2px;
-        padding-top: 0.6rem;
-        padding-bottom: 0.6rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        margin: 0.5rem;
-    }
-}
-@media only screen and (min-width: 767px) {
-    .recipe-title > h1 {
-        font-size: 2.8rem;
-    }
-}
 @media only screen and (min-width: 769px) {
     .container:not(.thin) {
         width: 70%;
@@ -546,16 +573,21 @@ export default defineComponent({
     .container:not(.thin) > * {
         width: 70%;
     }
-
-    .icons.responsive {
-        position: absolute;
-        top: -0.5rem;
-        right: -90px;
-        width: 90px;
-        flex-wrap: wrap;
+    .brief {
+        width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 200px;
     }
-    .icons.responsive > button:first-child {
-        margin-left: 0.5rem;
+    .brief.no-image {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-top: 1rem;
+    }
+
+    .icons.no-image {
+        flex-direction: column;
     }
 }
 </style>

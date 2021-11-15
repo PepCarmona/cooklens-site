@@ -129,10 +129,6 @@ export default defineComponent({
     /* background: linear-gradient(45deg, #f9fffd 20%, #c8f5e6 100%); */
 }
 input {
-    /* background: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px); */
     background-color: transparent;
     padding: 1rem;
     border: none;

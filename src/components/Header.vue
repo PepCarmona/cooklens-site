@@ -134,11 +134,14 @@ export default defineComponent({
 
 <style scoped>
 header {
+    position: relative;
     display: flex;
     height: 50px;
     width: 100%;
     justify-content: space-between;
     align-items: center;
+    z-index: 9;
+    backdrop-filter: blur(32px);
 }
 
 #logo {
