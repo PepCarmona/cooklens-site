@@ -66,7 +66,7 @@ i.current {
 }
 .add-recipe {
     position: fixed;
-    bottom: 1rem;
+    bottom: calc(1rem - 1px);
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--accent-color);
@@ -87,7 +87,7 @@ i.current {
     height: 55px;
     align-items: center;
     position: fixed;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     background-color: var(--background-contrast-color);
     box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);

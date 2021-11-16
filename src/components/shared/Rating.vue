@@ -83,10 +83,20 @@ textarea {
     min-height: 100px;
 }
 .rating-container {
+    height: fit-content;
     width: fit-content;
 }
 .rating {
     display: flex;
     justify-content: center;
+}
+.rating i {
+    font-size: 32px;
+}
+.lar.la-star {
+    color: var(--accent-color-transparent);
+}
+.las.la-star {
+    color: var(--accent-color);
 }
 </style>

@@ -39,9 +39,14 @@ body * {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: var(--text-main-color);
-    padding-bottom: 100px;
     background-color: var(--background-color);
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 55px;
+}
+#app > div {
+    flex-grow: 1;
 }
 @media only screen and (min-width: 769px) {
     #app {

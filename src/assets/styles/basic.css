@@ -1,5 +1,5 @@
 :root {
-    --main-color: grey;
+    /* --main-color: grey;
     --secondary-color: lightgrey;
     --terciary-color: gray;
     
@@ -12,19 +12,20 @@
     --secondary-transparent-color: rgba(255, 255, 255, 0.75);
     --third-transparent-color: rgba(255, 255, 255, 0.5);
     
-    --text-main-color: #2c3e50;
-    
-    --error-color: #d00000;
-    --light-error-color: rgb(255, 192, 192);
-
-
-
+    --text-main-color: #2c3e50; */
     --background-color: #F2F3F4;
     --background-contrast-color: #FFFFFF;
-    --accent-color: #12b886;
+
+    --accent-color: #12B886;
+    --accent-color-transparent: #12b88645;
+    --error-color: #D00000;
+    --light-error-color: #FFC0C0;
+
     --border-color: #E1E2E3;
 
     --main-text-color: #000000;
+    --inverted-text-color: #FFFFFF;
+
     --grey-600: #B3B4BA;
     --grey-800: #636773;
 
@@ -36,7 +37,8 @@
     -webkit-tap-highlight-color: transparent;
     font-family: var(--main-text-font);
     font-size: 16px;
-    line-height: 1.5em;
+    line-height: 140%;
+    letter-spacing: 0.023em;
 }
 
 .row {
@@ -309,6 +311,7 @@
     margin-right: auto;
     display: flex;
     flex-wrap: wrap;
+    height: 100%;
 }
 .container.thin {
     width: 100%;

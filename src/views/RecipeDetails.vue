@@ -1,170 +1,88 @@
 <template>
-    <div>
-        <CreateRecipe
-            v-if="showEditRecipe"
-            :recipe="recipe"
-            @saved="hideEdit"
-            @cancel="hideEdit"
-        />
-        <template v-else>
-            <CustomModal v-if="isLoading && !id">
-                <LoadingModal>Loading ...</LoadingModal>
-            </CustomModal>
-            <div class="container" :class="{ thin: !!id }" v-else>
-                <div v-if="isLoading & !!id">Loading...</div>
-                <template v-else>
-                    <div class="gallery-and-icons">
-                        <div class="back">
-                            <i class="las la-angle-left"></i>
-                        </div>
+    <CreateRecipe
+        v-if="showEditRecipe"
+        :recipe="recipe"
+        @saved="hideEdit"
+        @cancel="hideEdit"
+    />
+    <template v-else>
+        <CustomModal v-if="isLoading && !id">
+            <LoadingModal>Loading ...</LoadingModal>
+        </CustomModal>
+        <div class="container" :class="{ thin: !!id }" v-else>
+            <div v-if="isLoading & !!id">Loading...</div>
+            <template v-else>
+                <div class="gallery-and-icons">
+                    <button class="back" @click="goBack">
+                        <i class="las la-angle-left"></i>
+                    </button>
+                    <div v-if="recipeHasImages" class="gallery" ref="gallery">
                         <div
-                            v-if="recipeHasImages"
-                            class="gallery"
-                            ref="gallery"
-                        >
-                            <div
-                                class="image"
-                                :style="`background: url(${recipe.images[0]}) center center / cover;`"
-                            ></div>
-                        </div>
-                        <div
-                            class="icons"
-                            :class="{ 'no-image': !recipeHasImages }"
-                        >
-                            <button
-                                class="editButton"
-                                v-if="isOwnedRecipe"
-                                @click="showEditRecipe = true"
-                            >
-                                <i class="las la-pen"></i>
-                            </button>
-                            <button @click="toggleFavRecipe(recipe)">
-                                <i
-                                    v-if="isFavoriteRecipe(recipe)"
-                                    class="las la-heart"
-                                ></i>
-                                <i v-else class="lar la-heart"></i>
-                            </button>
-                            <button>
-                                <i class="las la-calendar-week"></i>
-                            </button>
-                            <button>
-                                <i class="las la-share-alt"></i>
-                            </button>
-                        </div>
+                            class="image"
+                            :style="`background: url(${recipe.images[0]}) center center / cover;`"
+                        ></div>
                     </div>
                     <div
-                        class="brief"
+                        class="icons"
                         :class="{ 'no-image': !recipeHasImages }"
                     >
-                        <div class="title">
-                            <h1>{{ recipe.title }}</h1>
-                        </div>
-                        <div v-if="recipe.url" class="imported-url">
-                            Imported from
-                            <a
-                                :href="recipe.url"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >{{ formattedURL }}</a
-                            >
-                        </div>
-                        <div v-if="recipe.author" class="author">
-                            By: {{ recipe.author.username }}
-                        </div>
-                        <div class="basic-info">
-                            <div class="time">
-                                <i class="las la-clock"></i>
-                                <span>{{ totalTime }}</span>
-                            </div>
-                            <div class="vertical-separator"></div>
-                            <div class="difficulty">
-                                <i class="las la-concierge-bell"></i>
-                                <span>Easy</span>
-                            </div>
-                            <div class="vertical-separator"></div>
-                            <div class="servings">
-                                <i class="las la-utensils"></i>
-                                <span>Serves {{ recipe.servings }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="recipe-info"
-                        :class="{ 'mb-2': recipeHasImages }"
-                    >
-                        <div v-if="recipe.author">
-                            By: {{ recipe.author.username }}
-                        </div>
-                        <div v-if="recipe.url">
-                            Imported from
-                            <a
-                                :href="recipe.url"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                >{{ formattedURL }}</a
-                            >
-                        </div>
-                    </div>
-                    <div v-if="!minified" class="mt-1">
-                        {{ recipe.description }}
-                    </div>
-                    <router-link
-                        v-else
-                        :to="{
-                            name: 'RecipeDetails',
-                            params: { title: 'getFormattedTitle(recipe)' },
-                            query: { id: recipe._id },
-                        }"
-                        target="_blank"
-                        class="goToPageLink"
-                    >
-                        Go to recipe page
-                    </router-link>
-                    <div class="section-title">
-                        <span>Ingredients</span>
-                        <CustomNumberInput
-                            v-if="canModifyServings"
-                            class="modifyServingsInput"
-                            :id="'servingsInput'"
-                            :min="1"
-                            v-model="modifiedServings"
-                        />
-                    </div>
-                    <ul class="ingredients">
-                        <li
-                            v-for="ingredient in ingredientsToShow"
-                            :key="ingredient._id"
+                        <button
+                            class="editButton"
+                            v-if="isOwnedRecipe"
+                            @click="showEditRecipe = true"
                         >
-                            <span class="check">
-                                <input type="checkbox" />
-                            </span>
-                            <span
-                                v-if="
-                                    ingredient.quantity &&
-                                    ingredient.quantity > 0
-                                "
-                            >
-                                {{ ingredient.quantity }}
-                            </span>
-                            <span>{{ ingredient.units }}</span>
-                            <span>{{ ingredient.name }}</span>
-                        </li>
-                    </ul>
-                    <div class="section-title">Instructions</div>
-                    <ul class="instructions">
-                        <li
-                            class="d-flex"
-                            v-for="step in recipe.instructions"
-                            :key="step._id"
+                            <i class="las la-pen"></i>
+                        </button>
+                        <button @click="toggleFavRecipe(recipe)">
+                            <i
+                                v-if="isFavoriteRecipe(recipe)"
+                                class="las la-heart"
+                            ></i>
+                            <i v-else class="lar la-heart"></i>
+                        </button>
+                        <button>
+                            <i class="las la-calendar-week"></i>
+                        </button>
+                        <button>
+                            <i class="las la-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="brief" :class="{ 'no-image': !recipeHasImages }">
+                    <div class="title">
+                        <h1>{{ recipe.title }}</h1>
+                    </div>
+                    <div v-if="recipe.url" class="imported-url">
+                        Imported from
+                        <a
+                            :href="recipe.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ formattedURL }}</a
                         >
-                            <div class="stepPosition">
-                                {{ step.position }}
-                            </div>
-                            <div class="stepContent">{{ step.content }}</div>
-                        </li>
-                    </ul>
-                    <h3 v-if="recipe.tags.length > 0">Tags:</h3>
+                    </div>
+                    <div v-if="recipe.author" class="author">
+                        By: {{ recipe.author.username }}
+                    </div>
+                    <div class="basic-info">
+                        <div class="time">
+                            <i class="las la-clock"></i>
+                            <span>{{ totalTime }}</span>
+                        </div>
+                        <div class="vertical-separator"></div>
+                        <div class="difficulty">
+                            <i class="las la-concierge-bell"></i>
+                            <span>Easy</span>
+                        </div>
+                        <div class="vertical-separator"></div>
+                        <div class="servings">
+                            <i class="las la-utensils"></i>
+                            <span>Serves {{ recipe.servings }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="recipe.tags.length > 0">
+                    <h3>Tags:</h3>
                     <ul class="tags d-flex">
                         <li
                             class="pill"
@@ -174,16 +92,94 @@
                             {{ tag.value }}
                         </li>
                     </ul>
-                    <div v-if="!minified" class="mt-4 d-flex-center">
-                        <Rating
-                            :recipeRating="recipe.rating"
-                            @rate="editRating"
-                        />
+                </div>
+
+                <div v-if="!minified" class="row">
+                    <Rating :recipeRating="recipe.rating" @rate="editRating" />
+                </div>
+                <div class="main-info">
+                    <div class="tabs">
+                        <button
+                            @click="showTab = 'introduction'"
+                            :class="{
+                                selected: showTab === 'introduction',
+                            }"
+                        >
+                            Intro
+                        </button>
+                        <button
+                            @click="showTab = 'ingredients'"
+                            :class="{ selected: showTab === 'ingredients' }"
+                        >
+                            Ingredients
+                        </button>
+                        <button
+                            @click="showTab = 'steps'"
+                            :class="{ selected: showTab === 'steps' }"
+                        >
+                            Steps
+                        </button>
                     </div>
-                </template>
-            </div>
-        </template>
-    </div>
+                    <div class="content">
+                        <div
+                            v-if="showTab === 'introduction'"
+                            class="introduction"
+                        >
+                            {{ recipe.description }}
+                        </div>
+                        <div
+                            v-if="showTab === 'ingredients'"
+                            class="ingredients"
+                        >
+                            <CustomNumberInput
+                                v-if="canModifyServings"
+                                class="modifyServingsInput"
+                                :id="'servingsInput'"
+                                :min="1"
+                                v-model="modifiedServings"
+                            />
+                            <ul class="ingredients-list">
+                                <li
+                                    v-for="ingredient in ingredientsToShow"
+                                    :key="ingredient._id"
+                                >
+                                    <span class="check"></span>
+                                    <span
+                                        v-if="
+                                            ingredient.quantity &&
+                                            ingredient.quantity > 0
+                                        "
+                                    >
+                                        {{ ingredient.quantity }}
+                                    </span>
+                                    <span>{{ ingredient.units }}</span>
+                                    <span>{{ ingredient.name }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div v-if="showTab === 'steps'" class="steps">
+                            <ul class="steps-list">
+                                <li
+                                    v-for="step in recipe.instructions"
+                                    :key="step._id"
+                                >
+                                    <!-- <div class="stepPosition">
+                                        {{ step.position }}
+                                    </div> -->
+                                    <div class="stepHead">
+                                        <span class="check"></span>
+                                    </div>
+                                    <div class="stepContent">
+                                        {{ step.content }}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
 </template>
 
 <script lang="ts">
@@ -203,6 +199,8 @@ import { User } from '@/api/types/user';
 export function getFormattedTitle(recipe: Recipe): string {
     return recipe.title.toLowerCase().replaceAll(' ', '-');
 }
+
+type Tab = 'introduction' | 'ingredients' | 'steps';
 
 export default defineComponent({
     name: 'RecipeDetails',
@@ -243,6 +241,8 @@ export default defineComponent({
         const imgWidth = ref(0);
 
         const showEditRecipe = ref(false);
+
+        const showTab = ref<Tab>('introduction');
 
         const data = {
             isLoading,
@@ -379,6 +379,10 @@ export default defineComponent({
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function goBack() {
+            console.log('back');
+        }
+
         return {
             ...data,
             img,
@@ -388,9 +392,11 @@ export default defineComponent({
             isOwnedRecipe,
             getFormattedTime,
             recipeHasImages,
+            showTab,
             editRating,
             hideEdit,
             getFormattedTitle,
+            goBack,
         };
     },
 });
@@ -408,7 +414,7 @@ export default defineComponent({
     background-color: var(--background-contrast-color);
     border-radius: 1rem;
     padding: 1rem;
-    margin: 1rem;
+    margin: 0 1rem;
     margin-top: -50px;
     z-index: 9;
 }
@@ -452,13 +458,6 @@ export default defineComponent({
 }
 .vertical-separator {
     border-left: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.recipe-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    padding-right: 60px;
 }
 
 .gallery-and-icons {
@@ -508,51 +507,87 @@ export default defineComponent({
     color: var(--main-text-color);
 }
 
-.section-title {
+.rating-container {
+    margin: 1rem auto;
+}
+
+.main-info {
+    background-color: var(--background-contrast-color);
+    padding: 1rem;
+    padding-bottom: 2rem;
+    flex-grow: 1;
+}
+
+.tabs {
+    padding: 0.5rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+}
+.tabs > button {
+    padding: 0.5rem 1rem;
     width: 100%;
-    border-top: 2px solid var(--secondary-color);
-    padding-top: 2rem;
-    margin-bottom: 1rem;
-    margin-top: 3rem;
-    font-size: 1.6rem;
-    font-weight: bold;
+    color: var(--grey-800);
+}
+.tabs > button.selected {
+    background-color: var(--accent-color);
+    border-radius: 50px;
+    color: var(--inverted-text-color);
+}
+
+.main-info > .content {
+    padding: 1rem 0;
 }
 
 .modifyServingsInput {
     width: 100px;
 }
-.ingredients > li {
+.ingredients-list > li {
     display: flex;
-    margin-bottom: 1rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    margin-bottom: 5px;
 }
-.ingredients .check {
-    margin-right: 0.4rem;
+.check {
+    height: 12px;
+    width: 12px;
+    margin: 5px;
+    margin-right: calc(0.5rem + 5px);
+    border-radius: 50px;
+    background-color: var(--accent-color);
 }
 
-.instructions > li {
-    margin-bottom: 2rem;
+.steps-list > li {
+    display: flex;
+    padding: 0.5rem 0;
+    margin-bottom: 5px;
 }
-.instructions > li:last-child,
-.ingredients > li:last-child {
+.steps-list > li:last-child,
+.ingredients-list > li:last-child {
     margin-bottom: 0;
 }
-.stepPosition {
+.stepHead {
+    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 25px;
-    width: 25px;
-    line-height: 25px;
-    border: 1px solid var(--main-color);
-    color: var(--main-color);
-    border-radius: 2px;
+}
+.stepHead::after {
+    content: '';
+    position: absolute;
+    display: block;
+    height: calc(100% + 1rem + 5px);
+    border-left: 2px solid var(--accent-color-transparent);
+    left: 10px;
+}
+.steps-list > li:first-child > .stepHead::after {
+    height: calc(50% + 0.3rem);
+    top: calc(50% + 6px);
+}
+.steps-list > li:last-child > .stepHead::after {
+    height: calc(50% + 0.3rem);
+    bottom: calc(50% + 6px);
 }
 .stepContent {
-    width: calc(100% - 20px - 1rem);
-    margin-left: 1rem;
+    width: fit-content;
 }
 
 .pill {
@@ -588,6 +623,16 @@ export default defineComponent({
 
     .icons.no-image {
         flex-direction: column;
+    }
+
+    .tabs,
+    .content {
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .tabs > button {
+        margin: 0 4rem;
     }
 }
 </style>
