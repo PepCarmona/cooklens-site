@@ -1,8 +1,13 @@
 <template>
     <footer>
-        <div class="add-recipe">
-            <i class="las la-plus mb-05 pt-05" style="color: white"></i>
-        </div>
+        <button
+            @click="addRecipe"
+            v-if="showAddRecipe || showEditRecipe"
+            class="add-recipe"
+        >
+            <i v-if="showAddRecipe" class="las la-plus"></i>
+            <i v-if="showEditRecipe" class="las la-pen"></i>
+        </button>
         <div id="mobile-sticky-footer">
             <div>
                 <router-link to="/">
@@ -12,7 +17,7 @@
                     ></i>
                 </router-link>
             </div>
-            <div class="mr-2">
+            <div :class="{ 'mr-2': showAddRecipe || showEditRecipe }">
                 <router-link to="/recipes">
                     <i
                         class="las la-search"
@@ -20,7 +25,7 @@
                     ></i>
                 </router-link>
             </div>
-            <div class="ml-2">
+            <div :class="{ 'ml-2': showAddRecipe || showEditRecipe }">
                 <router-link to="/profile/myWeekPlan">
                     <i
                         class="las la-calendar-week"
@@ -41,17 +46,55 @@
 </template>
 
 <script lang="ts">
+import useRecipeState from '@/store/recipe-state';
 import { computed, defineComponent } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Footer',
 
     setup() {
         const route = useRoute();
+        const router = useRouter();
+
+        const { isLoading, isOwnRecipe, recipe } = useRecipeState();
+
         const routeName = computed(() => route.name);
+
+        const showAddRecipe = computed(
+            () =>
+                route.name &&
+                ['Home', 'RecipesMainView', 'myRecipes'].includes(
+                    route.name.toString()
+                )
+        );
+
+        const showEditRecipe = computed(
+            () =>
+                !isLoading.value &&
+                route.name === 'RecipeDetails' &&
+                isOwnRecipe.value
+        );
+
+        function addRecipe() {
+            if (showAddRecipe.value) {
+                router.push({
+                    name: 'CreateRecipe',
+                });
+                return;
+            }
+            if (showEditRecipe.value) {
+                router.push({
+                    name: 'CreateRecipe',
+                    query: { edit: recipe.value._id },
+                });
+            }
+        }
         return {
             routeName,
+            showAddRecipe,
+            showEditRecipe,
+            addRecipe,
         };
     },
 });
@@ -79,6 +122,11 @@ i.current {
     justify-content: center;
     align-items: center;
     z-index: 9;
+}
+.add-recipe > i {
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    color: var(--inverted-text-color);
 }
 
 #mobile-sticky-footer {

@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
         props: (route) => ({ id: route.query.id, random: route.query.random }),
     },
     {
-        path: '/recipe/add',
+        path: '/recipe/form',
         name: 'CreateRecipe',
         component: () =>
             import(

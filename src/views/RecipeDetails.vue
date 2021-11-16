@@ -1,185 +1,164 @@
 <template>
-    <CreateRecipe
-        v-if="showEditRecipe"
-        :recipe="recipe"
-        @saved="hideEdit"
-        @cancel="hideEdit"
-    />
-    <template v-else>
-        <CustomModal v-if="isLoading && !id">
-            <LoadingModal>Loading ...</LoadingModal>
-        </CustomModal>
-        <div class="container" :class="{ thin: !!id }" v-else>
-            <div v-if="isLoading & !!id">Loading...</div>
-            <template v-else>
-                <div class="gallery-and-icons">
-                    <button v-if="canGoBack" class="back" @click="goBack">
-                        <i class="las la-angle-left"></i>
-                    </button>
-                    <div v-if="recipeHasImages" class="gallery" ref="gallery">
-                        <div
-                            class="image"
-                            :style="`background: url(${recipe.images[0]}) center center / cover;`"
-                        ></div>
-                    </div>
+    <CustomModal v-if="isLoading && !id">
+        <LoadingModal>Loading ...</LoadingModal>
+    </CustomModal>
+    <div class="container" :class="{ thin: !!id }" v-else>
+        <div v-if="isLoading & !!id">Loading...</div>
+        <template v-else>
+            <div class="gallery-and-icons">
+                <button v-if="canGoBack" class="back" @click="goBack">
+                    <i class="las la-angle-left"></i>
+                </button>
+                <div v-if="recipeHasImages" class="gallery" ref="gallery">
                     <div
-                        class="icons"
-                        :class="{ 'no-image': !recipeHasImages }"
+                        class="image"
+                        :style="`background: url(${recipe.images[0]}) center center / cover;`"
+                    ></div>
+                </div>
+                <div class="icons" :class="{ 'no-image': !recipeHasImages }">
+                    <button
+                        class="editButton"
+                        v-if="isOwnRecipe && !isMobile"
+                        @click="showEditRecipe"
                     >
-                        <button
-                            class="editButton"
-                            v-if="isOwnedRecipe"
-                            @click="showEditRecipe = true"
-                        >
-                            <i class="las la-pen"></i>
-                        </button>
-                        <button @click="toggleFavRecipe(recipe)">
-                            <i
-                                v-if="isFavoriteRecipe(recipe)"
-                                class="las la-heart"
-                            ></i>
-                            <i v-else class="lar la-heart"></i>
-                        </button>
-                        <button>
-                            <i class="las la-calendar-week"></i>
-                        </button>
-                        <button>
-                            <i class="las la-share-alt"></i>
-                        </button>
+                        <i class="las la-pen"></i>
+                    </button>
+                    <button @click="toggleFavRecipe(recipe)">
+                        <i
+                            v-if="isFavoriteRecipe(recipe)"
+                            class="las la-heart"
+                        ></i>
+                        <i v-else class="lar la-heart"></i>
+                    </button>
+                    <button>
+                        <i class="las la-calendar-week"></i>
+                    </button>
+                    <button>
+                        <i class="las la-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="brief" :class="{ 'no-image': !recipeHasImages }">
+                <div class="title">
+                    <h1>{{ recipe.title }}</h1>
+                </div>
+                <div v-if="recipe.url" class="imported-url">
+                    Imported from
+                    <a
+                        :href="recipe.url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        >{{ formattedURL }}</a
+                    >
+                </div>
+                <div v-if="recipe.author" class="author">
+                    By: {{ recipe.author.username }}
+                </div>
+                <div class="basic-info">
+                    <div class="time">
+                        <i class="las la-clock"></i>
+                        <span>{{ totalTime }}</span>
+                    </div>
+                    <div class="vertical-separator"></div>
+                    <div class="difficulty">
+                        <i class="las la-concierge-bell"></i>
+                        <span>Easy</span>
+                    </div>
+                    <div class="vertical-separator"></div>
+                    <div class="servings">
+                        <i class="las la-utensils"></i>
+                        <span>Serves {{ recipe.servings }}</span>
                     </div>
                 </div>
-                <div class="brief" :class="{ 'no-image': !recipeHasImages }">
-                    <div class="title">
-                        <h1>{{ recipe.title }}</h1>
-                    </div>
-                    <div v-if="recipe.url" class="imported-url">
-                        Imported from
-                        <a
-                            :href="recipe.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            >{{ formattedURL }}</a
-                        >
-                    </div>
-                    <div v-if="recipe.author" class="author">
-                        By: {{ recipe.author.username }}
-                    </div>
-                    <div class="basic-info">
-                        <div class="time">
-                            <i class="las la-clock"></i>
-                            <span>{{ totalTime }}</span>
-                        </div>
-                        <div class="vertical-separator"></div>
-                        <div class="difficulty">
-                            <i class="las la-concierge-bell"></i>
-                            <span>Easy</span>
-                        </div>
-                        <div class="vertical-separator"></div>
-                        <div class="servings">
-                            <i class="las la-utensils"></i>
-                            <span>Serves {{ recipe.servings }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div v-if="recipe.tags.length > 0">
-                    <h3>Tags:</h3>
-                    <ul class="tags d-flex">
-                        <li
-                            class="pill"
-                            v-for="tag in recipe.tags"
-                            :key="tag._id"
-                        >
-                            {{ tag.value }}
-                        </li>
-                    </ul>
-                </div>
+            </div>
+            <div v-if="recipe.tags.length > 0">
+                <h3>Tags:</h3>
+                <ul class="tags d-flex">
+                    <li class="pill" v-for="tag in recipe.tags" :key="tag._id">
+                        {{ tag.value }}
+                    </li>
+                </ul>
+            </div>
 
-                <div v-if="!minified" class="row">
-                    <Rating :recipeRating="recipe.rating" @rate="editRating" />
+            <div v-if="!minified" class="row">
+                <Rating :recipeRating="recipe.rating" @rate="editRating" />
+            </div>
+            <div class="main-info">
+                <div class="tabs">
+                    <button
+                        @click="showTab = 'introduction'"
+                        :class="{
+                            selected: showTab === 'introduction',
+                        }"
+                    >
+                        Intro
+                    </button>
+                    <button
+                        @click="showTab = 'ingredients'"
+                        :class="{ selected: showTab === 'ingredients' }"
+                    >
+                        Ingredients
+                    </button>
+                    <button
+                        @click="showTab = 'steps'"
+                        :class="{ selected: showTab === 'steps' }"
+                    >
+                        Steps
+                    </button>
                 </div>
-                <div class="main-info">
-                    <div class="tabs">
-                        <button
-                            @click="showTab = 'introduction'"
-                            :class="{
-                                selected: showTab === 'introduction',
-                            }"
-                        >
-                            Intro
-                        </button>
-                        <button
-                            @click="showTab = 'ingredients'"
-                            :class="{ selected: showTab === 'ingredients' }"
-                        >
-                            Ingredients
-                        </button>
-                        <button
-                            @click="showTab = 'steps'"
-                            :class="{ selected: showTab === 'steps' }"
-                        >
-                            Steps
-                        </button>
+                <div class="content">
+                    <div v-if="showTab === 'introduction'" class="introduction">
+                        {{ recipe.description }}
                     </div>
-                    <div class="content">
-                        <div
-                            v-if="showTab === 'introduction'"
-                            class="introduction"
-                        >
-                            {{ recipe.description }}
-                        </div>
-                        <div
-                            v-if="showTab === 'ingredients'"
-                            class="ingredients"
-                        >
-                            <CustomNumberInput
-                                v-if="canModifyServings"
-                                class="modifyServingsInput"
-                                :id="'servingsInput'"
-                                :min="1"
-                                v-model="modifiedServings"
-                            />
-                            <ul class="ingredients-list">
-                                <li
-                                    v-for="ingredient in ingredientsToShow"
-                                    :key="ingredient._id"
+                    <div v-if="showTab === 'ingredients'" class="ingredients">
+                        <CustomNumberInput
+                            v-if="canModifyServings"
+                            class="modifyServingsInput"
+                            :id="'servingsInput'"
+                            :min="1"
+                            v-model="modifiedServings"
+                        />
+                        <ul class="ingredients-list">
+                            <li
+                                v-for="ingredient in ingredientsToShow"
+                                :key="ingredient._id"
+                            >
+                                <span class="check"></span>
+                                <span
+                                    v-if="
+                                        ingredient.quantity &&
+                                        ingredient.quantity > 0
+                                    "
                                 >
-                                    <span class="check"></span>
-                                    <span
-                                        v-if="
-                                            ingredient.quantity &&
-                                            ingredient.quantity > 0
-                                        "
-                                    >
-                                        {{ ingredient.quantity }}
-                                    </span>
-                                    <span>{{ ingredient.units }}</span>
-                                    <span>{{ ingredient.name }}</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div v-if="showTab === 'steps'" class="steps">
-                            <ul class="steps-list">
-                                <li
-                                    v-for="step in recipe.instructions"
-                                    :key="step._id"
-                                >
-                                    <!-- <div class="stepPosition">
+                                    {{ ingredient.quantity }}
+                                </span>
+                                <span>{{ ingredient.units }}</span>
+                                <span>{{ ingredient.name }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-if="showTab === 'steps'" class="steps">
+                        <ul class="steps-list">
+                            <li
+                                v-for="step in recipe.instructions"
+                                :key="step._id"
+                            >
+                                <!-- <div class="stepPosition">
                                         {{ step.position }}
                                     </div> -->
-                                    <div class="stepHead">
-                                        <span class="check"></span>
-                                    </div>
-                                    <div class="stepContent">
-                                        {{ step.content }}
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                                <div class="stepHead">
+                                    <span class="check"></span>
+                                </div>
+                                <div class="stepContent">
+                                    {{ step.content }}
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </template>
-        </div>
-    </template>
+            </div>
+        </template>
+    </div>
 </template>
 
 <script lang="ts">
@@ -189,12 +168,9 @@ import { useRoute, useRouter } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
-import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
 import Rating from '@/components/shared/Rating.vue';
 import useRecipeState from '@/store/recipe-state';
 import useUserState from '@/store/user-state';
-import useAuthState from '@/store/auth-state';
-import { User } from '@/api/types/user';
 
 export function getFormattedTitle(recipe: Recipe): string {
     return recipe.title.toLowerCase().replaceAll(' ', '-');
@@ -214,7 +190,6 @@ export default defineComponent({
         CustomModal,
         LoadingModal,
         CustomNumberInput,
-        CreateRecipe,
         Rating,
     },
 
@@ -224,25 +199,21 @@ export default defineComponent({
             canModifyServings,
             modifiedServings,
             isFavoriteRecipe,
+            isOwnRecipe,
             getRecipe,
             recipe,
             editRating,
         } = useRecipeState();
         const { toggleFavRecipe } = useUserState();
-        const { authenticatedUser } = useAuthState();
 
         const route = useRoute();
         const router = useRouter();
 
         const gallery = ref<HTMLDivElement>();
 
-        // TODO: remove when real images are added
-        const imgHeight = ref(0);
-        const imgWidth = ref(0);
-
-        const showEditRecipe = ref(false);
-
         const showTab = ref<Tab>('introduction');
+
+        const isMobile = ref(window.innerWidth < 768);
 
         const data = {
             isLoading,
@@ -250,9 +221,11 @@ export default defineComponent({
             canModifyServings,
             modifiedServings,
             isFavoriteRecipe,
+            isOwnRecipe,
             toggleFavRecipe,
             gallery,
-            showEditRecipe,
+            showTab,
+            isMobile,
         };
 
         onMounted(() => {
@@ -262,15 +235,10 @@ export default defineComponent({
                 getRecipeDetails();
             }
 
-            setTimeout(() => {
-                imgWidth.value = Math.ceil(gallery.value?.offsetWidth || 0);
-                imgHeight.value = Math.ceil(imgWidth.value / 1.33);
-            }, 100);
-
-            window.addEventListener('resize', () => {
-                imgWidth.value = Math.ceil(gallery.value?.offsetWidth || 0);
-                imgHeight.value = Math.ceil(imgWidth.value / 1.33);
-            });
+            window.addEventListener(
+                'resize',
+                () => (isMobile.value = window.innerWidth < 768)
+            );
         });
 
         watch(route, () => {
@@ -278,12 +246,6 @@ export default defineComponent({
                 getRandomRecipe();
             }
         });
-
-        // TODO: Remove once real images are added
-        const img = computed(
-            () =>
-                `https://via.placeholder.com/${imgWidth.value}x${imgHeight.value}.webp`
-        );
 
         const ingredientsToShow = computed(() => {
             if (canModifyServings.value) {
@@ -316,13 +278,6 @@ export default defineComponent({
 
         const formattedURL = computed(
             () => new URL(recipe.value.url!).hostname
-        );
-
-        const isOwnedRecipe = computed(
-            () =>
-                recipe.value.author &&
-                authenticatedUser.value?._id ===
-                    (recipe.value.author as User)._id
         );
 
         const canGoBack = computed(() => !!route.query.cgb);
@@ -376,30 +331,30 @@ export default defineComponent({
             return formattedTime;
         }
 
-        function hideEdit() {
-            showEditRecipe.value = false;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         function goBack() {
             router.back();
         }
 
+        function showEditRecipe() {
+            router.push({
+                name: 'CreateRecipe',
+                query: { edit: recipe.value._id },
+            });
+        }
+
         return {
             ...data,
-            img,
             ingredientsToShow,
             totalTime,
             formattedURL,
-            isOwnedRecipe,
             canGoBack,
             getFormattedTime,
             recipeHasImages,
-            showTab,
             editRating,
-            hideEdit,
+            // hideEdit,
             getFormattedTitle,
             goBack,
+            showEditRecipe,
         };
     },
 });
@@ -506,8 +461,11 @@ export default defineComponent({
 .icons i {
     color: var(--accent-color);
 }
+.editButton {
+    background-color: var(--accent-color) !important;
+}
 .editButton > i {
-    color: var(--main-text-color);
+    color: var(--inverted-text-color);
 }
 
 .rating-container {

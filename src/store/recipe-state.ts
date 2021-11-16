@@ -8,6 +8,7 @@ import {
 import { computed, reactive, readonly, ref, Ref } from 'vue';
 import usePaginationState from '@/store/pagination-state';
 import useAuthState from './auth-state';
+import { User } from '@/api/types/user';
 
 export interface SearchQuery {
     type: SearchType;
@@ -16,6 +17,7 @@ export interface SearchQuery {
 
 interface RecipeState {
     isLoading: Readonly<Ref<boolean>>;
+    isOwnRecipe: Readonly<Ref<boolean>>;
     recipe: Readonly<Ref<Recipe>>;
     canModifyServings: Readonly<Ref<boolean>>;
     modifiedServings: Readonly<Ref<number | null>>;
@@ -43,6 +45,7 @@ const { checkIfNextPageExists, goToPage } = usePaginationState();
 const { authenticatedUser } = useAuthState();
 
 const isLoading = ref(false);
+const isOwnRecipe = ref(false);
 const recipe = ref<Recipe>(new RecipeClass());
 const canModifyServings = ref(false);
 const modifiedServings = ref<number | null>(null);
@@ -129,6 +132,11 @@ function getRecipe(id: string) {
             if (canModifyServings.value) {
                 modifiedServings.value = recipe.value.servings;
             }
+
+            isOwnRecipe.value =
+                !!resultRecipe.author &&
+                authenticatedUser.value?._id ===
+                    (resultRecipe.author as User)._id;
         })
         .finally(() => (isLoading.value = false));
 }
@@ -178,6 +186,7 @@ function getMainImageUrl(recipe: Recipe | undefined): string {
 export default function useRecipeState(): RecipeState {
     return {
         isLoading: readonly(isLoading),
+        isOwnRecipe: readonly(isOwnRecipe),
         recipe: computed(() => recipe.value),
         canModifyServings: readonly(canModifyServings),
         modifiedServings: readonly(modifiedServings),

@@ -64,7 +64,7 @@
                                 >
                                 <router-link
                                     @click="showMenu = false"
-                                    to="/recipe/add"
+                                    to="/recipe/form"
                                     >Add recipe</router-link
                                 >
                             </div>
@@ -82,7 +82,7 @@
                 My Profile
             </router-link>
             <router-link v-else to="/login">Login</router-link>
-            <router-link to="/recipe/add">Add recipe</router-link>
+            <router-link to="/recipe/form">Add recipe</router-link>
         </div>
     </header>
 </template>

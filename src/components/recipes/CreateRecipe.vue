@@ -2,7 +2,7 @@
     <div class="container" :class="{ thin }">
         <ImportRecipe
             :thin="!!thin"
-            v-if="!recipe"
+            v-if="!isEditting"
             @importedRecipe="importRecipe"
         />
 
@@ -14,7 +14,7 @@
             >
                 {{ newRecipe.title }}
             </h2>
-            <h3 v-else-if="!recipe">Or create your own recipe</h3>
+            <h3 v-else-if="!isEditting">Or create your own recipe</h3>
         </div>
         <div class="row mt-0">
             <input
@@ -197,7 +197,7 @@
         </div>
 
         <div class="row justify-center mt-2">
-            <template v-if="recipe">
+            <template v-if="isEditting">
                 <button class="save m-1" @click="editRecipe" title="Save">
                     Save recipe
                 </button>
@@ -233,20 +233,18 @@ import {
     nextTick,
     onBeforeUpdate,
     onMounted,
-    PropType,
     reactive,
     ref,
 } from 'vue';
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import ImportRecipe from '@/components/recipes/ImportRecipe.vue';
 import useRecipeState from '@/store/recipe-state';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'CreateRecipe',
 
     props: {
-        recipe: Object as PropType<Recipe>,
         thin: Boolean,
     },
 
@@ -255,10 +253,13 @@ export default defineComponent({
         ImportRecipe,
     },
 
-    emits: ['saved', 'cancel', 'newRecipeSaved'],
+    emits: ['newRecipeSaved'],
 
-    setup(props, { emit }) {
+    setup(_, { emit }) {
+        const route = useRoute();
         const router = useRouter();
+
+        const { recipe } = useRecipeState();
 
         const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
@@ -273,6 +274,8 @@ export default defineComponent({
         const showImport = ref(false);
         const importedRecipe = ref(false);
 
+        const isEditting = computed(() => !!route.query.edit);
+
         const data = {
             newRecipe,
             titleInput,
@@ -283,11 +286,12 @@ export default defineComponent({
             textAreaRefs,
             importedRecipe,
             importedRecipeTitle,
+            isEditting,
         };
 
         onMounted(() => {
-            if (props.recipe) {
-                Object.assign(newRecipe, props.recipe);
+            if (route.query.edit) {
+                Object.assign(newRecipe, recipe.value);
                 titleInput.value?.focus();
                 setTimeout(
                     () =>
@@ -425,22 +429,27 @@ export default defineComponent({
                         query: { id: editedRecipe._id },
                     });
 
-                    emit('saved', editedRecipe);
+                    if (route.query.edit) {
+                        router.back();
+                    }
                 });
         }
 
         function cancel() {
-            emit('cancel');
+            router.back();
         }
 
         function deleteRecipe() {
-            useRecipeState()
-                .deleteRecipe(props.recipe!)
-                .then(() =>
-                    router.push({
-                        name: 'RecipesMainView',
-                    })
-                );
+            if (route.query.edit) {
+                useRecipeState()
+                    .deleteRecipe(recipe.value)
+                    .then(() =>
+                        router.push({
+                            name: 'RecipesMainView',
+                        })
+                    );
+                return;
+            }
         }
 
         function resizeInput(event: Event) {

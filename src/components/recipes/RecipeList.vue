@@ -1,5 +1,8 @@
 <template>
-    <div class="card-container" :class="{ column: isWeekPlan, thin }">
+    <div
+        class="card-container"
+        :class="{ column: isWeekPlan, thin, 'pb-3': !isComponent }"
+    >
         <div v-if="isLoading" class="loadingCard">Loading...</div>
         <template v-else v-for="recipe in recipes" :key="recipe._id">
             <RecipeCard
@@ -28,12 +31,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 import { Recipe } from '@/api/types/recipe';
 import RecipeCard from '@/components/recipes/RecipeCard.vue';
 import Pagination from '@/components/shared/Pagination.vue';
 import usePaginationState from '@/store/pagination-state';
 import useRecipeState from '@/store/recipe-state';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
     name: 'RecipeList',
@@ -67,8 +71,13 @@ export default defineComponent({
     ],
 
     setup(_, { emit }) {
+        const route = useRoute();
         const { currentPage, nextPageExists } = usePaginationState();
         const { isLoading } = useRecipeState();
+
+        const isComponent = computed(
+            () => route.name?.toString() !== 'RecipesMainView'
+        );
 
         function goToPreviousPage() {
             emit('goToPage', currentPage.value - 1);
@@ -94,6 +103,7 @@ export default defineComponent({
             currentPage,
             nextPageExists,
             isLoading,
+            isComponent,
             goToPreviousPage,
             goToNextPage,
             showAllRecipes,
