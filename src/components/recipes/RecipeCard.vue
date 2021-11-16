@@ -121,7 +121,7 @@ export default defineComponent({
             router.push({
                 name: 'RecipeDetails',
                 params: { title: formattedTitle },
-                query: { id: props.recipe._id! },
+                query: { id: props.recipe._id!, cgb: 'true' },
             });
         }
 

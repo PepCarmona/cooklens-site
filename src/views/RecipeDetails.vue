@@ -13,7 +13,7 @@
             <div v-if="isLoading & !!id">Loading...</div>
             <template v-else>
                 <div class="gallery-and-icons">
-                    <button class="back" @click="goBack">
+                    <button v-if="canGoBack" class="back" @click="goBack">
                         <i class="las la-angle-left"></i>
                     </button>
                     <div v-if="recipeHasImages" class="gallery" ref="gallery">
@@ -325,6 +325,8 @@ export default defineComponent({
                     (recipe.value.author as User)._id
         );
 
+        const canGoBack = computed(() => !!route.query.cgb);
+
         function getRecipeDetails() {
             const id = props.id ?? route.query.id?.toString();
 
@@ -380,7 +382,7 @@ export default defineComponent({
         }
 
         function goBack() {
-            console.log('back');
+            router.back();
         }
 
         return {
@@ -390,6 +392,7 @@ export default defineComponent({
             totalTime,
             formattedURL,
             isOwnedRecipe,
+            canGoBack,
             getFormattedTime,
             recipeHasImages,
             showTab,
