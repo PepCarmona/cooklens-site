@@ -588,7 +588,7 @@ export default defineComponent({
 
     .tabs,
     .content {
-        max-width: 1000px;
+        width: 80%;
         margin-left: auto;
         margin-right: auto;
     }
