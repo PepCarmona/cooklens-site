@@ -397,7 +397,7 @@ export default defineComponent({
 .basic-info {
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--shadow-color);
     padding: 1rem;
     padding-bottom: 0.5rem;
     margin-top: 2rem;
@@ -415,7 +415,7 @@ export default defineComponent({
     text-align: center;
 }
 .vertical-separator {
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid var(--shadow-color);
 }
 
 .gallery-and-icons {

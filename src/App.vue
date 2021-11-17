@@ -5,10 +5,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, onBeforeMount, watch } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import useAuthState from './store/auth-state';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
     components: {
@@ -17,7 +18,16 @@ export default defineComponent({
     },
 
     setup() {
+        const route = useRoute();
         onBeforeMount(() => useAuthState().checkSession());
+
+        watch(route, () => {
+            if (route.name === 'CreateRecipe') {
+                document.getElementById('app')?.classList.add('invertedBG');
+            } else {
+                document.getElementById('app')?.classList.remove('invertedBG');
+            }
+        });
         return {};
     },
 });
@@ -44,6 +54,9 @@ body * {
     display: flex;
     flex-direction: column;
     padding-bottom: 55px;
+}
+#app.invertedBG {
+    background-color: var(--background-contrast-color);
 }
 #app > div {
     flex-grow: 1;

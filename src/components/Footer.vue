@@ -113,7 +113,7 @@ i.current {
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--accent-color);
-    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px -1px 0px var(--shadow-color);
     border-radius: 60px;
     height: 60px;
     width: 60px;
@@ -138,7 +138,7 @@ i.current {
     bottom: -1px;
     left: 0;
     background-color: var(--background-contrast-color);
-    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px -1px 0px var(--shadow-color);
 }
 #mobile-sticky-footer > div {
     display: flex;
