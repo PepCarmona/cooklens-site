@@ -332,7 +332,7 @@ export default defineComponent({
         const route = useRoute();
         const router = useRouter();
 
-        const { recipe } = useRecipeState();
+        const { recipe, getRecipe } = useRecipeState();
 
         const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
@@ -371,8 +371,11 @@ export default defineComponent({
             lastInput,
         };
 
-        onMounted(() => {
+        onMounted(async () => {
             if (route.query.edit) {
+                if (!recipe.value._id) {
+                    await getRecipe(route.query.edit.toString());
+                }
                 Object.assign(newRecipe, recipe.value);
                 showRecipeForm.value = true;
             }
