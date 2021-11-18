@@ -162,6 +162,7 @@
                                     ingredient, index
                                 ) in newRecipe.ingredients"
                                 :key="ingredient._id"
+                                ref="lastInput"
                             >
                                 <div class="handle">
                                     <i class="las la-grip-lines"></i>
@@ -228,6 +229,7 @@
                                 class="row step"
                                 v-for="(step, index) in newRecipe.instructions"
                                 :key="step._id"
+                                ref="lastInput"
                             >
                                 <div class="w-10 d-flex justify-center">
                                     <div class="stepPosition">
@@ -252,7 +254,7 @@
                             </div>
                         </div>
                         <button class="add" @click="addStep">
-                            <i class="las la-plus-circle"></i>
+                            <i class="las la-plus"></i>
                         </button>
                     </div>
                 </template>
@@ -351,6 +353,8 @@ export default defineComponent({
 
         const textAreaRefs = ref<InstanceType<typeof CustomInput>[]>([]);
 
+        const lastInput = ref<HTMLElement>();
+
         const data = {
             newRecipe,
             titleInput,
@@ -364,6 +368,7 @@ export default defineComponent({
             showRecipeForm,
             showAdvancedIngredientsForm,
             showTab,
+            lastInput,
         };
 
         onMounted(() => {
@@ -394,14 +399,11 @@ export default defineComponent({
         async function addIngredient() {
             newRecipe.ingredients.push(new IngredientClass());
 
-            await nextTick();
-
-            const lastInput = ingredientInput.value?.lastElementChild
-                ?.firstElementChild as HTMLInputElement;
-
-            await nextTick();
-
-            lastInput.focus();
+            nextTick(() =>
+                lastInput.value?.scrollIntoView({
+                    behavior: 'smooth',
+                })
+            );
         }
 
         async function addStep() {
@@ -410,27 +412,15 @@ export default defineComponent({
 
             newRecipe.instructions.push(newStep);
 
-            await nextTick();
-
-            const lastInput = stepInput.value?.lastElementChild
-                ?.children[1] as HTMLTextAreaElement;
-
-            await nextTick();
-
-            lastInput.focus();
+            nextTick(() =>
+                lastInput.value?.scrollIntoView({
+                    behavior: 'smooth',
+                })
+            );
         }
 
         async function addTag() {
             newRecipe.tags.push(new TagClass());
-
-            await nextTick();
-
-            const lastInput = tagInput.value?.lastElementChild
-                ?.firstElementChild as HTMLInputElement;
-
-            await nextTick();
-
-            lastInput.focus();
         }
 
         function deleteIngredient(index: number) {
@@ -624,11 +614,13 @@ button.cancel {
     margin-top: 1rem;
 }
 
-.ingredients {
+.ingredients,
+.steps {
     padding-bottom: 50px;
 }
 
-.ingredients .add {
+.ingredients .add,
+.steps .add {
     background-color: var(--accent-color);
     height: 50px;
     width: 50px;
@@ -637,7 +629,8 @@ button.cancel {
     right: 1rem;
     bottom: calc(1rem + 55px);
 }
-.ingredients .add > i {
+.ingredients .add > i,
+.steps .add > i {
     color: white;
 }
 
