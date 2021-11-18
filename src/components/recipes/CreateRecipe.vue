@@ -1,15 +1,21 @@
 <template>
     <div>
         <div class="header">
-            <span
-                v-if="showRecipeForm"
-                class="back"
-                @click="showRecipeForm = false"
-            >
+            <span class="back" @click="handleGoBack">
                 <i class="las la-angle-left"></i>
             </span>
             <span class="title">Add Recipe</span>
-            <span v-if="showRecipeForm" class="save">Save</span>
+            <div class="actions">
+                <span v-if="showRecipeForm" class="save">Save</span>
+                <span
+                    v-if="isEditting"
+                    class="delete"
+                    @click="deleteRecipe"
+                    title="Delete"
+                >
+                    Delete
+                </span>
+            </div>
         </div>
         <div v-if="showRecipeForm" class="tabs">
             <button
@@ -149,7 +155,6 @@
 
                 <template v-if="showTab === 'ingredients'">
                     <div class="row ingredients">
-                        Ingredients:
                         <div class="row mt-0" ref="ingredientInput">
                             <div
                                 class="row ingredient"
@@ -158,7 +163,10 @@
                                 ) in newRecipe.ingredients"
                                 :key="ingredient._id"
                             >
-                                <div>
+                                <div class="handle">
+                                    <i class="las la-grip-lines"></i>
+                                </div>
+                                <div v-if="showAdvancedIngredientsForm">
                                     <CustomNumberInput
                                         v-model="ingredient.quantity"
                                         :min="0"
@@ -167,18 +175,19 @@
                                     />
                                 </div>
                                 <CustomInput
+                                    v-if="showAdvancedIngredientsForm"
                                     class="w-20"
                                     v-model="ingredient.units"
                                     type="text"
                                     label="Units"
                                 />
                                 <CustomInput
-                                    class="w-60"
+                                    class="ingredient-query"
                                     v-model="ingredient.name"
                                     type="text"
                                     label="Ingredient"
                                 />
-                                <div class="w-10 d-flex-center">
+                                <div class="w-10 delete">
                                     <button
                                         class="close"
                                         @click="deleteIngredient(index)"
@@ -189,17 +198,31 @@
                             </div>
                         </div>
 
-                        <div class="row d-flex-center">
-                            <button class="add" @click="addIngredient">
-                                <i class="las la-plus-circle"></i>
-                            </button>
+                        <div class="row">
+                            <div class="toggleAdvancedForm">
+                                <span
+                                    v-if="showAdvancedIngredientsForm"
+                                    @click="showAdvancedIngredientsForm = false"
+                                >
+                                    See simple form
+                                </span>
+                                <span
+                                    v-else
+                                    @click="showAdvancedIngredientsForm = true"
+                                >
+                                    See advanced form
+                                </span>
+                            </div>
                         </div>
+
+                        <button class="add" @click="addIngredient">
+                            <i class="las la-plus"></i>
+                        </button>
                     </div>
                 </template>
 
                 <template v-if="showTab === 'steps'">
                     <div class="row steps">
-                        Instructions:
                         <div class="row mt-0" ref="stepInput">
                             <div
                                 class="row step"
@@ -218,7 +241,7 @@
                                     :id="`instructionInput-${step.position}`"
                                     :ref="(el) => textAreaRefs.push(el)"
                                 />
-                                <div class="w-10 d-flex-center">
+                                <div class="w-10 delete">
                                     <button
                                         class="close"
                                         @click="deleteStep(index)"
@@ -228,11 +251,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row d-flex-center">
-                            <button class="add" @click="addStep">
-                                <i class="las la-plus-circle"></i>
-                            </button>
-                        </div>
+                        <button class="add" @click="addStep">
+                            <i class="las la-plus-circle"></i>
+                        </button>
                     </div>
                 </template>
 
@@ -244,13 +265,6 @@
                     <button class="cancel m-1" @click="cancel" title="Cancel">
                         Cancel
                     </button> -->
-                        <button
-                            class="delete m-1"
-                            @click="deleteRecipe"
-                            title="Delete"
-                        >
-                            Delete
-                        </button>
                     </template>
                     <!-- <button class="save" v-else @click="addRecipe" title="Save">
                     Save recipe
@@ -261,11 +275,7 @@
                 </div>
             </template>
             <template v-else>
-                <ImportRecipe
-                    :thin="!!thin"
-                    v-if="!isEditting"
-                    @importedRecipe="importRecipe"
-                />
+                <ImportRecipe :thin="!!thin" @importedRecipe="importRecipe" />
 
                 <span class="openRecipeForm" @click="showRecipeForm = true">
                     or use our recipe form
@@ -336,6 +346,7 @@ export default defineComponent({
 
         const isEditting = computed(() => !!route.query.edit);
         const showRecipeForm = ref(false);
+        const showAdvancedIngredientsForm = ref(false);
         const showTab = ref<Tab>('introduction');
 
         const textAreaRefs = ref<InstanceType<typeof CustomInput>[]>([]);
@@ -351,12 +362,14 @@ export default defineComponent({
             importedRecipeTitle,
             isEditting,
             showRecipeForm,
+            showAdvancedIngredientsForm,
             showTab,
         };
 
         onMounted(() => {
             if (route.query.edit) {
                 Object.assign(newRecipe, recipe.value);
+                showRecipeForm.value = true;
             }
         });
 
@@ -523,6 +536,14 @@ export default defineComponent({
             );
         }
 
+        function handleGoBack() {
+            if (isEditting.value || !showRecipeForm.value) {
+                router.back();
+            } else {
+                showRecipeForm.value = false;
+            }
+        }
+
         return {
             ...data,
             addIngredient,
@@ -538,6 +559,7 @@ export default defineComponent({
             saveErrors,
             cancel,
             textAreaRefs,
+            handleGoBack,
         };
     },
 });
@@ -578,14 +600,6 @@ button.close:hover > i,
 button.close:focus > i {
     color: var(--error-color);
 }
-
-button.add {
-    border-radius: 50px;
-}
-button.add:hover,
-button.add:focus {
-    background-color: transparent;
-}
 /* button.save {
     background-color: var(--main-color);
     color: var(--main-light-color);
@@ -605,37 +619,65 @@ button.cancel {
     font-size: 1.2rem;
     margin-left: 2rem;
 }
-button.delete {
-    background-color: var(--light-error-color);
-    color: var(--error-color);
-    border: 1px solid var(--error-color);
-    border-radius: 2px;
-    padding: 0.6rem;
-    font-size: 1.1rem;
-}
 
 .row {
     margin-top: 1rem;
+}
+
+.ingredients {
+    padding-bottom: 50px;
+}
+
+.ingredients .add {
+    background-color: var(--accent-color);
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    position: fixed;
+    right: 1rem;
+    bottom: calc(1rem + 55px);
+}
+.ingredients .add > i {
+    color: white;
 }
 
 .ingredient,
 .step {
     flex-wrap: nowrap;
 }
-
-/* .ingredient > input:first-child {
-    width: 15%;
+.ingredient {
+    align-items: flex-end;
 }
-.ingredient > input:nth-child(2) {
-    width: 15%;
+.ingredient-query {
+    flex-grow: 1;
 }
-.ingredient > input:nth-child(3) {
-    width: 70%;
-} */
-.ingredient > div:last-child,
-.step > div:last-child {
+.ingredient > .delete,
+.step > .delete {
     width: fit-content !important;
 }
+
+.ingredient > .delete {
+    padding-bottom: 5px;
+}
+.toggleAdvancedForm {
+    margin-left: auto;
+    margin-right: 10%;
+    cursor: pointer;
+}
+.toggleAdvancedForm > span {
+    color: var(--grey-600);
+    text-decoration: underline;
+    font-size: 13px;
+}
+.handle {
+    padding-right: 1rem;
+    padding-bottom: 4px;
+}
+.handle > i {
+    font-size: 16px;
+    cursor: grab;
+}
+
 .step > textarea {
     width: 100%;
 }
@@ -646,16 +688,6 @@ button.delete {
     border-radius: 50px;
     padding: 0.5rem;
 }
-/* .pill input {
-    background-color: transparent;
-    border: none;
-    outline: none;
-    color: var(--main-light-color);
-    width: 1ch;
-}
-.pill input:focus {
-    border-bottom: 1px solid var(--main-light-color);
-} */
 
 .errors {
     color: var(--error-color);
@@ -671,7 +703,7 @@ button.delete {
     padding: 1rem;
 }
 .header > .back,
-.header > .save {
+.header > .actions {
     position: absolute;
 }
 .header > .back {
@@ -680,11 +712,22 @@ button.delete {
 .header > .back > i {
     font-size: 20px;
 }
-.header > .save {
+.header > .actions {
+    display: flex;
+    width: fit-content;
     right: 1rem;
+}
+.header .save,
+.header .delete {
     font-family: var(--main-text-font);
     font-size: 16px;
+}
+.header .save {
     color: var(--accent-color);
+}
+.header .delete {
+    color: var(--error-color);
+    margin-left: 0.5rem;
 }
 .header > .title {
     font-family: var(--title-font);
@@ -716,10 +759,10 @@ button.delete {
     color: var(--inverted-text-color);
 }
 
-@media only screen and (min-width: 767px) {
-    /* button.save {
-        width: 350px;
-    } */
+@media only screen and (max-width: 768px) {
+    .container {
+        width: calc(100% - 2rem);
+    }
 }
 
 @media only screen and (min-width: 769px) {

@@ -121,7 +121,7 @@ i.current {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9;
+    z-index: 100;
 }
 .add-recipe > i {
     margin-bottom: 0.5rem;
@@ -139,6 +139,7 @@ i.current {
     left: 0;
     background-color: var(--background-contrast-color);
     box-shadow: 0px -1px 0px var(--shadow-color);
+    z-index: 99;
 }
 #mobile-sticky-footer > div {
     display: flex;
