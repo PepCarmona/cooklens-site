@@ -59,7 +59,6 @@
                             type="text"
                             id="title"
                             required
-                            autocomplete="off"
                         />
                     </div>
 
@@ -124,7 +123,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row align-center tags">
+                    <div v-if="false" class="row align-center tags">
                         Tags:
                         <div class="d-flex" ref="tagInput">
                             <div
@@ -162,10 +161,10 @@
                                     ingredient, index
                                 ) in newRecipe.ingredients"
                                 :key="ingredient._id"
-                                ref="lastInput"
+                                ref="lastInputWrapper"
                             >
                                 <div class="handle">
-                                    <i class="las la-grip-lines"></i>
+                                    <i class="las la-grip-lines grab"></i>
                                 </div>
                                 <div v-if="showAdvancedIngredientsForm">
                                     <CustomNumberInput
@@ -186,7 +185,7 @@
                                     class="ingredient-query"
                                     v-model="ingredient.name"
                                     type="text"
-                                    label="Ingredient"
+                                    ref="lastInput"
                                 />
                                 <div class="w-10 delete">
                                     <button
@@ -208,7 +207,7 @@
                                     See simple form
                                 </span>
                                 <span
-                                    v-else
+                                    v-else-if="newRecipe.ingredients.length > 0"
                                     @click="showAdvancedIngredientsForm = true"
                                 >
                                     See advanced form
@@ -229,12 +228,10 @@
                                 class="row step"
                                 v-for="(step, index) in newRecipe.instructions"
                                 :key="step._id"
-                                ref="lastInput"
+                                ref="lastInputWrapper"
                             >
-                                <div class="w-10 d-flex justify-center">
-                                    <div class="stepPosition">
-                                        {{ step.position }}
-                                    </div>
+                                <div class="handle">
+                                    <i class="las la-grip-lines grab"></i>
                                 </div>
                                 <CustomInput
                                     type="textarea"
@@ -353,7 +350,8 @@ export default defineComponent({
 
         const textAreaRefs = ref<InstanceType<typeof CustomInput>[]>([]);
 
-        const lastInput = ref<HTMLElement>();
+        const lastInputWrapper = ref<HTMLElement>();
+        const lastInput = ref<InstanceType<typeof CustomInput>>();
 
         const data = {
             newRecipe,
@@ -368,6 +366,7 @@ export default defineComponent({
             showRecipeForm,
             showAdvancedIngredientsForm,
             showTab,
+            lastInputWrapper,
             lastInput,
         };
 
@@ -400,26 +399,64 @@ export default defineComponent({
         });
 
         async function addIngredient() {
-            newRecipe.ingredients.push(new IngredientClass());
+            if (
+                newRecipe.ingredients.length === 0 ||
+                newRecipe.ingredients[newRecipe.ingredients.length - 1].name
+                    .length > 0
+            ) {
+                newRecipe.ingredients.push(new IngredientClass());
+            } else {
+                await nextTick();
 
-            nextTick(() =>
-                lastInput.value?.scrollIntoView({
-                    behavior: 'smooth',
-                })
-            );
+                lastInputWrapper.value?.classList.add('highlighting');
+                setTimeout(
+                    () =>
+                        lastInputWrapper.value?.classList.remove(
+                            'highlighting'
+                        ),
+                    400
+                );
+            }
+
+            await nextTick();
+
+            lastInputWrapper.value?.scrollIntoView({
+                behavior: 'smooth',
+            });
+
+            lastInput.value?.focus();
         }
 
         async function addStep() {
             const newStep = new StepClass();
             newStep.position = newRecipe.instructions.length + 1;
 
-            newRecipe.instructions.push(newStep);
+            if (
+                newRecipe.instructions.length === 0 ||
+                newRecipe.instructions[newRecipe.instructions.length - 1]
+                    .content.length > 0
+            ) {
+                newRecipe.instructions.push(newStep);
+            } else {
+                await nextTick();
 
-            nextTick(() =>
-                lastInput.value?.scrollIntoView({
-                    behavior: 'smooth',
-                })
-            );
+                lastInputWrapper.value?.classList.add('highlighting');
+                setTimeout(
+                    () =>
+                        lastInputWrapper.value?.classList.remove(
+                            'highlighting'
+                        ),
+                    400
+                );
+            }
+
+            await nextTick();
+
+            lastInputWrapper.value?.scrollIntoView({
+                behavior: 'smooth',
+            });
+
+            textAreaRefs.value[textAreaRefs.value.length - 1].focus();
         }
 
         async function addTag() {
@@ -640,9 +677,17 @@ button.cancel {
 .ingredient,
 .step {
     flex-wrap: nowrap;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    transition: all 0.4s;
 }
 .ingredient {
     align-items: flex-end;
+}
+.ingredient.highlighting,
+.step.highlighting {
+    background-color: var(--accent-color-transparent);
+    transition: all 0s;
 }
 .ingredient-query {
     flex-grow: 1;
@@ -667,12 +712,29 @@ button.cancel {
 }
 .handle {
     padding-right: 1rem;
-    padding-bottom: 4px;
+    padding-bottom: 5px;
 }
-.handle > i {
+.handle > .grab {
     font-size: 16px;
     cursor: grab;
 }
+
+/* .step > .handle::after {
+    content: '';
+    position: absolute;
+    display: block;
+    height: calc(100% + 1rem + 5px);
+    border-left: 2px solid var(--accent-color-transparent);
+    left: 10px;
+}
+.step:first-child > .handle::after {
+    height: calc(50% + 0.3rem);
+    top: calc(50% + 6px);
+}
+.step:last-child > .handle::after {
+    height: calc(50% + 0.3rem);
+    bottom: calc(50% + 6px);
+} */
 
 .step > textarea {
     width: 100%;

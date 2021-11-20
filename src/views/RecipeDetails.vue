@@ -123,7 +123,7 @@
                                 v-for="ingredient in ingredientsToShow"
                                 :key="ingredient._id"
                             >
-                                <span class="check"></span>
+                                <span class="bullet"></span>
                                 <span
                                     v-if="
                                         ingredient.quantity &&
@@ -147,7 +147,7 @@
                                         {{ step.position }}
                                     </div> -->
                                 <div class="stepHead">
-                                    <span class="check"></span>
+                                    <span class="bullet"></span>
                                 </div>
                                 <div class="stepContent">
                                     {{ step.content }}
@@ -508,7 +508,7 @@ export default defineComponent({
     padding: 0.5rem 0;
     margin-bottom: 5px;
 }
-.check {
+.bullet {
     height: 12px;
     width: 12px;
     margin: 5px;

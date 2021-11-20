@@ -22,6 +22,7 @@
             <label :for="`textArea-${id}`" @click="textArea.focus()">{{
                 label
             }}</label>
+            <div class="focusedBorder"></div>
         </template>
         <template v-else>
             <input
@@ -46,6 +47,7 @@
             <label :for="`input-${id}`" @click="input.focus()">
                 {{ label }}
             </label>
+            <div class="focusedBorder"></div>
         </template>
     </div>
 </template>
@@ -68,10 +70,16 @@ export default defineComponent({
     name: 'CustomInput',
 
     props: {
-        modelValue: String,
+        modelValue: {
+            type: String,
+            required: true,
+        },
         label: String,
         id: String,
-        type: String as PropType<InputTypes>,
+        type: {
+            type: String as PropType<InputTypes>,
+            default: 'text',
+        },
         placeholder: String,
         pattern: String,
         minLength: Number,
@@ -83,7 +91,7 @@ export default defineComponent({
         cols: Number,
         autocomplete: {
             type: String as PropType<AutoComplete>,
-            default: 'on',
+            default: 'off',
         },
         autoResize: Boolean,
     },
@@ -145,12 +153,21 @@ export default defineComponent({
                 (event.target as HTMLTextAreaElement).value
             );
         }
+
+        function focus() {
+            if (textArea.value) {
+                textArea.value.focus();
+            } else if (input.value) {
+                input.value.focus();
+            }
+        }
         return {
             textArea,
             input,
             handleInput,
             handleTextArea,
             resizeTextArea,
+            focus,
         };
     },
 });
@@ -180,10 +197,15 @@ textarea {
 textarea {
     padding-bottom: 4px;
     line-height: 1.4;
+    overflow: hidden;
 }
 input.slim,
 textarea.slim {
     padding-top: 0;
+}
+input.invisibleInput,
+textarea.invisibleInput {
+    border-bottom: none;
 }
 input:focus + label,
 input.valid + label,
@@ -197,6 +219,11 @@ textarea.valid + label {
     color: var(--grey-600);
     z-index: 99;
 }
+input:focus + label + .focusedBorder,
+textarea:focus + label + .focusedBorder {
+    width: 100%;
+    left: 0;
+}
 label {
     position: absolute;
     bottom: 0.5rem;
@@ -208,5 +235,16 @@ label {
 }
 textarea + label {
     bottom: calc(0.5rem + 6px);
+}
+.focusedBorder {
+    position: absolute;
+    width: 0;
+    bottom: 0;
+    left: 50%;
+    border-bottom: 2px solid var(--accent-color);
+    transition: all 0.2s ease;
+}
+textarea + label + .focusedBorder {
+    bottom: 5px;
 }
 </style>
