@@ -420,9 +420,16 @@ export default defineComponent({
 
             await nextTick();
 
-            lastInputWrapper.value?.scrollIntoView({
-                behavior: 'smooth',
-            });
+            // lastInputWrapper.value?.scrollIntoView({
+            //     behavior: 'smooth',
+            // });
+            if (lastInputWrapper.value) {
+                const y =
+                    lastInputWrapper.value?.getBoundingClientRect().top +
+                    window.scrollY -
+                    500;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
 
             lastInput.value?.focus();
         }
@@ -452,9 +459,15 @@ export default defineComponent({
 
             await nextTick();
 
-            lastInputWrapper.value?.scrollIntoView({
-                behavior: 'smooth',
-            });
+            // lastInputWrapper.value?.scrollIntoView({
+            //     behavior: 'smooth',
+            // });
+            if (lastInputWrapper.value) {
+                const y =
+                    lastInputWrapper.value?.getBoundingClientRect().top +
+                    window.scrollY;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
 
             textAreaRefs.value[textAreaRefs.value.length - 1].focus();
         }
@@ -654,20 +667,22 @@ button.cancel {
     margin-top: 1rem;
 }
 
-.ingredients,
+/* .ingredients,
 .steps {
     padding-bottom: 50px;
-}
+} */
 
 .ingredients .add,
 .steps .add {
+    position: sticky;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 1rem;
+    bottom: calc(1rem + 55px);
     background-color: var(--accent-color);
     height: 50px;
     width: 50px;
     border-radius: 50px;
-    position: fixed;
-    right: 1rem;
-    bottom: calc(1rem + 55px);
 }
 .ingredients .add > i,
 .steps .add > i {
