@@ -84,12 +84,27 @@
                     </div>
 
                     <div class="row">
-                        <img
-                            v-for="image in newRecipe.images"
-                            :key="image"
-                            :src="image"
-                            height="300"
-                        />
+                        <template
+                            v-if="
+                                newRecipe.images && newRecipe.images.length > 0
+                            "
+                        >
+                            <div
+                                class="edit-images"
+                                v-for="image in newRecipe.images"
+                                :key="image"
+                                :style="`background-image: url(${image});`"
+                            >
+                                <button>
+                                    <i class="las la-pen"></i>
+                                </button>
+                            </div>
+                        </template>
+                        <div v-else class="add-images">
+                            <button>
+                                <span>Add images</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="row">
@@ -829,6 +844,35 @@ button.cancel {
     background-color: var(--accent-color);
     border-radius: 50px;
     color: var(--inverted-text-color);
+}
+
+.add-images,
+.edit-images {
+    width: 100%;
+    background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80');
+    background-size: cover;
+    background-position: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: left;
+}
+.edit-images {
+    height: 220px;
+}
+.add-images > button,
+.edit-images > button {
+    box-shadow: 0 0 10px 15px var(--shadow-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-left: auto;
+}
+.add-images > button {
+    background-color: var(--accent-color);
+    color: var(--inverted-text-color);
+}
+.edit-images > button {
+    background-color: var(--background-contrast-color);
+    color: var(--accent-color);
 }
 
 @media only screen and (max-width: 768px) {
