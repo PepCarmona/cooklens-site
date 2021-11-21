@@ -1,34 +1,35 @@
 <template>
-    <div class="input-container" :class="{ slim }">
-        <div class="arrow" :class="{ disabled: valueIsMin }">
-            <i
-                @click="removeToValue"
-                class="las la-angle-left"
-                style="color: white"
-            ></i>
+    <div class="input-wrapper" :class="{ slim, showArrows }">
+        <div v-if="showArrows" class="arrow" :class="{ disabled: valueIsMin }">
+            <i @click="removeToValue" class="las la-minus"></i>
         </div>
         <div class="input-container inner" :class="{ slim }">
             <input
-                @focus="saveInitialValue"
-                @input="handleInput"
-                @blur="checkInput"
-                :value="value"
                 type="number"
-                :id="id"
-                ref="input"
+                :name="`number-input-${id}`"
+                :value="value"
                 :class="{
+                    valid: !!modelValue && modelValue.toString().length > 0,
+                    slim: !label,
                     'text-center': !label,
-                    'hide-value': value === 0 && emptyIf0 && !manual0Input,
+                    'hide-value': value === 0 && !!emptyIf0 && !manual0Input,
                 }"
+                @input="handleInput"
+                @focus="saveInitialValue"
+                @blur="checkInput"
+                ref="input"
             />
-            <label v-if="label" :for="id">{{ label }}</label>
+            <label
+                v-if="label"
+                :for="`number-input-${id}`"
+                @click="input.focus()"
+            >
+                {{ label }}
+            </label>
+            <div class="focusedBorder"></div>
         </div>
-        <div class="arrow" :class="{ disabled: valueIsMax }">
-            <i
-                @click="addToValue"
-                class="las la-angle-right"
-                style="color: white"
-            ></i>
+        <div v-if="showArrows" class="arrow" :class="{ disabled: valueIsMax }">
+            <i @click="addToValue" class="las la-plus"></i>
         </div>
     </div>
 </template>
@@ -58,6 +59,8 @@ export default defineComponent({
         label: String,
         slim: Boolean,
         emptyIf0: Boolean,
+        showArrows: Boolean,
+        suffix: String,
     },
 
     emits: ['update:modelValue'],
@@ -70,9 +73,12 @@ export default defineComponent({
 
         const input = ref<HTMLInputElement>();
 
-        watch(props, () => {
-            value.value = props.modelValue;
-        });
+        watch(
+            () => props.modelValue,
+            () => {
+                value.value = props.modelValue;
+            }
+        );
 
         const valueIsMin = computed(() => value.value === props.min);
 
@@ -218,59 +224,93 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.input-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: fit-content;
+}
+.input-container.slim {
+    height: 25px;
+}
 input {
-    background: transparent;
+    position: relative;
+    line-height: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* height: 100%; */
+    margin: 0;
     border: none;
     outline: none;
-    text-align: right;
-    width: 4ch;
-    font-size: 1rem;
-    max-width: 80px;
-}
-input:focus {
-    border-bottom: 1px solid var(--main-dark-color);
+    padding: 24px 2px 6px 2px;
+    background-color: transparent;
+    border-bottom: 1px solid var(--shadow-color);
+
+    -moz-appearance: textfield;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-input[type='number'] {
-    -moz-appearance: textfield;
+input.slim {
+    padding-top: 0;
 }
 input.hide-value {
     color: transparent;
 }
-
-label {
-    text-align: left;
-    cursor: text;
-    margin-right: 0.5rem;
+input:focus + label,
+input.valid + label {
+    font-size: 12px;
+    bottom: calc(100% - 20px);
+    left: 2px;
+    margin: 0;
+    height: fit-content;
+    color: var(--grey-600);
+    z-index: 99;
 }
-
-.input-container {
-    background-color: var(--secondary-color);
-    height: 40px;
+input:focus + label + .focusedBorder {
     width: 100%;
-    display: flex;
-    flex-wrap: nowrap !important;
-    align-items: center;
-    margin: 0 !important;
+    left: 0;
 }
-.input-container.slim {
-    height: 25px;
+label {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 2px;
+    color: var(--grey-800);
+    line-height: 1;
+    transition: all 0.2s ease;
+    z-index: 0;
+}
+.focusedBorder {
+    position: absolute;
+    width: 0;
+    bottom: 0;
+    left: 50%;
+    border-bottom: 2px solid var(--accent-color);
+    transition: all 0.2s ease;
+}
+
+.showArrows {
+    display: flex;
+    align-items: flex-end;
+}
+.showArrows i {
+    color: var(--accent-color);
+    font-size: 20px;
+}
+.showArrows input {
+    text-align: center;
 }
 
 .arrow {
-    display: flex;
-    align-items: center;
     cursor: pointer;
-    width: fit-content;
-    background-color: var(--main-color);
-    height: 100%;
+    flex-shrink: 0;
+    width: 25%;
+    padding-bottom: 3px;
 }
 .arrow.disabled {
-    opacity: 0.6;
+    opacity: 0.3;
     pointer-events: none;
 }
 

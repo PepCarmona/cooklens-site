@@ -17,6 +17,8 @@
                     slim: !label,
                 }"
                 @input="handleTextArea"
+                @focus="hidePlaceholder"
+                @blur="restorePlaceholder"
                 ref="textArea"
             />
             <label :for="`textArea-${id}`" @click="textArea.focus()">{{
@@ -35,16 +37,18 @@
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :required="required"
+                :autocomplete="autocomplete"
                 :class="{
                     transparent,
                     valid: !!modelValue && modelValue.length > 0,
                     slim: !label,
                 }"
                 @input="handleInput"
-                :autocomplete="autocomplete"
+                @focus="hidePlaceholder"
+                @blur="restorePlaceholder"
                 ref="input"
             />
-            <label :for="`input-${id}`" @click="input.focus()">
+            <label v-if="label" :for="`input-${id}`" @click="input.focus()">
                 {{ label }}
             </label>
             <div class="focusedBorder"></div>
@@ -94,6 +98,7 @@ export default defineComponent({
             default: 'off',
         },
         autoResize: Boolean,
+        keepPlaceholder: Boolean,
     },
 
     emits: ['update:modelValue'],
@@ -161,6 +166,26 @@ export default defineComponent({
                 input.value.focus();
             }
         }
+
+        function hidePlaceholder() {
+            if (!props.keepPlaceholder) {
+                if (textArea.value) {
+                    textArea.value.classList.add('hidePlaceholder');
+                } else if (input.value) {
+                    input.value.classList.add('hidePlaceholder');
+                }
+            }
+        }
+
+        function restorePlaceholder() {
+            if (!props.keepPlaceholder) {
+                if (textArea.value) {
+                    textArea.value.classList.remove('hidePlaceholder');
+                } else if (input.value) {
+                    input.value.classList.remove('hidePlaceholder');
+                }
+            }
+        }
         return {
             textArea,
             input,
@@ -168,6 +193,8 @@ export default defineComponent({
             handleTextArea,
             resizeTextArea,
             focus,
+            hidePlaceholder,
+            restorePlaceholder,
         };
     },
 });
@@ -198,14 +225,11 @@ textarea {
     padding-bottom: 4px;
     line-height: 1.4;
     overflow: hidden;
+    resize: none;
 }
 input.slim,
 textarea.slim {
     padding-top: 0;
-}
-input.invisibleInput,
-textarea.invisibleInput {
-    border-bottom: none;
 }
 input:focus + label,
 input.valid + label,
@@ -246,5 +270,9 @@ textarea + label {
 }
 textarea + label + .focusedBorder {
     bottom: 5px;
+}
+
+.hidePlaceholder::placeholder {
+    visibility: hidden;
 }
 </style>

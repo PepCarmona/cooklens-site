@@ -63,13 +63,23 @@
                     </div>
 
                     <div class="row">
-                        <CustomInput
-                            type="textarea"
+                        <CustomNumberInput
+                            id="prepTime"
                             class="w-100"
-                            label="Description"
-                            id="descriptionInput"
-                            v-model="newRecipe.description"
-                            :ref="(el) => textAreaRefs.push(el)"
+                            label="Preparation Time (min)"
+                            v-model="newRecipe.time.preparation"
+                            :min="0"
+                            emptyIf0
+                        />
+                    </div>
+
+                    <div class="row">
+                        <CustomNumberInput
+                            id="cookTime"
+                            class="w-100"
+                            label="Cooking Time (min)"
+                            v-model="newRecipe.time.cooking"
+                            :min="5"
                         />
                     </div>
 
@@ -81,47 +91,26 @@
                             height="300"
                         />
                     </div>
-                    <div class="row numberInputs">
-                        <div class="row recipeTime">
-                            <div class="row">
-                                <span class="w-60 text-left"
-                                    >Preparation Time:
-                                </span>
-                                <div class="d-flex w-40 justify-center">
-                                    <CustomNumberInput
-                                        :id="'prepTimeInput'"
-                                        :label="'min'"
-                                        v-model="newRecipe.time.preparation"
-                                        :min="0"
-                                    />
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <span class="w-60 text-left"
-                                    >Cooking Time:
-                                </span>
-                                <div class="d-flex w-40 justify-center">
-                                    <CustomNumberInput
-                                        :id="'cookTimeInput'"
-                                        :label="'min'"
-                                        v-model="newRecipe.time.cooking"
-                                        :min="5"
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                    <div class="row">
+                        <CustomInput
+                            type="textarea"
+                            class="w-100"
+                            label="Description"
+                            id="descriptionInput"
+                            v-model="newRecipe.description"
+                            :ref="(el) => textAreaRefs.push(el)"
+                        />
+                    </div>
 
-                        <div class="row">
-                            <span class="w-60 text-left">Servings: </span>
-                            <div class="d-flex w-40 justify-center">
-                                <CustomNumberInput
-                                    :id="'servingsInput'"
-                                    v-model="newRecipe.servings"
-                                    :min="1"
-                                />
-                            </div>
-                        </div>
+                    <div class="row w-50">
+                        <CustomNumberInput
+                            id="servingsInput"
+                            label="Servings"
+                            v-model="newRecipe.servings"
+                            :min="1"
+                            showArrows
+                        />
                     </div>
                     <div v-if="false" class="row align-center tags">
                         Tags:
@@ -168,10 +157,12 @@
                                 </div>
                                 <div v-if="showAdvancedIngredientsForm">
                                     <CustomNumberInput
+                                        label="Qty"
                                         v-model="ingredient.quantity"
                                         :min="0"
                                         slim
                                         emptyIf0
+                                        showArrows
                                     />
                                 </div>
                                 <CustomInput
@@ -185,6 +176,14 @@
                                     class="ingredient-query"
                                     v-model="ingredient.name"
                                     type="text"
+                                    :label="
+                                        showAdvancedIngredientsForm &&
+                                        'Ingredient'
+                                    "
+                                    :placeholder="
+                                        !showAdvancedIngredientsForm &&
+                                        'Add ingredient'
+                                    "
                                     ref="lastInput"
                                 />
                                 <div class="w-10 delete">
@@ -198,7 +197,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div v-if="false" class="row">
                             <div class="toggleAdvancedForm">
                                 <span
                                     v-if="showAdvancedIngredientsForm"
