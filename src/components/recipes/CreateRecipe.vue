@@ -858,6 +858,10 @@ button.cancel {
 .header .back > i {
     font-size: 20px;
 }
+.header .back,
+.header .actions > * {
+    cursor: pointer;
+}
 .header .actions {
     display: flex;
     width: fit-content;
@@ -955,9 +959,11 @@ button.cancel {
 
 .openRecipeForm {
     display: block;
-    width: 100%;
-    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
     color: var(--accent-color);
+    cursor: pointer;
 }
 .integratedSites {
     text-align: left;
@@ -1078,6 +1084,12 @@ button.cancel {
     .tabs > button {
         margin-left: 4rem;
         margin-right: 4rem;
+    }
+
+    .import-wrapper {
+        width: 500px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 </style>

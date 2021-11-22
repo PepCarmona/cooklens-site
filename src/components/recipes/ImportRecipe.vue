@@ -126,11 +126,4 @@ button {
     color: var(--error-color);
     font-size: 0.8rem;
 }
-@media only screen and (min-width: 769px) {
-    .import-container:not(.thin) .import-inner-container {
-        width: 60%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
 </style>
