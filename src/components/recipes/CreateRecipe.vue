@@ -1,41 +1,92 @@
 <template>
     <div>
-        <div class="header">
-            <span class="back" @click="handleGoBack">
-                <i class="las la-angle-left"></i>
-            </span>
-            <span class="title">Add Recipe</span>
-            <div class="actions">
-                <span v-if="showRecipeForm" class="save">Save</span>
-                <span
-                    v-if="isEditting"
-                    class="delete"
-                    @click="deleteRecipe"
-                    title="Delete"
+        <CustomModal v-if="showInfoModal" @close="showInfoModal = false">
+            <div class="integratedSites">
+                <span class="title">Integration system</span>
+
+                <button
+                    class="showIntegratedSites"
+                    @click="showIntegratedSites = !showIntegratedSites"
                 >
-                    Delete
+                    <span>Check our integrated sites</span>
+                    <i
+                        class="las la-angle-right"
+                        :class="{ rotate: !showIntegratedSites }"
+                    ></i>
+                </button>
+
+                <ul :class="{ hidden: showIntegratedSites }">
+                    <li v-for="site in integratedSites" :key="site.url">
+                        <a
+                            :href="`https://${site.url}`"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {{ site.name }}
+                        </a>
+                    </li>
+                </ul>
+
+                <span class="manualImportAdvert">
+                    Recipes can still be imported from not integrated sites.
                 </span>
+
+                <button class="request">
+                    Request our team to integrate a new site
+                </button>
+
+                <button class="closeModal" @click="showInfoModal = false">
+                    Ok
+                </button>
             </div>
-        </div>
-        <div v-if="showRecipeForm" class="tabs">
-            <button
-                @click="showTab = 'introduction'"
-                :class="{ selected: showTab === 'introduction' }"
-            >
-                Intro
-            </button>
-            <button
-                @click="showTab = 'ingredients'"
-                :class="{ selected: showTab === 'ingredients' }"
-            >
-                Ingredients
-            </button>
-            <button
-                @click="showTab = 'steps'"
-                :class="{ selected: showTab === 'steps' }"
-            >
-                Steps
-            </button>
+        </CustomModal>
+        <div class="header">
+            <div>
+                <span class="back" @click="handleGoBack">
+                    <i class="las la-angle-left"></i>
+                </span>
+                <span class="title">Add Recipe</span>
+                <div class="actions">
+                    <span
+                        v-if="showRecipeForm"
+                        class="save"
+                        @click="saveRecipe"
+                    >
+                        Save
+                    </span>
+                    <span v-else class="info" @click="showInfoModal = true">
+                        <i class="las la-question-circle"></i>
+                    </span>
+                    <span
+                        v-if="isEditting"
+                        class="delete"
+                        @click="deleteRecipe"
+                        title="Delete"
+                    >
+                        Delete
+                    </span>
+                </div>
+            </div>
+            <div v-if="showRecipeForm" class="tabs">
+                <button
+                    @click="showTab = 'introduction'"
+                    :class="{ selected: showTab === 'introduction' }"
+                >
+                    Intro
+                </button>
+                <button
+                    @click="showTab = 'ingredients'"
+                    :class="{ selected: showTab === 'ingredients' }"
+                >
+                    Ingredients
+                </button>
+                <button
+                    @click="showTab = 'steps'"
+                    :class="{ selected: showTab === 'steps' }"
+                >
+                    Steps
+                </button>
+            </div>
         </div>
         <div class="container" :class="{ thin }">
             <template v-if="showRecipeForm">
@@ -270,43 +321,27 @@
                     </div>
                 </template>
 
-                <div class="row justify-center mt-2">
-                    <template v-if="isEditting">
-                        <!-- <button class="save m-1" @click="editRecipe" title="Save">
-                        Save recipe
-                    </button>
-                    <button class="cancel m-1" @click="cancel" title="Cancel">
-                        Cancel
-                    </button> -->
-                    </template>
-                    <!-- <button class="save" v-else @click="addRecipe" title="Save">
-                    Save recipe
-                </button> -->
-                </div>
                 <div v-if="saveErrors" class="row mt-05 errors">
                     {{ saveErrors }}
                 </div>
             </template>
-            <template v-else>
+            <div v-else class="import-wrapper">
+                <div class="title">Import Recipe</div>
+                <div class="subtitle">
+                    Recipes can be added manually or imported through our
+                    integration system.
+                </div>
                 <ImportRecipe :thin="!!thin" @importedRecipe="importRecipe" />
 
                 <span class="openRecipeForm" @click="showRecipeForm = true">
                     or use our recipe form
                 </span>
-            </template>
+            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import {
-    IngredientClass,
-    Recipe,
-    RecipeClass,
-    StepClass,
-    TagClass,
-} from '@/api/types/recipe';
-import { AxiosError } from 'axios';
 import {
     computed,
     defineComponent,
@@ -316,11 +351,23 @@ import {
     reactive,
     ref,
 } from 'vue';
+
+import {
+    IngredientClass,
+    Recipe,
+    RecipeClass,
+    StepClass,
+    TagClass,
+} from '@/api/types/recipe';
+import useRecipeState from '@/store/recipe-state';
+import { useRoute, useRouter } from 'vue-router';
+
 import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import CustomInput from '@/components/shared/CustomInput.vue';
 import ImportRecipe from '@/components/recipes/ImportRecipe.vue';
-import useRecipeState from '@/store/recipe-state';
-import { useRoute, useRouter } from 'vue-router';
+import CustomModal from '@/components/shared/CustomModal.vue';
+
+import { AxiosError } from 'axios';
 
 type Tab = 'introduction' | 'ingredients' | 'steps';
 
@@ -335,6 +382,7 @@ export default defineComponent({
         CustomNumberInput,
         ImportRecipe,
         CustomInput,
+        CustomModal,
     },
 
     emits: ['newRecipeSaved'],
@@ -343,7 +391,14 @@ export default defineComponent({
         const route = useRoute();
         const router = useRouter();
 
-        const { recipe, getRecipe } = useRecipeState();
+        const {
+            recipe,
+            getRecipe,
+            getIntegratedSites,
+            integratedSites,
+            addRecipe,
+            editRecipe,
+        } = useRecipeState();
 
         const newRecipe = reactive<Recipe>(new RecipeClass());
         const saveErrors = ref<string | null>(null);
@@ -361,6 +416,8 @@ export default defineComponent({
         const showRecipeForm = ref(false);
         const showAdvancedIngredientsForm = ref(false);
         const showTab = ref<Tab>('introduction');
+        const showInfoModal = ref(false);
+        const showIntegratedSites = ref(false);
 
         const textAreaRefs = ref<InstanceType<typeof CustomInput>[]>([]);
 
@@ -380,8 +437,11 @@ export default defineComponent({
             showRecipeForm,
             showAdvancedIngredientsForm,
             showTab,
+            showInfoModal,
             lastInputWrapper,
             lastInput,
+            integratedSites,
+            showIntegratedSites,
         };
 
         onMounted(async () => {
@@ -391,6 +451,8 @@ export default defineComponent({
                 }
                 Object.assign(newRecipe, recipe.value);
                 showRecipeForm.value = true;
+            } else {
+                getIntegratedSites();
             }
         });
 
@@ -434,9 +496,6 @@ export default defineComponent({
 
             await nextTick();
 
-            // lastInputWrapper.value?.scrollIntoView({
-            //     behavior: 'smooth',
-            // });
             if (lastInputWrapper.value) {
                 const y =
                     lastInputWrapper.value?.getBoundingClientRect().top +
@@ -473,9 +532,6 @@ export default defineComponent({
 
             await nextTick();
 
-            // lastInputWrapper.value?.scrollIntoView({
-            //     behavior: 'smooth',
-            // });
             if (lastInputWrapper.value) {
                 const y =
                     lastInputWrapper.value?.getBoundingClientRect().top +
@@ -502,27 +558,6 @@ export default defineComponent({
             newRecipe.tags.splice(index, 1);
         }
 
-        function addRecipe() {
-            saveErrors.value = null;
-
-            if (!isValidRecipe()) {
-                return;
-            }
-
-            useRecipeState()
-                .addRecipe(sanitizedRecipe.value)
-                .then((savedRecipe) => {
-                    router.push({
-                        name: 'RecipesMainView',
-                    });
-
-                    emit('newRecipeSaved', savedRecipe);
-                })
-                .catch((err: AxiosError) => {
-                    saveErrors.value = err.response?.data;
-                });
-        }
-
         function isValidRecipe(): boolean {
             if (sanitizedRecipe.value.title === '') {
                 alert('Cannot save recipes with empty title');
@@ -542,28 +577,50 @@ export default defineComponent({
             return true;
         }
 
-        function editRecipe() {
-            useRecipeState()
-                .editRecipe(sanitizedRecipe.value)
-                .then((editedRecipe) => {
-                    const formattedTitle = editedRecipe.title
-                        .toLowerCase()
-                        .replaceAll(' ', '-');
+        function saveNewRecipe() {
+            saveErrors.value = null;
 
+            if (!isValidRecipe()) {
+                return;
+            }
+
+            addRecipe(sanitizedRecipe.value)
+                .then((savedRecipe) => {
                     router.push({
-                        name: 'RecipeDetails',
-                        params: { title: formattedTitle },
-                        query: { id: editedRecipe._id },
+                        name: 'RecipesMainView',
                     });
 
-                    if (route.query.edit) {
-                        router.back();
-                    }
+                    emit('newRecipeSaved', savedRecipe);
+                })
+                .catch((err: AxiosError) => {
+                    saveErrors.value = err.response?.data;
                 });
         }
 
-        function cancel() {
-            router.back();
+        function saveEditedRecipe() {
+            editRecipe(sanitizedRecipe.value).then((editedRecipe) => {
+                const formattedTitle = editedRecipe.title
+                    .toLowerCase()
+                    .replaceAll(' ', '-');
+
+                router.push({
+                    name: 'RecipeDetails',
+                    params: { title: formattedTitle },
+                    query: { id: editedRecipe._id },
+                });
+
+                if (route.query.edit) {
+                    router.back();
+                }
+            });
+        }
+
+        function saveRecipe() {
+            if (isEditting.value) {
+                saveEditedRecipe();
+            } else {
+                saveNewRecipe();
+            }
         }
 
         function deleteRecipe() {
@@ -609,12 +666,10 @@ export default defineComponent({
             deleteIngredient,
             deleteStep,
             deleteTag,
-            addRecipe,
-            editRecipe,
+            saveRecipe,
             deleteRecipe,
             importRecipe,
             saveErrors,
-            cancel,
             textAreaRefs,
             handleGoBack,
         };
@@ -784,22 +839,26 @@ button.cancel {
 .header {
     position: relative;
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     justify-content: center;
     line-height: 60px;
     padding: 1rem;
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--shadow-color);
 }
-.header > .back,
-.header > .actions {
-    position: absolute;
+.header > div {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
 }
-.header > .back {
-    left: 1rem;
+.header > div:first-child {
+    padding-bottom: 1rem;
 }
-.header > .back > i {
+.header .back > i {
     font-size: 20px;
 }
-.header > .actions {
+.header .actions {
     display: flex;
     width: fit-content;
     right: 1rem;
@@ -816,9 +875,10 @@ button.cancel {
     color: var(--error-color);
     margin-left: 0.5rem;
 }
-.header > .title {
+.header .title {
     font-family: var(--title-font);
     font-size: 20px;
+    flex-grow: 1;
 }
 
 .tabs {
@@ -826,7 +886,6 @@ button.cancel {
     padding: 0 0.5rem;
     display: flex;
     justify-content: space-between;
-    box-shadow: 0px 1px 0px var(--shadow-color);
 }
 .tabs > button {
     padding: 0.5rem 1rem;
@@ -873,6 +932,97 @@ button.cancel {
 .edit-images > button {
     background-color: var(--background-contrast-color);
     color: var(--accent-color);
+}
+
+.info > i {
+    color: var(--accent-color);
+}
+
+.import-wrapper {
+    text-align: left;
+    width: 100%;
+}
+.import-wrapper > .title {
+    font-family: var(--title-font);
+    font-size: 20px;
+    margin-top: 1.5rem;
+}
+.import-wrapper > .subtitle {
+    font-size: 14px;
+    color: var(--grey-800);
+    margin-top: 0.25rem;
+}
+
+.openRecipeForm {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: var(--accent-color);
+}
+.integratedSites {
+    text-align: left;
+}
+.integratedSites > .title {
+    display: block;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+.integratedSites > span {
+    font-size: 13px;
+}
+.integratedSites > ul {
+    max-height: 500px;
+    overflow: hidden;
+    transition: all 0.4s;
+    margin-bottom: 0.5rem;
+}
+.integratedSites > ul.hidden {
+    max-height: 0;
+}
+.integratedSites li * {
+    font-size: 14px;
+    text-decoration: underline;
+    padding-left: 0.5rem;
+}
+.integratedSites li {
+    position: relative;
+}
+.integratedSites li::before {
+    content: '-';
+    position: absolute;
+    left: 0;
+}
+.integratedSites > .manualImportAdvert {
+    color: var(--grey-800);
+}
+.integratedSites > .request {
+    margin-top: 1rem;
+    font-size: 13px;
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+.showIntegratedSites {
+    align-items: flex-end;
+}
+.showIntegratedSites > i {
+    font-size: 14px;
+    margin-bottom: 0.25rem;
+    margin-left: 0.25rem;
+    transition: all 0.2s ease;
+}
+.showIntegratedSites > i.rotate {
+    transform: rotate(90deg);
+}
+.integratedSites > .closeModal {
+    font-size: 20px;
+    font-weight: 500;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+    text-align: center;
+    color: var(--accent-color);
+    border-top: 1px solid var(--border-color);
 }
 
 @media only screen and (max-width: 768px) {

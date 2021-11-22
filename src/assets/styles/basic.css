@@ -23,10 +23,12 @@
 
     --border-color: #E1E2E3;
     --shadow-color: #0000001A;
+    --dark-shadow-color: #00000045;
 
     --main-text-color: #000000;
     --inverted-text-color: #FFFFFF;
 
+    --grey-100: #F2F3F4;
     --grey-600: #B3B4BA;
     --grey-800: #636773;
 

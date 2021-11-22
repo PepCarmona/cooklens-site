@@ -37,15 +37,15 @@ export default defineComponent({
 
 <style scoped>
 .modalOverlay {
-    display: none;
     display: flex;
     position: fixed;
     height: 100vh;
     width: 100vw;
     top: 0;
     left: 0;
-    background-color: var(--third-transparent-color);
-    z-index: 15;
+    background-color: var(--dark-shadow-color);
+    backdrop-filter: blur(1px);
+    z-index: 999;
 }
 .modalOverlay.center {
     align-items: center;
@@ -72,14 +72,13 @@ export default defineComponent({
     justify-content: center;
     position: fixed;
     height: fit-content;
-    max-height: 90vh;
+    max-height: calc(100% - 2rem);
     overflow: auto;
-    width: 90vw;
-    padding: 2rem;
-    border-radius: 5px;
-    border: 1px solid var(--main-dark-color);
-    background-color: var(--main-light-color);
-    z-index: 16;
+    width: calc(100% - 2rem);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background-color: var(--background-contrast-color);
+    z-index: 100;
 }
 .modal.transparent {
     border: none;
