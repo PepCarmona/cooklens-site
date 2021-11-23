@@ -1,12 +1,6 @@
 <template>
     <header>
-        <div id="logo">
-            <router-link to="/"><img :src="logoUrl" alt="logo" /></router-link>
-        </div>
-        <div id="title">
-            <router-link to="/">Cooklens</router-link>
-        </div>
-        <div v-if="isMobile" id="menu-mobile" class="menu">
+        <div id="menu-mobile" class="menu">
             <span @click="showMenu = true"><i class="las la-bars"></i></span>
             <div class="slide-menu-mobile">
                 <transition name="fade">
@@ -73,22 +67,14 @@
                 </transition>
             </div>
         </div>
-        <div v-else id="menu-desktop" class="menu">
-            <router-link to="/recipes">Recipes</router-link>
-            <router-link to="/about">About</router-link>
-            <!-- <router-link to="/recipe/random?random=true">Random</router-link> -->
-            <!-- <span v-if="!!authenticatedUser" @click="logOut">Log Out</span> -->
-            <router-link v-if="!!authenticatedUser" to="/profile">
-                My Profile
-            </router-link>
-            <router-link v-else to="/login">Login</router-link>
-            <router-link to="/recipe/form">Add recipe</router-link>
+        <div id="title">
+            <router-link to="/">Cooklens</router-link>
         </div>
     </header>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, ref } from 'vue';
 import useAuthState from '@/store/auth-state';
 import { useRouter } from 'vue-router';
 
@@ -99,15 +85,7 @@ export default defineComponent({
         const router = useRouter();
 
         const showMenu = ref(false);
-        const windowWidth = ref<number>(window.innerWidth);
         const { authenticatedUser } = useAuthState();
-
-        onMounted(() =>
-            window.addEventListener(
-                'resize',
-                () => (windowWidth.value = window.innerWidth)
-            )
-        );
 
         function logOut() {
             useAuthState()
@@ -119,12 +97,6 @@ export default defineComponent({
 
         return {
             showMenu,
-            logoUrl: computed(() =>
-                windowWidth.value >= 768
-                    ? 'https://via.placeholder.com/40/4d4d4d/ffffff.webp?text=X'
-                    : 'https://via.placeholder.com/30/4d4d4d/ffffff.webp?text=X'
-            ),
-            isMobile: computed(() => windowWidth.value < 768),
             authenticatedUser,
             logOut,
         };
@@ -144,36 +116,25 @@ header {
     backdrop-filter: blur(32px);
 }
 
-#logo {
-    display: flex;
-    height: 100%;
-    width: fit-content;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-#logo > a {
-    display: flex;
-}
-
 #title {
     font-size: 1.3rem;
     font-weight: 600;
     text-align: center;
-    width: fit-content;
+    width: 100%;
+    padding-bottom: 4px;
+    margin-left: -4rem;
 }
 #title > a {
     color: var(--main-dark-color);
     text-decoration: none;
+    font-size: 24px;
+    font-family: var(--title-font);
+    font-weight: 200;
 }
 
 .menu {
-    display: flex;
-    height: 100%;
-    width: fit-content;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
+    width: 4rem;
+    flex-shrink: 0;
 }
 .menu a {
     font-weight: bold;
@@ -264,39 +225,22 @@ header {
 .slide-enter-from {
     transform: translateX(100vw);
 }
-
-#menu-desktop {
-    display: flex;
-    justify-content: flex-end;
-}
-#menu-desktop > * {
-    width: fit-content;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    background-color: transparent;
-    font-size: 1rem;
-    font-weight: 100;
-    text-decoration: none;
-    color: var(--main-dark-color);
-    text-align: center;
-    border: none;
-    outline: none;
-    cursor: pointer;
-}
 @media only screen and (min-width: 767px) {
     header {
         height: 60px;
     }
     #title {
-        font-size: 1.5rem;
         text-align: left;
-        width: 40%;
         position: relative;
+        padding-bottom: 6px;
+        margin-left: 0;
+    }
+    #title > a {
+        font-size: 28px;
     }
 
     .menu {
         display: block;
-        width: 60%;
         text-align: right;
         padding-right: 1rem;
     }
