@@ -32,11 +32,6 @@
             </span>
             <span v-else>Register</span>
         </button>
-
-        <div class="alternative">
-            Already have an account?
-            <router-link to="/login">Sign in</router-link>
-        </div>
     </div>
 </template>
 
@@ -118,5 +113,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import '~@/assets/styles/login.css';
+@import '~@/assets/styles/authentication.css';
 </style>

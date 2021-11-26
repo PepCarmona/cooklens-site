@@ -24,10 +24,6 @@
             </span>
             <span v-else>Login</span>
         </button>
-
-        <div class="alternative">
-            No account yet? <router-link to="/register">Register</router-link>
-        </div>
     </div>
 </template>
 
@@ -103,5 +99,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import '~@/assets/styles/login.css';
+@import '~@/assets/styles/authentication.css';
 </style>

@@ -20,7 +20,7 @@ export default defineComponent({
 
         onBeforeMount(() => {
             if (!authenticatedUser.value) {
-                router.push({ name: 'Login' });
+                router.push({ name: 'Authentication' });
             }
         });
         return {

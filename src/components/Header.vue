@@ -53,7 +53,7 @@
                                 <router-link
                                     v-else
                                     @click="showMenu = false"
-                                    to="/login"
+                                    to="/auth"
                                     >Login</router-link
                                 >
                                 <router-link

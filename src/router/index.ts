@@ -39,19 +39,11 @@ const routes: Array<RouteRecordRaw> = [
             ),
     },
     {
-        path: '/login',
-        name: 'Login',
+        path: '/auth',
+        name: 'Authentication',
         component: () =>
             import(
-                /* webpackChunkName: "login" */ '../components/profile/auth/Login.vue'
-            ),
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: () =>
-            import(
-                /* webpackChunkName: "register" */ '../components/profile/auth/Register.vue'
+                /* webpackChunkName: "register" */ '../components/profile/auth/Authentication.vue'
             ),
     },
     {
