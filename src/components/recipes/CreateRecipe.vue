@@ -109,6 +109,7 @@
                             v-model="newRecipe.title"
                             type="text"
                             id="title"
+                            :autoComplete="'off'"
                             required
                         />
                     </div>
@@ -190,6 +191,7 @@
                                     type="text"
                                     v-model="tag.value"
                                     autoResize
+                                    :autoComplete="'off'"
                                 />
                                 <button
                                     class="close tag"
@@ -237,6 +239,7 @@
                                     v-model="ingredient.units"
                                     type="text"
                                     label="Units"
+                                    :autoComplete="'off'"
                                 />
                                 <CustomInput
                                     class="ingredient-query"
@@ -250,6 +253,7 @@
                                         !showAdvancedIngredientsForm &&
                                         'Add ingredient'
                                     "
+                                    :autoComplete="'off'"
                                     ref="lastInput"
                                 />
                                 <div class="w-10 delete">

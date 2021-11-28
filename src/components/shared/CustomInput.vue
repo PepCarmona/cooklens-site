@@ -37,13 +37,14 @@
                 :placeholder="placeholder"
                 :disabled="disabled"
                 :required="required"
-                :autocomplete="autocomplete"
+                :autocomplete="autoComplete"
                 :class="{
                     transparent,
                     valid: !!modelValue && modelValue.length > 0,
                     slim: !label,
                 }"
                 @input="handleInput"
+                @keydown="$emit('keydown', $event)"
                 @focus="hidePlaceholder"
                 @blur="restorePlaceholder"
                 ref="input"
@@ -74,10 +75,7 @@ export default defineComponent({
     name: 'CustomInput',
 
     props: {
-        modelValue: {
-            type: String,
-            required: true,
-        },
+        modelValue: String,
         label: String,
         id: String,
         type: {
@@ -93,15 +91,19 @@ export default defineComponent({
         disabled: Boolean,
         rows: Number,
         cols: Number,
-        autocomplete: {
+        autoComplete: {
             type: String as PropType<AutoComplete>,
-            default: 'off',
+            default: 'on',
         },
         autoResize: Boolean,
+        autoCapitalize: {
+            type: Boolean,
+            default: true,
+        },
         keepPlaceholder: Boolean,
     },
 
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'keydown'],
 
     setup(props, { emit }) {
         const textArea = ref<HTMLTextAreaElement>();
@@ -114,6 +116,9 @@ export default defineComponent({
         });
 
         function capitalizeFirstLetter(event: Event) {
+            if (!props.autoCapitalize) {
+                return;
+            }
             const input = event.target as
                 | HTMLInputElement
                 | HTMLTextAreaElement;

@@ -1,18 +1,22 @@
 <template>
-    <div class="login-container">
-        <input
+    <div class="auth-container">
+        <CustomInput
+            label="Username"
             v-model="user.username"
             type="text"
-            placeholder="Username"
-            @keypress="autoLogin"
+            id="userName"
+            :autoCapitalize="false"
+            @keydown.enter="logIn"
             required
         />
 
-        <input
+        <CustomInput
+            label="Password"
             v-model="user.password"
             type="password"
-            placeholder="Password"
-            @keypress="autoLogin"
+            id="password"
+            :autoCapitalize="false"
+            @keydown.enter="logIn"
             required
         />
 
@@ -32,9 +36,14 @@ import { defineComponent, ref } from 'vue';
 import { User, UserClass } from '@/api/types/user';
 import useAuthState from '@/store/auth-state';
 import { useRouter } from 'vue-router';
+import CustomInput from '@/components/shared/CustomInput.vue';
 
 export default defineComponent({
     name: 'Login',
+
+    components: {
+        CustomInput,
+    },
 
     setup() {
         const router = useRouter();
@@ -82,17 +91,10 @@ export default defineComponent({
             return true;
         }
 
-        function autoLogin(event: KeyboardEvent) {
-            if (event.key === 'Enter') {
-                logIn();
-            }
-        }
-
         return {
             user,
             isLoading,
             logIn,
-            autoLogin,
         };
     },
 });
