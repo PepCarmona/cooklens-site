@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header v-if="showHeader">
         <div id="menu-mobile" class="menu">
             <span @click="showMenu = true"><i class="las la-bars"></i></span>
             <div class="slide-menu-mobile">
@@ -74,17 +74,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import useAuthState from '@/store/auth-state';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Header',
 
     setup() {
         const router = useRouter();
+        const route = useRoute();
 
         const showMenu = ref(false);
+        const showHeader = computed(() => route.name !== 'Authentication');
         const { authenticatedUser } = useAuthState();
 
         function logOut() {
@@ -97,6 +99,7 @@ export default defineComponent({
 
         return {
             showMenu,
+            showHeader,
             authenticatedUser,
             logOut,
         };

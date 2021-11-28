@@ -37,7 +37,11 @@
                 <router-link to="/profile">
                     <i
                         class="las la-user-circle"
-                        :class="{ current: routeName === 'Profile' }"
+                        :class="{
+                            current: ['Authentication', 'Profile'].includes(
+                                routeName
+                            ),
+                        }"
                     ></i>
                 </router-link>
             </div>

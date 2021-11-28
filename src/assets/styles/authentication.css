@@ -1,3 +1,25 @@
+.authentication {
+    display: flex;
+    flex-direction: column;
+}
+.cover-image {
+    height: 30vh;
+    background-image: url('https://images.unsplash.com/photo-1600335895229-6e75511892c8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NjJ8fGZvb2R8ZW58MHx8MHx8&auto=format&fit=crop&w=870&q=80');
+    background-size: cover;
+    background-position: center;
+}
+.form {
+    flex-grow: 1;
+    background-color: var(--background-contrast-color);
+    margin-top: -1rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+.form > .title {
+    font-family: var(--title-font);
+    font-size: 40px;
+    margin-top: 2.5rem;
+}
 .login-container {
     width: 100%;
     display: flex;
@@ -29,12 +51,17 @@
     color: var(--error-color);
 }
 
-.login-container .alternative {
-    font-size: 0.8rem;
-    margin-top: 1rem;
+.alternative {
+    padding-right: 1rem;
     text-align: right;
 }
-.login-container a {
-    text-decoration: none;
-    color: var(--terciary-color);
+.alternative > span {
+    font-size: 13px;
+}
+.alternative .toggle-login {
+    font-size: 14px;
+    color: var(--accent-color);
+}
+.alternative > span:hover {
+    text-decoration: underline;
 }
