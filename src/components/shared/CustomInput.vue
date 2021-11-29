@@ -2,7 +2,7 @@
     <div class="input-wrapper">
         <template v-if="type === 'textarea'">
             <textarea
-                :name="id"
+                :name="`textArea-${id}`"
                 :rows="rows"
                 :cols="cols"
                 :value="modelValue"
@@ -21,13 +21,15 @@
                 @blur="restorePlaceholder"
                 ref="textArea"
             />
-            <label :for="id" @click="textArea.focus()">{{ label }}</label>
+            <label :for="`textArea-${id}`" @click="textArea.focus()">{{
+                label
+            }}</label>
             <div class="focusedBorder"></div>
         </template>
         <template v-else>
             <input
                 :type="type"
-                :name="id"
+                :name="`input-${id}`"
                 :value="modelValue"
                 :minlength="minLength"
                 :maxlength="maxLength"
@@ -47,7 +49,7 @@
                 @blur="restorePlaceholder"
                 ref="input"
             />
-            <label v-if="label" :for="id" @click="input.focus()">
+            <label v-if="label" :for="`input-${id}`" @click="input.focus()">
                 {{ label }}
             </label>
             <div class="focusedBorder"></div>
