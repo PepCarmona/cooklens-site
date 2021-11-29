@@ -128,7 +128,7 @@ header {
     flex-shrink: 0;
     z-index: 9;
 }
-.menu a.router-link-exact-active {
+a.router-link-exact-active {
     color: var(--accent-color);
 }
 .menu > span {
@@ -177,14 +177,7 @@ header {
     width: 100%;
     padding: 1rem;
     padding-left: 0;
-    border-bottom: 1px solid var(--secondary-color);
     text-align: left;
-    font-size: 1rem;
-    font-weight: 100;
-    text-decoration: none;
-    color: var(--secondary-light-color);
-    background-color: transparent;
-    outline: none;
 }
 .slide-menu .items > * {
     border-bottom: 1px solid var(--accent-color-transparent);
