@@ -1,8 +1,11 @@
 <template>
     <div class="authentication">
+        <div class="back" @click="goBack">
+            <i class="las la-angle-left"></i>
+        </div>
         <div class="cover-image"></div>
         <div class="form">
-            <div class="title">Cooklens</div>
+            <router-link class="title" to="/">Cooklens</router-link>
             <div class="subtitle">Just enjoy cooking</div>
             <Login v-if="showLogin" />
             <Register v-else />
@@ -28,7 +31,9 @@
 import { defineComponent, ref } from 'vue';
 import Login from '@/components/profile/auth/Login.vue';
 import Register from '@/components/profile/auth/Register.vue';
+import { useRouter } from 'vue-router';
 
+let prevRoute: string | undefined;
 export default defineComponent({
     name: 'Authentication',
 
@@ -37,11 +42,25 @@ export default defineComponent({
         Register,
     },
 
+    beforeRouteEnter(to, from) {
+        prevRoute = from.name?.toString();
+    },
+
     setup() {
+        const router = useRouter();
         const showLogin = ref(true);
+
+        function goBack() {
+            if (prevRoute) {
+                router.back();
+            } else {
+                router.push({ name: 'Home' });
+            }
+        }
 
         return {
             showLogin,
+            goBack,
         };
     },
 });

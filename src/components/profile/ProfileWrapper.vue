@@ -6,23 +6,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent } from 'vue';
 import useAuthState from '@/store/auth-state';
-import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'ProfileWrapper',
 
+    beforeRouteEnter(to, from, next) {
+        if (!useAuthState().authenticatedUser.value) {
+            next({ name: 'Authentication' });
+        } else {
+            next();
+        }
+    },
+
     setup() {
-        const router = useRouter();
-
         const { authenticatedUser, isLoading } = useAuthState();
-
-        onBeforeMount(() => {
-            if (!authenticatedUser.value) {
-                router.push({ name: 'Authentication' });
-            }
-        });
         return {
             authenticatedUser,
             isLoading,

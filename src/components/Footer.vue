@@ -8,7 +8,7 @@
             <i v-if="showAddRecipe" class="las la-plus"></i>
             <i v-if="showEditRecipe" class="las la-pen"></i>
         </button>
-        <div id="mobile-sticky-footer">
+        <div v-if="showFooter" id="mobile-sticky-footer">
             <div>
                 <router-link to="/">
                     <i
@@ -80,6 +80,8 @@ export default defineComponent({
                 isOwnRecipe.value
         );
 
+        const showFooter = computed(() => route.name !== 'Authentication');
+
         function addRecipe() {
             if (showAddRecipe.value) {
                 router.push({
@@ -98,6 +100,7 @@ export default defineComponent({
             routeName,
             showAddRecipe,
             showEditRecipe,
+            showFooter,
             addRecipe,
         };
     },

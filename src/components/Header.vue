@@ -1,5 +1,10 @@
 <template>
-    <CustomModal :showIf="showMenu" @close="showMenu = false" :mode="'top'">
+    <CustomModal
+        v-if="showHeader"
+        :showIf="showMenu"
+        @close="showMenu = false"
+        :mode="'top'"
+    >
         <div class="slide-menu">
             <span class="menu-close" @click="showMenu = false">
                 <i class="las la-times"></i>
