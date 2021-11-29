@@ -105,6 +105,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+footer {
+    z-index: 10;
+}
 i {
     color: black;
 }

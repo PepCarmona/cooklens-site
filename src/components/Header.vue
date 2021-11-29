@@ -4,18 +4,25 @@
             <span @click="showMenu = true"><i class="las la-bars"></i></span>
             <div class="slide-menu-mobile">
                 <transition name="fade">
-                    <div v-if="showMenu" class="overlay"></div>
-                </transition>
-                <transition name="slide">
                     <div
                         v-if="showMenu"
-                        class="slideMenu d-flex justify-center"
-                    >
+                        class="overlay"
+                        @click="showMenu = false"
+                    ></div>
+                </transition>
+                <transition name="slide">
+                    <div v-if="showMenu" class="slide-menu">
                         <div>
-                            <span class="menuTitle">MENU</span>
-                            <span class="menuClose" @click="showMenu = false">
+                            <span class="menu-close" @click="showMenu = false">
                                 <i class="las la-times"></i>
                             </span>
+                            <router-link
+                                @click="showMenu = false"
+                                to="/"
+                                class="menu-title"
+                            >
+                                Cooklens
+                            </router-link>
                             <div class="items">
                                 <!-- <router-link @click="showMenu = false" to="/"
                                     >Home</router-link
@@ -45,6 +52,7 @@
                                     Log Out
                                 </span> -->
                                 <router-link
+                                    @click="showMenu = false"
                                     v-if="!!authenticatedUser"
                                     to="/profile"
                                 >
@@ -115,7 +123,7 @@ header {
     width: 100%;
     justify-content: space-between;
     align-items: center;
-    z-index: 9;
+    z-index: 99;
     backdrop-filter: blur(32px);
 }
 
@@ -128,7 +136,6 @@ header {
     margin-left: -4rem;
 }
 #title > a {
-    color: var(--main-dark-color);
     text-decoration: none;
     font-size: 24px;
     font-family: var(--title-font);
@@ -138,29 +145,27 @@ header {
 .menu {
     width: 4rem;
     flex-shrink: 0;
-}
-.menu a {
-    font-weight: bold;
-    color: var(--text-main-color);
+    z-index: 9;
 }
 .menu a.router-link-exact-active {
-    color: var(--main-light-color);
+    color: var(--accent-color);
 }
 .menu > span {
     cursor: pointer;
 }
-.menuTitle {
+.menu-title {
     display: block;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--main-light-color);
+    font-family: var(--title-font);
+    font-weight: 200;
+    font-size: 30px;
     margin-top: 3rem;
     margin-bottom: 1rem;
+    color: var(--accent-color);
 }
-.menuClose {
+.menu-close {
     position: absolute;
     top: 1rem;
-    left: -3rem;
+    right: 1rem;
     cursor: pointer;
 }
 
@@ -170,34 +175,41 @@ header {
     left: 0;
     height: 100vh;
     width: 100vw;
-    background-color: var(--secondary-transparent-color);
-    z-index: 9;
+    background-color: var(--dark-shadow-color);
+    backdrop-filter: blur(1px);
 }
 
-.slideMenu {
+.slide-menu {
+    display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     position: absolute;
     top: 0;
-    right: 0;
-    height: 100vh;
-    width: 75vw;
+    left: 0;
+    height: fit-content;
+    max-height: 100vh;
+    width: 100vw;
     z-index: 10;
-    background-color: var(--terciary-color);
+    border-bottom-right-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    padding-bottom: 3rem;
+    background-color: var(--background-contrast-color);
 }
-.slideMenu > div {
+.slide-menu > div {
     height: fit-content;
     width: 80%;
 }
-.slideMenu > div > * {
+.slide-menu > div > * {
     text-align: left;
 }
-.slideMenu .items {
+.slide-menu .items {
     display: flex;
     flex-wrap: wrap;
 }
-.slideMenu .items > * {
+.slide-menu .items > * {
     width: 100%;
     padding: 1rem;
+    padding-left: 0;
     border-bottom: 1px solid var(--secondary-color);
     text-align: left;
     font-size: 1rem;
@@ -207,7 +219,10 @@ header {
     background-color: transparent;
     outline: none;
 }
-.slideMenu .items > *:last-child {
+.slide-menu .items > *:not(:last-child) {
+    border-bottom: 1px solid var(--accent-color-transparent);
+}
+.slide-menu .items > *:last-child {
     border: 0;
 }
 
@@ -226,7 +241,7 @@ header {
 }
 .slide-leave-to,
 .slide-enter-from {
-    transform: translateX(100vw);
+    transform: translateY(-100vh);
 }
 @media only screen and (min-width: 767px) {
     header {
