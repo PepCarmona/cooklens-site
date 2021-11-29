@@ -166,6 +166,7 @@ header {
     justify-content: left;
     height: fit-content;
     padding-bottom: 3rem;
+    width: 100%;
 }
 .slide-menu .items {
     display: flex;
@@ -185,7 +186,7 @@ header {
     background-color: transparent;
     outline: none;
 }
-.slide-menu .items > *:not(:last-child) {
+.slide-menu .items > * {
     border-bottom: 1px solid var(--accent-color-transparent);
 }
 .slide-menu .items > *:last-child {
@@ -210,6 +211,28 @@ header {
         display: block;
         text-align: right;
         padding-right: 1rem;
+    }
+
+    .menu-close {
+        left: 1rem;
+        right: auto;
+    }
+    .menu-title {
+        margin-top: -1.1rem;
+        margin-left: 2.5rem;
+        margin-bottom: 2rem;
+    }
+    .slide-menu {
+        padding-bottom: 1rem;
+    }
+    .slide-menu .items {
+        margin-left: 2rem;
+    }
+    .slide-menu .items > * {
+        width: fit-content;
+        border-bottom: none;
+        border-right: 1px solid var(--accent-color-transparent);
+        padding: 0.5rem 1rem;
     }
 }
 </style>

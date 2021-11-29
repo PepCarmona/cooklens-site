@@ -162,5 +162,8 @@ export default defineComponent({
         width: fit-content;
         max-width: 90vw;
     }
+    .modal.top {
+        max-width: 100vw;
+    }
 }
 </style>
