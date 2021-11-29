@@ -1,48 +1,28 @@
 <template>
-    <header v-if="showHeader">
-        <div id="menu-mobile" class="menu">
-            <span @click="showMenu = true"><i class="las la-bars"></i></span>
-            <div class="slide-menu-mobile">
-                <transition name="fade">
-                    <div
-                        v-if="showMenu"
-                        class="overlay"
-                        @click="showMenu = false"
-                    ></div>
-                </transition>
-                <transition name="slide">
-                    <div v-if="showMenu" class="slide-menu">
-                        <div>
-                            <span class="menu-close" @click="showMenu = false">
-                                <i class="las la-times"></i>
-                            </span>
-                            <router-link
-                                @click="showMenu = false"
-                                to="/"
-                                class="menu-title"
-                            >
-                                Cooklens
-                            </router-link>
-                            <div class="items">
-                                <!-- <router-link @click="showMenu = false" to="/"
+    <CustomModal :showIf="showMenu" @close="showMenu = false" :mode="'top'">
+        <div class="slide-menu">
+            <span class="menu-close" @click="showMenu = false">
+                <i class="las la-times"></i>
+            </span>
+            <router-link @click="showMenu = false" to="/" class="menu-title">
+                Cooklens
+            </router-link>
+            <div class="items">
+                <!-- <router-link @click="showMenu = false" to="/"
                                     >Home</router-link
                                 > -->
-                                <router-link
-                                    @click="showMenu = false"
-                                    to="/recipes"
-                                    >Recipes</router-link
-                                >
-                                <router-link
-                                    @click="showMenu = false"
-                                    to="/about"
-                                    >About</router-link
-                                >
-                                <!-- <router-link
+                <router-link @click="showMenu = false" to="/recipes"
+                    >Recipes</router-link
+                >
+                <router-link @click="showMenu = false" to="/about"
+                    >About</router-link
+                >
+                <!-- <router-link
                                     @click="showMenu = false"
                                     to="/recipe/random?random=true"
                                     >Random</router-link
                                 > -->
-                                <!-- <span
+                <!-- <span
                                     v-if="!!authenticatedUser"
                                     @click="
                                         logOut();
@@ -51,29 +31,25 @@
                                 >
                                     Log Out
                                 </span> -->
-                                <router-link
-                                    @click="showMenu = false"
-                                    v-if="!!authenticatedUser"
-                                    to="/profile"
-                                >
-                                    My Profile
-                                </router-link>
-                                <router-link
-                                    v-else
-                                    @click="showMenu = false"
-                                    to="/auth"
-                                    >Login</router-link
-                                >
-                                <router-link
-                                    @click="showMenu = false"
-                                    to="/recipe/form"
-                                    >Add recipe</router-link
-                                >
-                            </div>
-                        </div>
-                    </div>
-                </transition>
+                <router-link
+                    @click="showMenu = false"
+                    v-if="!!authenticatedUser"
+                    to="/profile"
+                >
+                    My Profile
+                </router-link>
+                <router-link v-else @click="showMenu = false" to="/auth"
+                    >Login</router-link
+                >
+                <router-link @click="showMenu = false" to="/recipe/form"
+                    >Add recipe</router-link
+                >
             </div>
+        </div>
+    </CustomModal>
+    <header v-if="showHeader">
+        <div id="menu-mobile" class="menu">
+            <span @click="showMenu = true"><i class="las la-bars"></i></span>
         </div>
         <div id="title">
             <router-link to="/">Cooklens</router-link>
@@ -85,9 +61,14 @@
 import { computed, defineComponent, ref } from 'vue';
 import useAuthState from '@/store/auth-state';
 import { useRoute, useRouter } from 'vue-router';
+import CustomModal from '@/components/shared/CustomModal.vue';
 
 export default defineComponent({
     name: 'Header',
+
+    components: {
+        CustomModal,
+    },
 
     setup() {
         const router = useRouter();
@@ -158,7 +139,7 @@ header {
     font-family: var(--title-font);
     font-weight: 200;
     font-size: 30px;
-    margin-top: 3rem;
+    margin-top: 1rem;
     margin-bottom: 1rem;
     color: var(--accent-color);
 }
@@ -182,29 +163,14 @@ header {
 .slide-menu {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 0;
+    justify-content: left;
     height: fit-content;
-    max-height: 100vh;
-    width: 100vw;
-    z-index: 10;
-    border-bottom-right-radius: 1rem;
-    border-bottom-left-radius: 1rem;
     padding-bottom: 3rem;
-    background-color: var(--background-contrast-color);
-}
-.slide-menu > div {
-    height: fit-content;
-    width: 80%;
-}
-.slide-menu > div > * {
-    text-align: left;
 }
 .slide-menu .items {
     display: flex;
     flex-wrap: wrap;
+    width: 100%;
 }
 .slide-menu .items > * {
     width: 100%;
@@ -226,23 +192,6 @@ header {
     border: 0;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.6s;
-}
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-    transition: transform 0.6s;
-}
-.slide-leave-to,
-.slide-enter-from {
-    transform: translateY(-100vh);
-}
 @media only screen and (min-width: 767px) {
     header {
         height: 60px;

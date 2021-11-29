@@ -1,6 +1,6 @@
 <template>
     <div>
-        <CustomModal v-if="showInfoModal" @close="showInfoModal = false">
+        <CustomModal :showIf="showInfoModal" @close="showInfoModal = false">
             <div class="integratedSites">
                 <span class="title">Integration system</span>
 
