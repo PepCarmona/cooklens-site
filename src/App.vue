@@ -24,7 +24,10 @@ export default defineComponent({
 
         watch(route, () => {
             const app = document.getElementById('app');
-            if (route.name === 'CreateRecipe') {
+            if (
+                route.name &&
+                ['CreateRecipe', 'Profile'].includes(route.name.toString())
+            ) {
                 app?.classList.add('invertedBG');
             } else {
                 app?.classList.remove('invertedBG');
