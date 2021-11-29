@@ -8,14 +8,14 @@
     background-size: cover;
     background-position: center;
 }
-.form {
+form {
     flex-grow: 1;
     background-color: var(--background-contrast-color);
     margin-top: -1rem;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
 }
-.form > .title {
+form > .title {
     font-family: var(--title-font);
     font-size: 40px;
     margin-top: 2.5rem;

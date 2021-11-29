@@ -1,7 +1,7 @@
 <template>
     <div class="authentication">
         <div class="cover-image"></div>
-        <div class="form">
+        <form>
             <div class="title">Cooklens</div>
             <div class="subtitle">Just enjoy cooking</div>
             <Login v-if="showLogin" />
@@ -20,7 +20,7 @@
                     </span>
                 </span>
             </div>
-        </div>
+        </form>
     </div>
 </template>
 

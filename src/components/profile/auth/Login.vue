@@ -6,6 +6,7 @@
             type="text"
             id="userName"
             :autoCapitalize="false"
+            :autoComplete="'username'"
             @keydown.enter="logIn"
             required
         />
@@ -16,6 +17,7 @@
             type="password"
             id="password"
             :autoCapitalize="false"
+            :autoComplete="'current-password'"
             @keydown.enter="logIn"
             required
         />
