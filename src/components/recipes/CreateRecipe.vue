@@ -40,54 +40,51 @@
                 </button>
             </div>
         </CustomModal>
-        <div class="header">
-            <div>
-                <span class="back" @click="handleGoBack">
-                    <i class="las la-angle-left"></i>
+        <PageHeader @go-back="handleGoBack">
+            <template v-slot:title>Add Recipe</template>
+            <template v-slot:actions>
+                <span
+                    v-if="showRecipeForm"
+                    class="save-recipe"
+                    @click="saveRecipe"
+                >
+                    Save
                 </span>
-                <span class="title">Add Recipe</span>
-                <div class="actions">
-                    <span
-                        v-if="showRecipeForm"
-                        class="save"
-                        @click="saveRecipe"
+                <span v-else class="info" @click="showInfoModal = true">
+                    <i class="las la-question-circle"></i>
+                </span>
+                <span
+                    v-if="isEditting"
+                    class="delete-recipe"
+                    @click="deleteRecipe"
+                    title="Delete"
+                >
+                    Delete
+                </span>
+            </template>
+            <template v-slot:second-row>
+                <div v-if="showRecipeForm" class="tabs">
+                    <button
+                        @click="showTab = 'introduction'"
+                        :class="{ selected: showTab === 'introduction' }"
                     >
-                        Save
-                    </span>
-                    <span v-else class="info" @click="showInfoModal = true">
-                        <i class="las la-question-circle"></i>
-                    </span>
-                    <span
-                        v-if="isEditting"
-                        class="delete"
-                        @click="deleteRecipe"
-                        title="Delete"
+                        Intro
+                    </button>
+                    <button
+                        @click="showTab = 'ingredients'"
+                        :class="{ selected: showTab === 'ingredients' }"
                     >
-                        Delete
-                    </span>
+                        Ingredients
+                    </button>
+                    <button
+                        @click="showTab = 'steps'"
+                        :class="{ selected: showTab === 'steps' }"
+                    >
+                        Steps
+                    </button>
                 </div>
-            </div>
-            <div v-if="showRecipeForm" class="tabs">
-                <button
-                    @click="showTab = 'introduction'"
-                    :class="{ selected: showTab === 'introduction' }"
-                >
-                    Intro
-                </button>
-                <button
-                    @click="showTab = 'ingredients'"
-                    :class="{ selected: showTab === 'ingredients' }"
-                >
-                    Ingredients
-                </button>
-                <button
-                    @click="showTab = 'steps'"
-                    :class="{ selected: showTab === 'steps' }"
-                >
-                    Steps
-                </button>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
         <div class="container" :class="{ thin }">
             <template v-if="showRecipeForm">
                 <template v-if="showTab === 'introduction'">
@@ -256,7 +253,7 @@
                                     :autoComplete="'off'"
                                     ref="lastInput"
                                 />
-                                <div class="w-10 delete">
+                                <div class="w-10 delete-ingredient">
                                     <button
                                         class="close"
                                         @click="deleteIngredient(index)"
@@ -309,7 +306,7 @@
                                     :id="`instructionInput-${step.position}`"
                                     :ref="(el) => textAreaRefs.push(el)"
                                 />
-                                <div class="w-10 delete">
+                                <div class="w-10 delete-step">
                                     <button
                                         class="close"
                                         @click="deleteStep(index)"
@@ -370,6 +367,7 @@ import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
 import CustomInput from '@/components/shared/CustomInput.vue';
 import ImportRecipe from '@/components/recipes/ImportRecipe.vue';
 import CustomModal from '@/components/shared/CustomModal.vue';
+import PageHeader from '@/components/shared/PageHeader.vue';
 
 import { AxiosError } from 'axios';
 
@@ -387,6 +385,7 @@ export default defineComponent({
         ImportRecipe,
         CustomInput,
         CustomModal,
+        PageHeader,
     },
 
     emits: ['newRecipeSaved'],
@@ -716,15 +715,6 @@ button.close:hover > i,
 button.close:focus > i {
     color: var(--error-color);
 }
-/* button.save {
-    background-color: var(--main-color);
-    color: var(--main-light-color);
-    border: 1px solid var(--main-dark-color);
-    border-radius: 2px;
-    padding: 0.6rem;
-    width: 100%;
-    font-size: 1.2rem;
-} */
 button.cancel {
     background-color: var(--secondary-color);
     color: var(--main-dark-color);
@@ -780,12 +770,12 @@ button.cancel {
 .ingredient-query {
     flex-grow: 1;
 }
-.ingredient > .delete,
-.step > .delete {
+.delete-ingredient,
+.delete-step {
     width: fit-content !important;
 }
 
-.ingredient > .delete {
+.delete-ingredient {
     padding-bottom: 5px;
 }
 .toggleAdvancedForm {
@@ -840,55 +830,18 @@ button.cancel {
     font-size: 0.8rem;
 }
 
-.header {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: center;
-    line-height: 60px;
-    padding: 1rem;
-    padding-bottom: 0;
-    border-bottom: 1px solid var(--shadow-color);
-}
-.header > div {
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-}
-.header > div:first-child {
-    padding-bottom: 1rem;
-}
-.header .back > i {
-    font-size: 20px;
-}
-.header .back,
-.header .actions > * {
-    cursor: pointer;
-}
-.header .actions {
-    display: flex;
-    width: fit-content;
-    right: 1rem;
-}
-.header .save,
-.header .delete {
+.save-recipe,
+.delete-recipe {
     font-family: var(--main-text-font);
     font-size: 16px;
 }
-.header .save {
+.save-recipe {
     color: var(--accent-color);
 }
-.header .delete {
+.delete-recipe {
     color: var(--error-color);
     margin-left: 0.5rem;
 }
-.header .title {
-    font-family: var(--title-font);
-    font-size: 20px;
-    flex-grow: 1;
-}
-
 .tabs {
     width: 100%;
     padding: 0 0.5rem;

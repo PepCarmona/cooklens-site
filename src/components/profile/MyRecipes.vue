@@ -1,10 +1,7 @@
 <template>
-    <div class="title">
-        <button @click="back" class="back">
-            <i class="las la-arrow-left"></i>
-        </button>
-        <h2>My Recipes</h2>
-    </div>
+    <PageHeader @go-back="back">
+        <template v-slot:title>My Recipes</template>
+    </PageHeader>
     <div class="createRecipe">
         <router-link :to="{ name: 'CreateRecipe' }">
             <button>
@@ -23,6 +20,7 @@ import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
 import { useRouter } from 'vue-router';
 import useUserState from '@/store/user-state';
+import PageHeader from '@/components/shared/PageHeader.vue';
 
 export default defineComponent({
     name: 'MyRecipes',
@@ -30,6 +28,7 @@ export default defineComponent({
     components: {
         LoadingModal,
         RecipeList,
+        PageHeader,
     },
 
     setup() {

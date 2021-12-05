@@ -1,18 +1,13 @@
 <template>
     <div class="profile-container">
-        <div class="header">
-            <div>
-                <span class="back" @click="handleGoBack">
-                    <i class="las la-angle-left"></i>
+        <PageHeader @go-back="handleGoBack">
+            <template v-slot:title>My Profile</template>
+            <template v-slot:actions>
+                <span class="settings">
+                    <i class="las la-sliders-h"></i>
                 </span>
-                <span class="title">My Profile</span>
-                <div class="actions">
-                    <span class="settings">
-                        <i class="las la-sliders-h"></i>
-                    </span>
-                </div>
-            </div>
-        </div>
+            </template>
+        </PageHeader>
         <div class="user-info-container">
             <div class="user-info">
                 <div class="info">
@@ -62,9 +57,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import useAuthState from '@/store/auth-state';
+import PageHeader from '@/components/shared/PageHeader.vue';
 
 export default defineComponent({
     name: 'Profile',
+
+    components: {
+        PageHeader,
+    },
 
     setup() {
         const { authenticatedUser } = useAuthState();
@@ -77,40 +77,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.header {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: center;
-    line-height: 60px;
-    padding: 1rem;
-    padding-bottom: 0;
-    border-bottom: 1px solid var(--shadow-color);
-}
-.header > div {
-    width: 100%;
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: 1rem;
-}
-.header .back > i {
-    font-size: 20px;
-}
-.header .back,
-.header .actions > * {
-    cursor: pointer;
-}
-.header .actions {
-    display: flex;
-    width: fit-content;
-    right: 1rem;
-}
-.header .title {
-    font-family: var(--title-font);
-    font-size: 20px;
-    flex-grow: 1;
-}
 .user-info-container {
     margin: 0 1rem;
 }
