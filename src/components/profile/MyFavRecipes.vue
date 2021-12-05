@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="my-fav-recipes-container">
         <PageHeader @go-back="back">
             <template v-slot:title>My Favorite Recipes</template>
         </PageHeader>
@@ -48,3 +48,9 @@ export default defineComponent({
     },
 });
 </script>
+
+<style scoped>
+.my-fav-recipes-container {
+    background-color: var(--background-color);
+}
+</style>

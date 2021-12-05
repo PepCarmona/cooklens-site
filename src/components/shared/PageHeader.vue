@@ -42,6 +42,7 @@ export default defineComponent({
     padding: 1rem;
     padding-bottom: 0;
     border-bottom: 1px solid var(--shadow-color);
+    background-color: var(--background-contrast-color);
 }
 .header > div {
     width: 100%;

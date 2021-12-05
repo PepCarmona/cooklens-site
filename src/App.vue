@@ -35,16 +35,13 @@ export default defineComponent({
 
         watch(route, () => {
             const app = document.getElementById('app');
-            if (
-                route.name &&
-                ['CreateRecipe', 'Profile'].includes(route.name.toString())
-            ) {
+            if (route.meta.invertedBG) {
                 app?.classList.add('invertedBG');
             } else {
                 app?.classList.remove('invertedBG');
             }
 
-            if (route.name === 'Authentication') {
+            if (route.meta.noFooter) {
                 app?.classList.add('no-footer');
             } else {
                 app?.classList.remove('no-footer');
@@ -71,14 +68,14 @@ body * {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: var(--text-main-color);
-    background-color: var(--background-color);
+    background-color: var(--background-contrast-color);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     padding-bottom: 55px;
 }
 #app.invertedBG {
-    background-color: var(--background-contrast-color);
+    background-color: var(--background-color);
 }
 #app.no-footer {
     padding-bottom: 0;

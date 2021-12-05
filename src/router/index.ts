@@ -14,6 +14,7 @@ const routes: Array<RouteRecordRaw> = [
             import(
                 /* webpackChunkName: "about" */ '../views/RecipesMainView.vue'
             ),
+        meta: { invertedBG: true },
     },
     {
         path: '/about',
@@ -29,6 +30,7 @@ const routes: Array<RouteRecordRaw> = [
                 /* webpackChunkName: "recipeDetails" */ '../views/RecipeDetails.vue'
             ),
         props: (route) => ({ id: route.query.id, random: route.query.random }),
+        meta: { invertedBG: true },
     },
     {
         path: '/recipe/form',
@@ -45,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
             import(
                 /* webpackChunkName: "register" */ '../components/profile/auth/Authentication.vue'
             ),
+        meta: { noFooter: true },
     },
     {
         path: '/profile',

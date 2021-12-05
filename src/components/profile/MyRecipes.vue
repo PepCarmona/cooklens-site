@@ -1,17 +1,19 @@
 <template>
-    <PageHeader @go-back="back">
-        <template v-slot:title>My Recipes</template>
-    </PageHeader>
-    <div class="createRecipe">
-        <router-link :to="{ name: 'CreateRecipe' }">
-            <button>
-                <span>Create Recipe</span>
-                <i class="las la-plus"></i>
-            </button>
-        </router-link>
+    <div class="my-recipes-container">
+        <PageHeader @go-back="back">
+            <template v-slot:title>My Recipes</template>
+        </PageHeader>
+        <div class="createRecipe">
+            <router-link :to="{ name: 'CreateRecipe' }">
+                <button>
+                    <span>Create Recipe</span>
+                    <i class="las la-plus"></i>
+                </button>
+            </router-link>
+        </div>
+        <LoadingModal v-if="isLoading" />
+        <RecipeList :recipes="myRecipes" />
     </div>
-    <LoadingModal v-if="isLoading" />
-    <RecipeList :recipes="myRecipes" />
 </template>
 
 <script lang="ts">
@@ -54,6 +56,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.my-recipes-container {
+    background-color: var(--background-color);
+}
 .createRecipe {
     display: flex;
     width: 100%;

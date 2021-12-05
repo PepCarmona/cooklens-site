@@ -1,96 +1,107 @@
 <template>
-    <PageHeader @go-back="back">
-        <template v-slot:title>My Week Plan</template>
-    </PageHeader>
-    <div class="weekplan-header">
-        <div class="selectWeekPlan">
-            <div class="dropDown__selected">
-                <input
-                    type="text"
-                    v-model="selectedWeekPlan.name"
-                    placeholder="New Week Plan"
-                />
-                <div class="dropDown__button" @click="isDropped = !isDropped">
-                    <i class="las la-caret-down" style="font-size: 16px"></i>
-                </div>
-            </div>
-            <div
-                v-if="!isNameValid && hasSelectedWeekPlanChanged"
-                class="errors"
-            >
-                * Invalid Name
-            </div>
-            <div class="dropDown" v-if="isDropped">
-                <ul>
-                    <li
-                        v-for="(weekPlan, index) in myWeekPlans"
-                        :key="index"
-                        @click="
-                            selectWeekPlan(weekPlan);
-                            isDropped = false;
-                        "
-                        :class="{
-                            selected: weekPlan._id === selectedWeekPlan._id,
-                        }"
+    <div class="my-weekplan-container">
+        <PageHeader @go-back="back">
+            <template v-slot:title>My Week Plan</template>
+        </PageHeader>
+        <div class="weekplan-header">
+            <div class="selectWeekPlan">
+                <div class="dropDown__selected">
+                    <input
+                        type="text"
+                        v-model="selectedWeekPlan.name"
+                        placeholder="New Week Plan"
+                    />
+                    <div
+                        class="dropDown__button"
+                        @click="isDropped = !isDropped"
                     >
-                        {{ weekPlan.name }}
-                    </li>
-                    <li
-                        @click="
-                            selectWeekPlan(undefined);
-                            isDropped = false;
-                        "
-                    >
-                        New week plan
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <button
-            class="save"
-            :class="{ disabled: !hasSelectedWeekPlanChanged || !isNameValid }"
-            @click="saveWeekPlan(selectedWeekPlan)"
-        >
-            <i class="las la-save"></i>
-            <span>Save</span>
-        </button>
-        <button
-            class="remove"
-            :class="{ disabled: isNewWeekPlan }"
-            @click="deleteWeekPlan(selectedWeekPlan)"
-        >
-            <i class="las la-trash-alt"></i>
-            <span>Delete</span>
-        </button>
-    </div>
-    <div class="body">
-        <div class="weekPlan">
-            <div
-                class="day"
-                v-for="(dailyPlan, index) in selectedWeekPlan.dailyPlans"
-                :key="index"
-            >
-                <div class="dayName">
-                    {{ weekDays[index] }}
+                        <i
+                            class="las la-caret-down"
+                            style="font-size: 16px"
+                        ></i>
+                    </div>
                 </div>
-                <div class="meals">
-                    <div class="lunch" :class="{ free: !dailyPlan.lunch }">
-                        <span class="label">Lunch</span>
-                        <span
-                            v-if="dailyPlan.lunch"
-                            class="remove-label"
-                            @click="removeRecipeFromWeekPlan(index, 'lunch')"
+                <div
+                    v-if="!isNameValid && hasSelectedWeekPlanChanged"
+                    class="errors"
+                >
+                    * Invalid Name
+                </div>
+                <div class="dropDown" v-if="isDropped">
+                    <ul>
+                        <li
+                            v-for="(weekPlan, index) in myWeekPlans"
+                            :key="index"
+                            @click="
+                                selectWeekPlan(weekPlan);
+                                isDropped = false;
+                            "
+                            :class="{
+                                selected: weekPlan._id === selectedWeekPlan._id,
+                            }"
                         >
-                            <i
-                                class="las la-trash-alt"
-                                style="color: white"
-                            ></i>
-                        </span>
-                        <div
-                            v-if="dailyPlan.lunch"
-                            class="text"
-                            @click="showRecipeDetails(dailyPlan.lunch)"
-                            :style="`background: 
+                            {{ weekPlan.name }}
+                        </li>
+                        <li
+                            @click="
+                                selectWeekPlan(undefined);
+                                isDropped = false;
+                            "
+                        >
+                            New week plan
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <button
+                class="save"
+                :class="{
+                    disabled: !hasSelectedWeekPlanChanged || !isNameValid,
+                }"
+                @click="saveWeekPlan(selectedWeekPlan)"
+            >
+                <i class="las la-save"></i>
+                <span>Save</span>
+            </button>
+            <button
+                class="remove"
+                :class="{ disabled: isNewWeekPlan }"
+                @click="deleteWeekPlan(selectedWeekPlan)"
+            >
+                <i class="las la-trash-alt"></i>
+                <span>Delete</span>
+            </button>
+        </div>
+        <div class="body">
+            <div class="weekPlan">
+                <div
+                    class="day"
+                    v-for="(dailyPlan, index) in selectedWeekPlan.dailyPlans"
+                    :key="index"
+                >
+                    <div class="dayName">
+                        {{ weekDays[index] }}
+                    </div>
+                    <div class="meals">
+                        <div class="lunch" :class="{ free: !dailyPlan.lunch }">
+                            <span class="label">Lunch</span>
+                            <span
+                                v-if="dailyPlan.lunch"
+                                class="remove-label"
+                                @click="
+                                    removeRecipeFromWeekPlan(index, 'lunch')
+                                "
+                            >
+                                <i
+                                    class="las la-trash-alt"
+                                    style="color: white"
+                                ></i>
+                            </span>
+                            <div
+                                v-if="dailyPlan.lunch"
+                                class="text"
+                                @click="showRecipeDetails(dailyPlan.lunch)"
+                                :style="`background: 
                                 linear-gradient(
                                     0deg,
                                     var(--main-color) 0%,
@@ -99,34 +110,42 @@
                                 url(${getMainImageUrl(
                                     dailyPlan.lunch
                                 )}) center center / cover;`"
-                        >
-                            {{ dailyPlan.lunch.title }}
+                            >
+                                {{ dailyPlan.lunch.title }}
+                            </div>
+                            <div
+                                v-else
+                                class="add"
+                                @click="showRecipeList('lunch', index)"
+                            >
+                                <i
+                                    class="las la-plus"
+                                    style="font-size: 48px"
+                                ></i>
+                            </div>
                         </div>
                         <div
-                            v-else
-                            class="add"
-                            @click="showRecipeList('lunch', index)"
+                            class="dinner"
+                            :class="{ free: !dailyPlan.dinner }"
                         >
-                            <i class="las la-plus" style="font-size: 48px"></i>
-                        </div>
-                    </div>
-                    <div class="dinner" :class="{ free: !dailyPlan.dinner }">
-                        <span class="label">Dinner</span>
-                        <span
-                            v-if="dailyPlan.dinner"
-                            class="remove-label"
-                            @click="removeRecipeFromWeekPlan(index, 'dinner')"
-                        >
-                            <i
-                                class="las la-trash-alt"
-                                style="color: white"
-                            ></i>
-                        </span>
-                        <div
-                            v-if="dailyPlan.dinner"
-                            class="text"
-                            @click="showRecipeDetails(dailyPlan.lunch)"
-                            :style="`background: 
+                            <span class="label">Dinner</span>
+                            <span
+                                v-if="dailyPlan.dinner"
+                                class="remove-label"
+                                @click="
+                                    removeRecipeFromWeekPlan(index, 'dinner')
+                                "
+                            >
+                                <i
+                                    class="las la-trash-alt"
+                                    style="color: white"
+                                ></i>
+                            </span>
+                            <div
+                                v-if="dailyPlan.dinner"
+                                class="text"
+                                @click="showRecipeDetails(dailyPlan.lunch)"
+                                :style="`background: 
                                 linear-gradient(
                                     0deg,
                                     var(--main-color) 0%,
@@ -135,83 +154,96 @@
                                 url(${getMainImageUrl(
                                     dailyPlan.dinner
                                 )}) center center / cover;`"
-                        >
-                            {{ dailyPlan.dinner.title }}
-                        </div>
-                        <div
-                            v-else
-                            class="add"
-                            @click="showRecipeList('dinner', index)"
-                        >
-                            <i class="las la-plus" style="font-size: 48px"></i>
+                            >
+                                {{ dailyPlan.dinner.title }}
+                            </div>
+                            <div
+                                v-else
+                                class="add"
+                                @click="showRecipeList('dinner', index)"
+                            >
+                                <i
+                                    class="las la-plus"
+                                    style="font-size: 48px"
+                                ></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <CustomModal
-        thin
-        :mode="'right'"
-        v-if="modalMode !== null"
-        @close="modalMode = null"
-    >
-        <div class="recipeList" v-if="modalMode === 'recipeList'">
-            <div class="closeModal-container">
-                <button class="closeModal" @click="modalMode = null">
-                    <i class="las la-times"></i>
+        <CustomModal
+            thin
+            :mode="'right'"
+            v-if="modalMode !== null"
+            @close="modalMode = null"
+        >
+            <div class="recipeList" v-if="modalMode === 'recipeList'">
+                <div class="closeModal-container">
+                    <button class="closeModal" @click="modalMode = null">
+                        <i class="las la-times"></i>
+                    </button>
+                </div>
+                <button
+                    class="createRecipeButon"
+                    @click="modalMode = 'createRecipe'"
+                >
+                    Add new recipe
                 </button>
+                <div class="recipeListContainer">
+                    <!-- <SearchRecipe /> -->
+                    <RecipeList
+                        thin
+                        :recipes="recipes"
+                        :isWeekPlan="true"
+                        @goToPage="goToPage"
+                        @selectedRecipe="
+                            addRecipeToWeekPlan(
+                                $event,
+                                selectedDay,
+                                selectedMeal
+                            );
+                            modalMode = null;
+                        "
+                        @seeMoreInfoAboutRecipe="
+                            showRecipeDetails($event, true)
+                        "
+                    />
+                </div>
             </div>
-            <button
-                class="createRecipeButon"
-                @click="modalMode = 'createRecipe'"
-            >
-                Add new recipe
-            </button>
-            <div class="recipeListContainer">
-                <!-- <SearchRecipe /> -->
-                <RecipeList
+            <div class="recipeDetails" v-if="modalMode === 'recipeDetails'">
+                <div class="closeModal-container">
+                    <button
+                        v-if="canGoBack"
+                        class="closeModal"
+                        @click="modalMode = 'recipeList'"
+                    >
+                        <i class="las la-arrow-left"></i>
+                    </button>
+                    <button v-else class="closeModal" @click="modalMode = null">
+                        <i class="las la-times"></i>
+                    </button>
+                </div>
+                <RecipeDetails :id="detailedRecipe._id" minified />
+            </div>
+            <div class="createRecipe" v-if="modalMode === 'createRecipe'">
+                <div class="closeModal-container">
+                    <button
+                        class="closeModal"
+                        @click="modalMode = 'recipeList'"
+                    >
+                        <i class="las la-times"></i>
+                    </button>
+                </div>
+                <CreateRecipe
                     thin
-                    :recipes="recipes"
-                    :isWeekPlan="true"
-                    @goToPage="goToPage"
-                    @selectedRecipe="
-                        addRecipeToWeekPlan($event, selectedDay, selectedMeal);
-                        modalMode = null;
+                    @newRecipeSaved="
+                        addRecipeToWeekPlan($event, selectedDay, selectedMeal)
                     "
-                    @seeMoreInfoAboutRecipe="showRecipeDetails($event, true)"
                 />
             </div>
-        </div>
-        <div class="recipeDetails" v-if="modalMode === 'recipeDetails'">
-            <div class="closeModal-container">
-                <button
-                    v-if="canGoBack"
-                    class="closeModal"
-                    @click="modalMode = 'recipeList'"
-                >
-                    <i class="las la-arrow-left"></i>
-                </button>
-                <button v-else class="closeModal" @click="modalMode = null">
-                    <i class="las la-times"></i>
-                </button>
-            </div>
-            <RecipeDetails :id="detailedRecipe._id" minified />
-        </div>
-        <div class="createRecipe" v-if="modalMode === 'createRecipe'">
-            <div class="closeModal-container">
-                <button class="closeModal" @click="modalMode = 'recipeList'">
-                    <i class="las la-times"></i>
-                </button>
-            </div>
-            <CreateRecipe
-                thin
-                @newRecipeSaved="
-                    addRecipeToWeekPlan($event, selectedDay, selectedMeal)
-                "
-            />
-        </div>
-    </CustomModal>
+        </CustomModal>
+    </div>
 </template>
 
 <script lang="ts">
@@ -314,6 +346,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.my-weekplan-container {
+    background-color: var(--background-color);
+}
 .back {
     padding: 0.5rem 1rem;
     position: absolute;
