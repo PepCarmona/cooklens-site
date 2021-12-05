@@ -60,6 +60,7 @@ const routes: Array<RouteRecordRaw> = [
                     import(
                         /* webpackChunkName: "profile" */ '../components/profile/Profile.vue'
                     ),
+                meta: { requireAuth: true },
             },
             {
                 path: 'myRecipes',
@@ -68,6 +69,7 @@ const routes: Array<RouteRecordRaw> = [
                     import(
                         /* webpackChunkName: "myRecipes" */ '../components/profile/MyRecipes.vue'
                     ),
+                meta: { requireAuth: true },
             },
             {
                 path: 'favRecipes',
@@ -76,6 +78,7 @@ const routes: Array<RouteRecordRaw> = [
                     import(
                         /* webpackChunkName: "favRecipes" */ '../components/profile/MyFavRecipes.vue'
                     ),
+                meta: { requireAuth: true },
             },
             {
                 path: 'myWeekPlan',
@@ -84,6 +87,7 @@ const routes: Array<RouteRecordRaw> = [
                     import(
                         /* webpackChunkName: "favRecipes" */ '../components/profile/MyWeekPlan.vue'
                     ),
+                meta: { requireAuth: true },
             },
         ],
     },

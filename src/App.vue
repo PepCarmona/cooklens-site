@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount, watch } from 'vue';
+import { defineComponent, watch } from 'vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import useAuthState from './store/auth-state';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
     components: {
@@ -19,8 +19,19 @@ export default defineComponent({
 
     setup() {
         const route = useRoute();
+        const router = useRouter();
+        const { checkSession, authenticatedUser } = useAuthState();
 
-        onBeforeMount(() => useAuthState().checkSession());
+        router.beforeEach(async (to, from, next) => {
+            if (authenticatedUser.value === undefined) {
+                await checkSession();
+                next();
+            } else if (to.meta.requireAuth && !authenticatedUser.value) {
+                next({ name: 'Authentication' });
+            } else {
+                next();
+            }
+        });
 
         watch(route, () => {
             const app = document.getElementById('app');

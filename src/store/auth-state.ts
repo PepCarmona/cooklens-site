@@ -4,7 +4,7 @@ import { readonly, Ref, ref, computed } from 'vue';
 
 interface AuthState {
     isLoading: Readonly<Ref<boolean>>;
-    authenticatedUser: Readonly<Ref<User | null>>;
+    authenticatedUser: Readonly<Ref<User | null | undefined>>;
     token: Readonly<Ref<string>>;
 
     register(user: User): Promise<void>;
@@ -16,7 +16,7 @@ interface AuthState {
 const authService = new AuthEndpoint();
 
 const isLoading = ref(false);
-const authenticatedUser = ref<User | null>(null);
+const authenticatedUser = ref<User | null>();
 const token = ref(localStorage.getItem('userToken') || '');
 
 function register(user: User) {
