@@ -27,6 +27,7 @@ export default defineComponent({
                 await checkSession();
                 if (authenticatedUser.value) {
                     next();
+                    return;
                 }
             }
             if (to.meta.requireAuth && !authenticatedUser.value) {
