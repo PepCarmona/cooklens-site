@@ -55,7 +55,11 @@ export default defineComponent({
         CustomInput,
     },
 
-    setup() {
+    props: {
+        nextUrl: String,
+    },
+
+    setup(props) {
         const router = useRouter();
 
         const user = ref<User>(new UserClass());
@@ -69,7 +73,7 @@ export default defineComponent({
 
             useAuthState()
                 .register(user.value)
-                .then(() => router.push({ name: 'Home' }));
+                .then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
         }
 
         function isValidUser(): boolean {

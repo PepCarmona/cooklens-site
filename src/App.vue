@@ -30,7 +30,10 @@ export default defineComponent({
                 }
             }
             if (to.meta.requireAuth && !authenticatedUser.value) {
-                next({ name: 'Authentication' });
+                next({
+                    name: 'Authentication',
+                    query: { nextUrl: to.fullPath },
+                });
             } else {
                 next();
             }

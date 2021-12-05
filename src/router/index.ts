@@ -47,6 +47,7 @@ const routes: Array<RouteRecordRaw> = [
             import(
                 /* webpackChunkName: "register" */ '../components/profile/auth/Authentication.vue'
             ),
+        props: (route) => ({ nextUrl: route.query.nextUrl }),
         meta: { noFooter: true },
     },
     {

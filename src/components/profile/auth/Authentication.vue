@@ -7,8 +7,8 @@
         <div class="form">
             <router-link class="title" to="/">Cooklens</router-link>
             <div class="subtitle">Just enjoy cooking</div>
-            <Login v-if="showLogin" />
-            <Register v-else />
+            <Login v-if="showLogin" :nextUrl="nextUrl" />
+            <Register v-else :nextUrl="nextUrl" />
             <div class="alternative">
                 <span v-if="showLogin">
                     No account yet?
@@ -46,9 +46,10 @@ export default defineComponent({
         prevRoute = from.name?.toString();
     },
 
-    setup() {
+    setup(_, { attrs }) {
         const router = useRouter();
         const showLogin = ref(true);
+        const nextUrl = attrs.nextUrl;
 
         function goBack() {
             if (prevRoute) {
@@ -60,6 +61,7 @@ export default defineComponent({
 
         return {
             showLogin,
+            nextUrl,
             goBack,
         };
     },
