@@ -25,8 +25,11 @@ export default defineComponent({
         router.beforeEach(async (to, from, next) => {
             if (authenticatedUser.value === undefined) {
                 await checkSession();
-                next();
-            } else if (to.meta.requireAuth && !authenticatedUser.value) {
+                if (authenticatedUser.value) {
+                    next();
+                }
+            }
+            if (to.meta.requireAuth && !authenticatedUser.value) {
                 next({ name: 'Authentication' });
             } else {
                 next();
