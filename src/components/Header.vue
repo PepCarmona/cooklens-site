@@ -13,29 +13,12 @@
                 Cooklens
             </router-link>
             <div class="items">
-                <!-- <router-link @click="showMenu = false" to="/"
-                                    >Home</router-link
-                                > -->
                 <router-link @click="showMenu = false" to="/recipes"
                     >Recipes</router-link
                 >
                 <router-link @click="showMenu = false" to="/about"
                     >About</router-link
                 >
-                <!-- <router-link
-                                    @click="showMenu = false"
-                                    to="/recipe/random?random=true"
-                                    >Random</router-link
-                                > -->
-                <!-- <span
-                                    v-if="!!authenticatedUser"
-                                    @click="
-                                        logOut();
-                                        showMenu = false;
-                                    "
-                                >
-                                    Log Out
-                                </span> -->
                 <router-link
                     @click="showMenu = false"
                     v-if="!!authenticatedUser"
@@ -76,26 +59,16 @@ export default defineComponent({
     },
 
     setup() {
-        const router = useRouter();
         const route = useRoute();
 
         const showMenu = ref(false);
         const showHeader = computed(() => route.name !== 'Authentication');
         const { authenticatedUser } = useAuthState();
 
-        function logOut() {
-            useAuthState()
-                .logOut()
-                .then(() => {
-                    router.push({ name: 'Home' });
-                });
-        }
-
         return {
             showMenu,
             showHeader,
             authenticatedUser,
-            logOut,
         };
     },
 });

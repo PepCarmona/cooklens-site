@@ -45,7 +45,7 @@
             </div>
             <div class="more-info">
                 <!-- <span class="title">More…</span> -->
-                <div>
+                <div @click="logOut">
                     <span>Logout</span>
                     <i class="las la-sign-out-alt"></i>
                 </div>
@@ -58,6 +58,7 @@
 import { defineComponent } from 'vue';
 import useAuthState from '@/store/auth-state';
 import PageHeader from '@/components/shared/PageHeader.vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Profile',
@@ -67,10 +68,20 @@ export default defineComponent({
     },
 
     setup() {
+        const router = useRouter();
         const { authenticatedUser } = useAuthState();
+
+        function logOut() {
+            useAuthState()
+                .logOut()
+                .then(() => {
+                    router.push({ name: 'Home' });
+                });
+        }
 
         return {
             authenticatedUser,
+            logOut,
         };
     },
 });
