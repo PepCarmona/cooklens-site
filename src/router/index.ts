@@ -6,6 +6,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/',
         name: 'Home',
         component: Home,
+        meta: { showAddRecipe: true },
     },
     {
         path: '/recipes',
@@ -14,7 +15,7 @@ const routes: Array<RouteRecordRaw> = [
             import(
                 /* webpackChunkName: "about" */ '../views/RecipesMainView.vue'
             ),
-        meta: { invertedBG: true },
+        meta: { invertedBG: true, showAddRecipe: true },
     },
     {
         path: '/about',
@@ -67,13 +68,13 @@ const routes: Array<RouteRecordRaw> = [
                 meta: { requireAuth: true },
             },
             {
-                path: 'myRecipes',
-                name: 'myRecipes',
+                path: 'ownRecipes',
+                name: 'ownRecipes',
                 component: () =>
                     import(
-                        /* webpackChunkName: "myRecipes" */ '../components/profile/MyRecipes.vue'
+                        /* webpackChunkName: "ownRecipes" */ '../components/profile/MyRecipes.vue'
                     ),
-                meta: { requireAuth: true },
+                meta: { requireAuth: true, showAddRecipe: true },
             },
             {
                 path: 'favRecipes',

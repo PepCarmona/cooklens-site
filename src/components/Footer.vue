@@ -65,13 +65,7 @@ export default defineComponent({
 
         const routeName = computed(() => route.name);
 
-        const showAddRecipe = computed(
-            () =>
-                route.name &&
-                ['Home', 'RecipesMainView', 'myRecipes'].includes(
-                    route.name.toString()
-                )
-        );
+        const showAddRecipe = computed(() => route.meta.showAddRecipe);
 
         const showEditRecipe = computed(
             () =>
@@ -80,7 +74,7 @@ export default defineComponent({
                 isOwnRecipe.value
         );
 
-        const showFooter = computed(() => route.name !== 'Authentication');
+        const showFooter = computed(() => !route.meta.noFooter);
 
         function addRecipe() {
             if (showAddRecipe.value) {

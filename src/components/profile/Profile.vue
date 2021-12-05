@@ -24,7 +24,7 @@
                 <div class="image"></div>
             </div>
             <div class="links">
-                <router-link :to="{ name: 'myRecipes' }">
+                <router-link :to="{ name: 'ownRecipes' }">
                     <button>
                         <i class="las la-book"></i>
                         <span>My Recipes</span>
