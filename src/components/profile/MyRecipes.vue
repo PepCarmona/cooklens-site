@@ -54,13 +54,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.back {
-    padding: 0.5rem 1rem;
-    position: absolute;
-    left: 1rem;
-}
-
-.title,
 .createRecipe {
     display: flex;
     width: 100%;

@@ -1,11 +1,8 @@
 <template>
-    <div class="title">
-        <button @click="back" class="back">
-            <i class="las la-arrow-left"></i>
-        </button>
-        <h2>My Week Plan</h2>
-    </div>
-    <div class="header">
+    <PageHeader @go-back="back">
+        <template v-slot:title>My Week Plan</template>
+    </PageHeader>
+    <div class="weekplan-header">
         <div class="selectWeekPlan">
             <div class="dropDown__selected">
                 <input
@@ -219,15 +216,19 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
+
+import CustomModal from '@/components/shared/CustomModal.vue';
+import RecipeList from '@/components/recipes/RecipeList.vue';
+import RecipeDetails from '@/views/RecipeDetails.vue';
+import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
+import PageHeader from '@/components/shared/PageHeader.vue';
+
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
 import useWeekPlanState, { weekDays } from '@/store/weekPlan-state';
-import CustomModal from '@/components/shared/CustomModal.vue';
-import RecipeList from '@/components/recipes/RecipeList.vue';
+
 import { Meals } from '@/api/types/weekPlan';
 import { Recipe } from '@/api/types/recipe';
-import RecipeDetails from '@/views/RecipeDetails.vue';
-import CreateRecipe from '@/components/recipes/CreateRecipe.vue';
 
 type modalModes = 'recipeList' | 'recipeDetails' | 'createRecipe' | null;
 
@@ -239,6 +240,7 @@ export default defineComponent({
         RecipeList,
         RecipeDetails,
         CreateRecipe,
+        PageHeader,
     },
 
     setup() {
@@ -326,13 +328,13 @@ export default defineComponent({
 }
 
 .body,
-.header {
+.weekplan-header {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
 
-.header {
+.weekplan-header {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -549,7 +551,7 @@ export default defineComponent({
 }
 
 @media only screen and (min-width: 768px) {
-    .header {
+    .weekplan-header {
         display: flex;
         justify-content: flex-end;
         margin-bottom: 1rem;

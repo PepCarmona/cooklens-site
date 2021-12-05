@@ -1,12 +1,11 @@
 <template>
-    <div class="row align-center justify-center">
-        <button @click="back" class="back">
-            <i class="las la-arrow-left"></i>
-        </button>
-        <h2>My Favorite Recipes</h2>
+    <div>
+        <PageHeader @go-back="back">
+            <template v-slot:title>My Favorite Recipes</template>
+        </PageHeader>
+        <LoadingModal v-if="isLoading" />
+        <RecipeList v-else :recipes="favRecipes" />
     </div>
-    <LoadingModal v-if="isLoading" />
-    <RecipeList v-else :recipes="favRecipes" />
 </template>
 
 <script lang="ts">
@@ -14,6 +13,7 @@ import { defineComponent, onBeforeMount } from 'vue';
 
 import LoadingModal from '@/components/shared/LoadingModal.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
+import PageHeader from '@/components/shared/PageHeader.vue';
 
 import useUserState from '@/store/user-state';
 import { useRouter } from 'vue-router';
@@ -24,6 +24,7 @@ export default defineComponent({
     components: {
         LoadingModal,
         RecipeList,
+        PageHeader,
     },
 
     setup() {
@@ -47,11 +48,3 @@ export default defineComponent({
     },
 });
 </script>
-
-<style scoped>
-.back {
-    padding: 0.5rem 1rem;
-    position: absolute;
-    left: 1rem;
-}
-</style>
