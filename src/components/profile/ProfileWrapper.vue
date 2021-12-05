@@ -6,14 +6,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, onUpdated } from 'vue';
 import useAuthState from '@/store/auth-state';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'ProfileWrapper',
 
     setup() {
+        const router = useRouter();
         const { authenticatedUser, isLoading } = useAuthState();
+
+        onMounted(() =>
+            router.replace({
+                params: { user: authenticatedUser.value?.username },
+            })
+        );
+        onUpdated(() =>
+            router.replace({
+                params: { user: authenticatedUser.value?.username },
+            })
+        );
         return {
             authenticatedUser,
             isLoading,
