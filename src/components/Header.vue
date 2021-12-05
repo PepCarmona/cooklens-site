@@ -133,7 +133,7 @@ header {
     flex-shrink: 0;
     z-index: 9;
 }
-a.router-link-exact-active {
+.slide-menu a.router-link-exact-active {
     color: var(--accent-color);
 }
 .menu > span {

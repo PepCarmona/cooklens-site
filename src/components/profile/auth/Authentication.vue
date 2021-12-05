@@ -1,6 +1,6 @@
 <template>
     <div class="authentication">
-        <div class="back" @click="goBack">
+        <div class="auth-back" @click="goBack">
             <i class="las la-angle-left"></i>
         </div>
         <div class="cover-image"></div>
