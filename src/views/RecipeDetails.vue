@@ -351,7 +351,6 @@ export default defineComponent({
             getFormattedTime,
             recipeHasImages,
             editRating,
-            // hideEdit,
             getFormattedTitle,
             goBack,
             showEditRecipe,

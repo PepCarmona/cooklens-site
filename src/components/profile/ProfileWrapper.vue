@@ -12,14 +12,6 @@ import useAuthState from '@/store/auth-state';
 export default defineComponent({
     name: 'ProfileWrapper',
 
-    // beforeRouteEnter(to, from, next) {
-    //     if (!useAuthState().authenticatedUser.value) {
-    //         next({ name: 'Authentication' });
-    //     } else {
-    //         next();
-    //     }
-    // },
-
     setup() {
         const { authenticatedUser, isLoading } = useAuthState();
         return {

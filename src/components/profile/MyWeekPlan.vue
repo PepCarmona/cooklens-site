@@ -239,7 +239,6 @@ export default defineComponent({
         RecipeList,
         RecipeDetails,
         CreateRecipe,
-        // SearchRecipe,
     },
 
     setup() {
