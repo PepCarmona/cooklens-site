@@ -2,7 +2,7 @@
     <div class="header">
         <div>
             <span class="back" @click="$emit('go-back')">
-                <i class="las la-angle-left"></i>
+                <i v-if="canGoBack" class="las la-angle-left"></i>
             </span>
             <span class="title">
                 <slot name="title"></slot>
@@ -22,6 +22,13 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'PageHeader',
+
+    props: {
+        canGoBack: {
+            type: Boolean,
+            default: true,
+        },
+    },
 
     emits: ['go-back'],
 
@@ -52,20 +59,23 @@ export default defineComponent({
 .header > div:first-child {
     padding-bottom: 1rem;
 }
-.header .back > i {
+.back {
+    min-width: 28px;
+}
+.back > i {
     font-size: 20px;
 }
-.header .back,
-.header .actions > * {
+.back,
+.actions > * {
     cursor: pointer;
 }
-.header .actions {
+.actions {
     display: flex;
     width: fit-content;
     right: 1rem;
     min-width: 28px;
 }
-.header .title {
+.title {
     font-family: var(--title-font);
     font-size: 20px;
     flex-grow: 1;

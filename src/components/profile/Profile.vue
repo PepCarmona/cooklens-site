@@ -1,6 +1,6 @@
 <template>
     <div class="profile-container">
-        <PageHeader @go-back="handleGoBack">
+        <PageHeader :canGoBack="false">
             <template v-slot:title>My Profile</template>
             <template v-slot:actions>
                 <span class="settings">

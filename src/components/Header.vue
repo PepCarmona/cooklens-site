@@ -48,7 +48,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 import useAuthState from '@/store/auth-state';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import CustomModal from '@/components/shared/CustomModal.vue';
 
 export default defineComponent({
