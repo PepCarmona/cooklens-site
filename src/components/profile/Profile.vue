@@ -36,10 +36,10 @@
                         <span>Favorites</span>
                     </button>
                 </router-link>
-                <router-link :to="{ name: 'myWeekPlan' }">
+                <router-link :to="{ name: 'myMealPlan' }">
                     <button>
                         <i class="las la-calendar-week"></i>
-                        <span>Week Plans</span>
+                        <span>Meal Plan</span>
                     </button>
                 </router-link>
             </div>

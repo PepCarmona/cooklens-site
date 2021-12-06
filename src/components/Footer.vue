@@ -26,10 +26,10 @@
                 </router-link>
             </div>
             <div :class="{ 'ml-2': showAddRecipe || showEditRecipe }">
-                <router-link to="/profile/myWeekPlan">
+                <router-link to="/profile/myMealPlan">
                     <i
                         class="las la-calendar-week"
-                        :class="{ current: routeName === 'myWeekPlan' }"
+                        :class="{ current: routeName === 'myMealPlan' }"
                     ></i>
                 </router-link>
             </div>
