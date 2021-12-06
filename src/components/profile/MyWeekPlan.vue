@@ -1,9 +1,9 @@
 <template>
-    <div class="my-mealplans-container">
+    <div class="my-weekplan-container">
         <PageHeader @go-back="back">
-            <template v-slot:title>My Meal Plans</template>
+            <template v-slot:title>My Week Plan</template>
         </PageHeader>
-        <div class="mealplans-header">
+        <div class="weekplan-header">
             <div class="selectWeekPlan">
                 <div class="dropDown__selected">
                     <input
@@ -346,7 +346,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.my-mealplans-container {
+.my-weekplan-container {
     background-color: var(--background-color);
 }
 .back {
@@ -363,13 +363,13 @@ export default defineComponent({
 }
 
 .body,
-.mealplans-header {
+.weekplan-header {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
 }
 
-.mealplans-header {
+.weekplan-header {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -586,7 +586,7 @@ export default defineComponent({
 }
 
 @media only screen and (min-width: 768px) {
-    .mealplans-header {
+    .weekplan-header {
         display: flex;
         justify-content: flex-end;
         margin-bottom: 1rem;

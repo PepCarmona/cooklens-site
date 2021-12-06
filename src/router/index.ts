@@ -86,11 +86,11 @@ const routes: Array<RouteRecordRaw> = [
                 meta: { requireAuth: true },
             },
             {
-                path: 'myMealPlans',
-                name: 'myMealPlans',
+                path: 'myWeekPlan',
+                name: 'myWeekPlan',
                 component: () =>
                     import(
-                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyMealPlans.vue'
+                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyWeekPlan.vue'
                     ),
                 meta: { requireAuth: true },
             },
