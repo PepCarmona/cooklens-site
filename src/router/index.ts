@@ -52,7 +52,7 @@ const routes: Array<RouteRecordRaw> = [
         meta: { noFooter: true },
     },
     {
-        path: '/profile/:user',
+        path: '/profile',
         component: () =>
             import(
                 /* webpackChunkName: "profileWrapper" */ '../components/profile/ProfileWrapper.vue'
@@ -95,14 +95,6 @@ const routes: Array<RouteRecordRaw> = [
                 meta: { requireAuth: true },
             },
         ],
-    },
-    {
-        path: '/profile',
-        component: () =>
-            import(
-                /* webpackChunkName: "profileWrapper" */ '../components/profile/ProfileWrapper.vue'
-            ),
-        beforeEnter: (to, from, next) => next('/profile/ '),
     },
 ];
 
