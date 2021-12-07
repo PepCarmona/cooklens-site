@@ -28,6 +28,20 @@
 
         <div class="content">
             <div>Selected day: {{ selectedDay }}</div>
+            <div>
+                <button
+                    @click="showPreviousWeek()"
+                    :disabled="currentWeekIndex === 0"
+                >
+                    Prev
+                </button>
+                <button
+                    @click="showNextWeek()"
+                    :disabled="currentWeekIndex === weeks.length - 1"
+                >
+                    Next
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -37,6 +51,34 @@ import { computed, defineComponent, ref } from 'vue';
 import PageHeader from '@/components/shared/PageHeader.vue';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
+
+interface Day {
+    month: string;
+    dayNumber: number;
+    dayName: string;
+    date: string;
+    isBeforeToday: boolean;
+}
+
+class WeekDay implements Day {
+    month: string;
+    dayNumber: number;
+    dayName: string;
+    isBeforeToday: boolean;
+    date: string;
+
+    constructor(_day: Date) {
+        const day = moment(_day);
+
+        this.month = day.format('MMMM');
+        this.dayNumber = day.date();
+        this.dayName = day.format('ddd');
+        this.date = day.format('DD/M/YYYY');
+        this.isBeforeToday = day
+            .startOf('day')
+            .isBefore(moment().startOf('day'));
+    }
+}
 
 export default defineComponent({
     name: 'MyMealPlan',
@@ -50,26 +92,25 @@ export default defineComponent({
 
         const selectedDay = ref(moment().format('DD/M/YYYY'));
 
-        const currentWeek = computed(() => {
-            const week = [];
+        const currentWeek = ref<Day[]>(getWeek(new Date()));
 
-            const weekStart = moment().startOf('isoWeek');
+        const currentWeekIndex = computed(() =>
+            weeks.findIndex(
+                (week) => week[0].date === currentWeek.value[0].date
+            )
+        );
 
-            for (let i = 0; i < 7; i++) {
-                const day = moment(weekStart).add(i, 'days');
-                week.push({
-                    month: day.format('MMMM'),
-                    dayNumber: day.date(),
-                    dayName: day.format('ddd'),
-                    date: day.format('DD/M/YYYY'),
-                    isBeforeToday: day
-                        .startOf('day')
-                        .isBefore(moment().startOf('day')),
-                });
-            }
+        const weeks: Day[][] = [];
 
-            return week;
-        });
+        for (let i = 0; i < 14; i++) {
+            weeks.push(
+                getWeek(
+                    moment()
+                        .add(i - 4, 'weeks')
+                        .toDate()
+                )
+            );
+        }
 
         const currentMonth = computed(() => {
             let text = currentWeek.value[0].month;
@@ -81,6 +122,26 @@ export default defineComponent({
             return text;
         });
 
+        function getWeek(day: Date) {
+            const week: Day[] = [];
+            const weekStart = moment(day).startOf('isoWeek');
+
+            for (let i = 0; i < 7; i++) {
+                const day = moment(weekStart).add(i, 'days');
+                week.push(new WeekDay(day.toDate()));
+            }
+
+            return week;
+        }
+
+        function showPreviousWeek() {
+            currentWeek.value = weeks[currentWeekIndex.value - 1];
+        }
+
+        function showNextWeek() {
+            currentWeek.value = weeks[currentWeekIndex.value + 1];
+        }
+
         function back() {
             router.push({
                 name: 'Profile',
@@ -89,7 +150,11 @@ export default defineComponent({
         return {
             selectedDay,
             currentWeek,
+            currentWeekIndex,
             currentMonth,
+            weeks,
+            showPreviousWeek,
+            showNextWeek,
             back,
         };
     },
