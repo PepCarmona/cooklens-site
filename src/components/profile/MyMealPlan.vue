@@ -8,11 +8,13 @@
                 {{ currentMonth }}
             </div>
             <div class="week">
-                <div
+                <button
                     v-for="day in currentWeek"
                     :key="day"
                     class="day"
-                    :class="{ selected: day.isToday }"
+                    :class="{ selected: day.date === selectedDay }"
+                    @click="selectedDay = day.date"
+                    :disabled="day.isBeforeToday"
                 >
                     <span class="day-name">
                         {{ day.dayName.toUpperCase() }}
@@ -20,14 +22,18 @@
                     <span class="day-number">
                         {{ day.dayNumber }}
                     </span>
-                </div>
+                </button>
             </div>
+        </div>
+
+        <div class="content">
+            <div>Selected day: {{ selectedDay }}</div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import PageHeader from '@/components/shared/PageHeader.vue';
 import { useRouter } from 'vue-router';
 import moment from 'moment';
@@ -42,6 +48,8 @@ export default defineComponent({
     setup() {
         const router = useRouter();
 
+        const selectedDay = ref(moment().format('DD/M/YYYY'));
+
         const currentWeek = computed(() => {
             const week = [];
 
@@ -53,7 +61,10 @@ export default defineComponent({
                     month: day.format('MMMM'),
                     dayNumber: day.date(),
                     dayName: day.format('ddd'),
-                    isToday: moment().startOf('day').isSame(day.startOf('day')),
+                    date: day.format('DD/M/YYYY'),
+                    isBeforeToday: day
+                        .startOf('day')
+                        .isBefore(moment().startOf('day')),
                 });
             }
 
@@ -76,6 +87,7 @@ export default defineComponent({
             });
         }
         return {
+            selectedDay,
             currentWeek,
             currentMonth,
             back,
@@ -86,11 +98,12 @@ export default defineComponent({
 
 <style scoped>
 .my-mealplan-container {
-    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 .mealplan-header {
-    display: flex;
-    flex-wrap: wrap;
+    background-color: var(--background-color);
 }
 .mealplan-header > div {
     width: 100%;
@@ -131,5 +144,8 @@ export default defineComponent({
     background-color: var(--accent-color);
     border-radius: 25px;
     color: var(--inverted-text-color);
+}
+.content {
+    flex-grow: 1;
 }
 </style>

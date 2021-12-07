@@ -88,6 +88,8 @@ body * {
     padding-bottom: 0;
 }
 #app > div {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
 }
 @media only screen and (min-width: 769px) {
