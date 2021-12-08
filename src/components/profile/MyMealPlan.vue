@@ -4,12 +4,27 @@
             <template v-slot:title>My Meal Plan</template>
         </PageHeader>
         <div class="mealplan-header">
-            <div class="month-text">
-                {{ currentMonth }}
+            <div class="title">
+                <span class="icon">
+                    <i
+                        v-if="
+                            swiper &&
+                            swiper.activeIndex !== NUMBER_OF_PAST_WEEKS
+                        "
+                        class="las la-map-pin"
+                        @click="showToday"
+                    ></i>
+                </span>
+                <span class="month-text">{{ currentMonth }}</span>
+                <span class="icon">
+                    <i class="las la-calendar" @click="showCalendar"></i>
+                </span>
             </div>
             <Swiper
                 :modules="[Virtual]"
                 :initialSlide="NUMBER_OF_PAST_WEEKS"
+                :spaceBetween="30"
+                @init="swiper = $event"
                 @activeIndexChange="showingWeek = weeks[$event.activeIndex]"
                 virtual
             >
@@ -51,6 +66,7 @@ import { useRouter } from 'vue-router';
 import PageHeader from '@/components/shared/PageHeader.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
+import { Swiper as ISwiper } from '@/helpers/swiper';
 
 import moment from 'moment';
 import 'swiper/swiper.min.css';
@@ -117,6 +133,8 @@ export default defineComponent({
             );
         }
 
+        const swiper = ref<ISwiper>();
+
         const currentMonth = computed(() => {
             let text = showingWeek.value[0].month;
 
@@ -126,6 +144,14 @@ export default defineComponent({
 
             return text;
         });
+
+        function showToday() {
+            swiper.value?.slideTo(NUMBER_OF_PAST_WEEKS);
+        }
+
+        function showCalendar() {
+            console.log('calendar');
+        }
 
         function getWeek(day: Date) {
             const week: Day[] = [];
@@ -150,6 +176,9 @@ export default defineComponent({
             showingWeek,
             currentMonth,
             weeks,
+            swiper,
+            showToday,
+            showCalendar,
             back,
             Virtual,
         };
@@ -169,11 +198,20 @@ export default defineComponent({
 .mealplan-header > div {
     width: 100%;
 }
+.title {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.title > .icon {
+    min-width: 25px;
+    margin: 0 1rem;
+}
 .month-text {
     font-size: 20px;
     font-weight: 200;
     font-family: var(--title-font);
-    margin-bottom: 1rem;
 }
 .week {
     display: flex;
