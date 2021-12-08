@@ -23,19 +23,22 @@ export default defineComponent({
         const { checkSession, authenticatedUser } = useAuthState();
 
         router.beforeEach(async (to, from, next) => {
-            if (authenticatedUser.value === undefined) {
-                await checkSession();
-                if (authenticatedUser.value) {
-                    next();
-                    return;
+            if (to.meta.requireAuth) {
+                if (authenticatedUser.value === undefined) {
+                    await checkSession();
                 }
-            }
-            if (to.meta.requireAuth && !authenticatedUser.value) {
-                next({
-                    name: 'Authentication',
-                    query: { nextUrl: to.fullPath },
-                });
+                if (!authenticatedUser.value) {
+                    next({
+                        name: 'Authentication',
+                        query: { nextUrl: to.fullPath },
+                    });
+                } else {
+                    next();
+                }
             } else {
+                if (authenticatedUser.value === undefined) {
+                    checkSession();
+                }
                 next();
             }
         });
