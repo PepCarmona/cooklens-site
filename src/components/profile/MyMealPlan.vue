@@ -88,6 +88,9 @@ export default defineComponent({
     },
 
     setup() {
+        const NUMBER_OF_FUTURE_WEEKS = 52;
+        const NUMBER_OF_PAST_WEEKS = 52; // TODO: start on registration date
+
         const router = useRouter();
 
         const selectedDay = ref(moment().format('DD/M/YYYY'));
@@ -95,18 +98,21 @@ export default defineComponent({
         const currentWeek = ref<Day[]>(getWeek(new Date()));
 
         const currentWeekIndex = computed(() =>
-            weeks.findIndex(
+            weeks.value.findIndex(
                 (week) => week[0].date === currentWeek.value[0].date
             )
         );
 
-        const weeks: Day[][] = [];
-
-        for (let i = 0; i < 14; i++) {
-            weeks.push(
+        const weeks = ref<Day[][]>([]);
+        for (
+            let i = 0;
+            i < NUMBER_OF_FUTURE_WEEKS + NUMBER_OF_PAST_WEEKS;
+            i++
+        ) {
+            weeks.value.push(
                 getWeek(
                     moment()
-                        .add(i - 4, 'weeks')
+                        .add(i - NUMBER_OF_PAST_WEEKS, 'weeks')
                         .toDate()
                 )
             );
@@ -135,11 +141,11 @@ export default defineComponent({
         }
 
         function showPreviousWeek() {
-            currentWeek.value = weeks[currentWeekIndex.value - 1];
+            currentWeek.value = weeks.value[currentWeekIndex.value - 1];
         }
 
         function showNextWeek() {
-            currentWeek.value = weeks[currentWeekIndex.value + 1];
+            currentWeek.value = weeks.value[currentWeekIndex.value + 1];
         }
 
         function back() {
