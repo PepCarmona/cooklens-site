@@ -7,50 +7,53 @@
             <div class="month-text">
                 {{ currentMonth }}
             </div>
-            <div class="week">
-                <button
-                    v-for="day in currentWeek"
-                    :key="day"
-                    class="day"
-                    :class="{ selected: day.date === selectedDay }"
-                    @click="selectedDay = day.date"
-                    :disabled="day.isBeforeToday"
+            <Swiper
+                :modules="[Virtual]"
+                :initialSlide="NUMBER_OF_PAST_WEEKS"
+                @activeIndexChange="showingWeek = weeks[$event.activeIndex]"
+                virtual
+            >
+                <SwiperSlide
+                    v-for="(week, index) in weeks"
+                    :key="index"
+                    :virtualIndex="index"
                 >
-                    <span class="day-name">
-                        {{ day.dayName.toUpperCase() }}
-                    </span>
-                    <span class="day-number">
-                        {{ day.dayNumber }}
-                    </span>
-                </button>
-            </div>
+                    <div class="week">
+                        <button
+                            v-for="day in week"
+                            :key="day"
+                            class="day"
+                            :class="{ selected: day.date === selectedDay }"
+                            @click="selectedDay = day.date"
+                            :disabled="day.isBeforeToday"
+                        >
+                            <span class="day-name">
+                                {{ day.dayName.toUpperCase() }}
+                            </span>
+                            <span class="day-number">
+                                {{ day.dayNumber }}
+                            </span>
+                        </button>
+                    </div>
+                </SwiperSlide>
+            </Swiper>
         </div>
-
         <div class="content">
             <div>Selected day: {{ selectedDay }}</div>
-            <div>
-                <button
-                    @click="showPreviousWeek()"
-                    :disabled="currentWeekIndex === 0"
-                >
-                    Prev
-                </button>
-                <button
-                    @click="showNextWeek()"
-                    :disabled="currentWeekIndex === weeks.length - 1"
-                >
-                    Next
-                </button>
-            </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
-import PageHeader from '@/components/shared/PageHeader.vue';
 import { useRouter } from 'vue-router';
+
+import PageHeader from '@/components/shared/PageHeader.vue';
+import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
+import { Virtual } from 'swiper';
+
 import moment from 'moment';
+import 'swiper/swiper.min.css';
 
 interface Day {
     month: string;
@@ -85,6 +88,8 @@ export default defineComponent({
 
     components: {
         PageHeader,
+        Swiper,
+        SwiperSlide,
     },
 
     setup() {
@@ -95,13 +100,7 @@ export default defineComponent({
 
         const selectedDay = ref(moment().format('DD/M/YYYY'));
 
-        const currentWeek = ref<Day[]>(getWeek(new Date()));
-
-        const currentWeekIndex = computed(() =>
-            weeks.value.findIndex(
-                (week) => week[0].date === currentWeek.value[0].date
-            )
-        );
+        const showingWeek = ref<Day[]>(getWeek(new Date()));
 
         const weeks = ref<Day[][]>([]);
         for (
@@ -119,10 +118,10 @@ export default defineComponent({
         }
 
         const currentMonth = computed(() => {
-            let text = currentWeek.value[0].month;
+            let text = showingWeek.value[0].month;
 
-            if (currentWeek.value.some((day) => day.month !== text)) {
-                text += ' / ' + currentWeek.value[6].month;
+            if (showingWeek.value.some((day) => day.month !== text)) {
+                text += ' / ' + showingWeek.value[6].month;
             }
 
             return text;
@@ -140,28 +139,19 @@ export default defineComponent({
             return week;
         }
 
-        function showPreviousWeek() {
-            currentWeek.value = weeks.value[currentWeekIndex.value - 1];
-        }
-
-        function showNextWeek() {
-            currentWeek.value = weeks.value[currentWeekIndex.value + 1];
-        }
-
         function back() {
             router.push({
                 name: 'Profile',
             });
         }
         return {
+            NUMBER_OF_PAST_WEEKS,
             selectedDay,
-            currentWeek,
-            currentWeekIndex,
+            showingWeek,
             currentMonth,
             weeks,
-            showPreviousWeek,
-            showNextWeek,
             back,
+            Virtual,
         };
     },
 });
