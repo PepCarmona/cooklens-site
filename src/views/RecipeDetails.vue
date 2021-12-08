@@ -368,6 +368,7 @@ export default defineComponent({
 }
 
 .brief {
+    width: auto;
     background-color: var(--background-contrast-color);
     border-radius: 1rem;
     padding: 1rem;

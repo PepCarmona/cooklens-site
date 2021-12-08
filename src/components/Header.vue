@@ -83,7 +83,7 @@ header {
     justify-content: space-between;
     align-items: center;
     z-index: 99;
-    backdrop-filter: blur(32px);
+    backdrop-filter: blur(12px);
 }
 
 #title {
