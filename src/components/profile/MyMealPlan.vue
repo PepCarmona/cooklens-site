@@ -1,24 +1,50 @@
 <template>
     <div class="my-mealplan-container">
         <CustomModal
-            :showIf="!!calendar"
+            :showIf="calendar && calendar.length > 0"
             :mode="'full'"
             @close="calendar = undefined"
         >
-            <div v-for="week in calendar" :key="week" class="calendar-week">
-                <button
-                    v-for="day in week"
-                    :key="day"
-                    class="day"
-                    :class="{ selected: day.date === selectedDay }"
-                    @click="
-                        selectedDay = day.date;
-                        calendar = undefined;
-                    "
-                    :disabled="day.isBeforeToday"
-                >
-                    {{ day.dayNumber }}
-                </button>
+            <div
+                v-for="month in calendar"
+                :key="month"
+                class="calendar-month"
+                :class="{ selected: month.isInView }"
+            >
+                <div class="calendar-month-title">
+                    <span class="month-name">{{ month.monthName }}</span>
+                    <span class="year">{{ month.year }}</span>
+                </div>
+                <div class="calendar-weekdays">
+                    <div v-for="day in weekdaysShort" :key="day">
+                        {{ day }}
+                    </div>
+                </div>
+                <div class="calendar-month-body">
+                    <div
+                        v-for="week in month.weeks"
+                        :key="week"
+                        class="calendar-week"
+                    >
+                        <div
+                            v-for="day in week"
+                            :key="day"
+                            class="calendar-day"
+                        >
+                            <button
+                                v-if="day"
+                                :class="{ selected: day.date === selectedDay }"
+                                :disabled="day.isBeforeToday"
+                                @click="
+                                    selectedDay = day.date;
+                                    calendar = [];
+                                "
+                            >
+                                {{ day.dayNumber }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </CustomModal>
         <PageHeader @go-back="back">
@@ -81,43 +107,74 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue';
+import { computed, defineComponent, nextTick, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import PageHeader from '@/components/shared/PageHeader.vue';
 import CustomModal from '@/components/shared/CustomModal.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
-import { Swiper as ISwiper } from '@/helpers/swiper';
 
-import moment from 'moment';
+import { Swiper as ISwiper } from '@/helpers/swiper';
+import { getLastItem } from '@/helpers/array';
+import { weekdaysShort } from '@/helpers/date';
+
+import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+dayjs.extend(isoWeek);
 import 'swiper/swiper.min.css';
+
+type Calendar = CalendarMonth[];
+
+type Week = [
+    Day | null,
+    Day | null,
+    Day | null,
+    Day | null,
+    Day | null,
+    Day | null,
+    Day | null
+];
+
+interface CalendarMonth {
+    monthNumber: number;
+    monthName: string;
+    year: number;
+    weeks: Week[];
+    isInView: boolean;
+}
 
 interface Day {
     month: string;
-    dayNumber: number;
+    dayNumber: string;
     dayName: string;
+    weekday: number;
     date: string;
     isBeforeToday: boolean;
 }
 
 class WeekDay implements Day {
     month: string;
-    dayNumber: number;
+    dayNumber: string;
     dayName: string;
+    weekday: number;
     isBeforeToday: boolean;
     date: string;
+    unformattedDate: Date;
 
     constructor(_day: Date) {
-        const day = moment(_day);
+        const day = dayjs(_day);
 
         this.month = day.format('MMMM');
-        this.dayNumber = day.date();
-        this.dayName = day.format('ddd');
-        this.date = day.format('DD/M/YYYY');
+        this.dayNumber = day.format('D');
+        this.dayName = weekdaysShort[day.isoWeekday() - 1];
+        this.date = day.format('M-DD-YYYY');
         this.isBeforeToday = day
             .startOf('day')
-            .isBefore(moment().startOf('day'));
+            .isBefore(dayjs().startOf('day'));
+        this.weekday = day.isoWeekday();
+        this.unformattedDate = day.toDate();
     }
 }
 
@@ -137,7 +194,7 @@ export default defineComponent({
 
         const router = useRouter();
 
-        const selectedDay = ref(moment().format('DD/M/YYYY'));
+        const selectedDay = ref(dayjs().format('M-DD-YYYY'));
 
         const showingWeek = ref<Day[]>(getWeek(new Date()));
 
@@ -149,7 +206,7 @@ export default defineComponent({
         ) {
             weeks.value.push(
                 getWeek(
-                    moment()
+                    dayjs()
                         .add(i - NUMBER_OF_PAST_WEEKS, 'weeks')
                         .toDate()
                 )
@@ -158,7 +215,7 @@ export default defineComponent({
 
         const swiper = ref<ISwiper>();
 
-        const calendar = ref();
+        const calendar = ref<Calendar>([]);
 
         const currentMonth = computed(() => {
             let text = showingWeek.value[0].month;
@@ -174,7 +231,6 @@ export default defineComponent({
             () => showingWeek.value,
             () => {
                 const index = weeks.value.indexOf(showingWeek.value);
-                console.log('index', index);
                 swiper.value?.slideTo(index);
             }
         );
@@ -191,7 +247,6 @@ export default defineComponent({
                         week.some((day) => day.date === selectedDay.value)
                     );
                     if (selectedWeek) {
-                        console.log('selectedWeek', selectedWeek);
                         showingWeek.value = selectedWeek;
                     }
                 }
@@ -202,20 +257,93 @@ export default defineComponent({
             swiper.value?.slideTo(NUMBER_OF_PAST_WEEKS);
         }
 
-        function showCalendar() {
-            calendar.value = weeks.value;
+        async function showCalendar() {
+            const startDate = dayjs(weeks.value[0][0].date).toDate();
+            const endDate = dayjs(
+                getLastItem(getLastItem(weeks.value)).date
+            ).toDate();
+
+            calendar.value = getCalendar(startDate, endDate);
+
+            await nextTick();
+
+            document
+                .querySelector('.calendar-month.selected')
+                ?.scrollIntoView({ block: 'center' });
         }
 
         function getWeek(day: Date) {
             const week: Day[] = [];
-            const weekStart = moment(day).startOf('isoWeek');
+            const weekStart = dayjs(day).startOf('isoWeek');
 
             for (let i = 0; i < 7; i++) {
-                const day = moment(weekStart).add(i, 'days');
+                const day = dayjs(weekStart).add(i, 'days');
                 week.push(new WeekDay(day.toDate()));
             }
 
             return week;
+        }
+
+        function getEmptyWeek(): Week {
+            return [null, null, null, null, null, null, null];
+        }
+
+        function getCalendar(start?: Date, end?: Date, period?: number) {
+            const startDate = start ?? Date.now();
+            const endDate =
+                end ??
+                dayjs(startDate)
+                    .add(period ?? 730, 'days')
+                    .toDate();
+
+            const monthsDifference =
+                dayjs(endDate).diff(dayjs(startDate), 'months') + 1;
+
+            let calendar: Calendar = [];
+
+            for (let i = 0; i <= monthsDifference; i++) {
+                const date = dayjs(startDate).add(i, 'months');
+                const month = date.month();
+                const year = date.year();
+                const daysInMonth = dayjs().month(month).daysInMonth();
+
+                const weeks: Week[] = [];
+                let week: Week = getEmptyWeek();
+
+                let isInView = false;
+
+                for (let j = 1; j <= daysInMonth; j++) {
+                    const day = date.date(j);
+                    if (
+                        day.isBefore(dayjs(startDate)) ||
+                        day.isAfter(dayjs(endDate))
+                    ) {
+                        continue;
+                    }
+
+                    if (day.isSame(dayjs(selectedDay.value))) {
+                        isInView = true;
+                    }
+
+                    const weekday = day.isoWeekday() - 1;
+                    week[weekday] = new WeekDay(day.toDate());
+
+                    if (weekday === 6 || j === daysInMonth) {
+                        weeks.push(week);
+                        week = getEmptyWeek();
+                    }
+                }
+
+                calendar.push({
+                    monthNumber: month,
+                    monthName: date.format('MMMM'),
+                    year,
+                    weeks,
+                    isInView,
+                });
+            }
+
+            return calendar;
         }
 
         function back() {
@@ -229,6 +357,7 @@ export default defineComponent({
             showingWeek,
             currentMonth,
             weeks,
+            weekdaysShort,
             calendar,
             swiper,
             showToday,
@@ -300,5 +429,57 @@ export default defineComponent({
 }
 .content {
     flex-grow: 1;
+}
+
+.calendar-month {
+    width: 100%;
+}
+.calendar-month:not(:first-child) {
+    margin-top: 2rem;
+}
+.calendar-month-title {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.25rem;
+}
+.month-name {
+    font-size: 18px;
+    font-family: var(--title-font);
+}
+.year {
+    display: block;
+    font-size: 14px;
+    font-family: var(--title-font);
+}
+.calendar-weekdays {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    color: var(--grey-600);
+}
+.calendar-weekdays > * {
+    width: calc(100% / 7);
+}
+.calendar-week {
+    display: flex;
+    padding: 0.25rem 0;
+}
+.calendar-day {
+    width: calc(100% / 7);
+}
+.calendar-day > * {
+    display: block;
+    height: 25px;
+    width: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.calendar-day > *.selected {
+    background-color: var(--accent-color);
+    border-radius: 25px;
+    color: var(--inverted-text-color);
 }
 </style>

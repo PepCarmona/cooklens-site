@@ -79,9 +79,7 @@
                     v-for="(dailyPlan, index) in selectedWeekPlan.dailyPlans"
                     :key="index"
                 >
-                    <div class="dayName">
-                        {{ weekDays[index] }}
-                    </div>
+                    <div class="dayName">Day name</div>
                     <div class="meals">
                         <div class="lunch" :class="{ free: !dailyPlan.lunch }">
                             <span class="label">Lunch</span>
@@ -257,7 +255,7 @@ import PageHeader from '@/components/shared/PageHeader.vue';
 
 import { useRouter } from 'vue-router';
 import useRecipeState from '@/store/recipe-state';
-import useWeekPlanState, { weekDays } from '@/store/weekPlan-state';
+import useWeekPlanState from '@/store/weekPlan-state';
 
 import { Meals } from '@/api/types/weekPlan';
 import { Recipe } from '@/api/types/recipe';
@@ -326,7 +324,6 @@ export default defineComponent({
 
         return {
             ...weekPlanState,
-            weekDays,
             isDropped,
             selectedMeal,
             selectedDay,

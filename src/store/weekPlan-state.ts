@@ -1,17 +1,12 @@
+import { computed, Ref, ref, watch } from 'vue';
+
 import { UserEndpoint } from '@/api/endpoints/user';
 import { WeekPlanEndpoint } from '@/api/endpoints/weekPlan';
 import { Recipe } from '@/api/types/recipe';
 import { DailyPlan, WeekPlan } from '@/api/types/weekPlan';
-import moment from 'moment';
-import { computed, Ref, ref, watch } from 'vue';
-import useAuthState from './auth-state';
-moment.updateLocale('en', {
-    week: {
-        dow: 1,
-    },
-});
 
-export const weekDays = moment.weekdaysShort();
+import useAuthState from './auth-state';
+
 export const fakeWeekPlans: WeekPlan[] = [
     {
         name: 'Fake Week Plan1',

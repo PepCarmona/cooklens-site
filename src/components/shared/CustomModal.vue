@@ -125,6 +125,7 @@ export default defineComponent({
     max-height: 100vh;
     width: 100vw;
     border-radius: 0;
+    padding: 1rem;
 }
 
 .master-enter-active,

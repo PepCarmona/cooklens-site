@@ -10,14 +10,13 @@
   "dependencies": {
     "axios": "^0.21.3",
     "core-js": "^3.6.5",
-    "moment": "^2.29.1",
+    "dayjs": "^1.10.7",
     "swiper": "^7.3.1",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.5",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
