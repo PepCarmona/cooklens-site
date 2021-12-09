@@ -120,6 +120,12 @@ export default defineComponent({
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+.modal.full {
+    margin: 0;
+    max-height: 100vh;
+    width: 100vw;
+    border-radius: 0;
+}
 
 .master-enter-active,
 .master-leave-active {

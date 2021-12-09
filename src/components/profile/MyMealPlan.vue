@@ -1,5 +1,26 @@
 <template>
     <div class="my-mealplan-container">
+        <CustomModal
+            :showIf="!!calendar"
+            :mode="'full'"
+            @close="calendar = undefined"
+        >
+            <div v-for="week in calendar" :key="week" class="calendar-week">
+                <button
+                    v-for="day in week"
+                    :key="day"
+                    class="day"
+                    :class="{ selected: day.date === selectedDay }"
+                    @click="
+                        selectedDay = day.date;
+                        calendar = undefined;
+                    "
+                    :disabled="day.isBeforeToday"
+                >
+                    {{ day.dayNumber }}
+                </button>
+            </div>
+        </CustomModal>
         <PageHeader @go-back="back">
             <template v-slot:title>My Meal Plan</template>
         </PageHeader>
@@ -60,10 +81,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import PageHeader from '@/components/shared/PageHeader.vue';
+import CustomModal from '@/components/shared/CustomModal.vue';
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
 import { Swiper as ISwiper } from '@/helpers/swiper';
@@ -104,6 +126,7 @@ export default defineComponent({
 
     components: {
         PageHeader,
+        CustomModal,
         Swiper,
         SwiperSlide,
     },
@@ -135,6 +158,8 @@ export default defineComponent({
 
         const swiper = ref<ISwiper>();
 
+        const calendar = ref();
+
         const currentMonth = computed(() => {
             let text = showingWeek.value[0].month;
 
@@ -145,12 +170,40 @@ export default defineComponent({
             return text;
         });
 
+        watch(
+            () => showingWeek.value,
+            () => {
+                const index = weeks.value.indexOf(showingWeek.value);
+                console.log('index', index);
+                swiper.value?.slideTo(index);
+            }
+        );
+
+        watch(
+            () => selectedDay.value,
+            () => {
+                if (
+                    !showingWeek.value.some(
+                        (day) => day.date === selectedDay.value
+                    )
+                ) {
+                    const selectedWeek = weeks.value.find((week) =>
+                        week.some((day) => day.date === selectedDay.value)
+                    );
+                    if (selectedWeek) {
+                        console.log('selectedWeek', selectedWeek);
+                        showingWeek.value = selectedWeek;
+                    }
+                }
+            }
+        );
+
         function showToday() {
             swiper.value?.slideTo(NUMBER_OF_PAST_WEEKS);
         }
 
         function showCalendar() {
-            console.log('calendar');
+            calendar.value = weeks.value;
         }
 
         function getWeek(day: Date) {
@@ -176,6 +229,7 @@ export default defineComponent({
             showingWeek,
             currentMonth,
             weeks,
+            calendar,
             swiper,
             showToday,
             showCalendar,
