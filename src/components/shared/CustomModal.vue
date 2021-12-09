@@ -6,7 +6,7 @@
                     v-if="showIf"
                     class="modal-overlay"
                     :class="mode"
-                    @click.self="close"
+                    @click.self="$emit('close')"
                 />
             </transition>
             <transition name="slide">
@@ -15,6 +15,13 @@
                     class="modal"
                     :class="({ transparent, thin }, mode)"
                 >
+                    <button
+                        v-if="mode === 'full'"
+                        class="close"
+                        @click="$emit('close')"
+                    >
+                        <i class="las la-times"></i>
+                    </button>
                     <slot></slot>
                 </div>
             </transition>
@@ -48,12 +55,8 @@ export default defineComponent({
 
     emits: ['close'],
 
-    setup(_, { emit }) {
-        return {
-            close() {
-                emit('close');
-            },
-        };
+    setup() {
+        return {};
     },
 });
 </script>
@@ -158,6 +161,21 @@ export default defineComponent({
 .top.slide-leave-to,
 .top.slide-enter-from {
     transform: translateY(-100vh);
+}
+
+.close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 5px 1px var(--shadow-color);
+    background-color: var(--background-contrast-color);
 }
 
 @media only screen and (min-width: 767px) {

@@ -438,9 +438,10 @@ export default defineComponent({
     margin-top: 2rem;
 }
 .calendar-month-title {
-    background-color: var(--accent-color);
+    background-color: var(--accent-color-complementary);
     color: white;
     padding: 0.25rem;
+    border-radius: 0.5rem;
 }
 .month-name {
     font-size: 18px;
