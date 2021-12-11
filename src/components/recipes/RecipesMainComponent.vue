@@ -15,6 +15,9 @@
             @showAllRecipes="showAllRecipes"
             @goToPage="goToPage"
             :slim="embedded"
+            :showActions="showActions"
+            @see-more-info="$emit('see-more-info', $event)"
+            @select-recipe="$emit('select-recipe', $event)"
         />
     </div>
 </template>
@@ -32,6 +35,7 @@ export default defineComponent({
 
     props: {
         embedded: Boolean,
+        showActions: Boolean,
     },
 
     components: {
@@ -39,7 +43,7 @@ export default defineComponent({
         RecipeList,
     },
 
-    emits: ['back'],
+    emits: ['back', 'select-recipe', 'see-more-info'],
 
     setup() {
         const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =

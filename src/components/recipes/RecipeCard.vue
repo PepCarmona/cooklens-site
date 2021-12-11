@@ -54,15 +54,14 @@
                 </div>
             </div>
         </div>
-        <!-- <div v-if="isWeekPlan" class="weekPlanButtons">
-            <button class="seeMore" @click="seeMoreInfoAboutRecipe">
-                See more
+        <div v-if="showActions" class="actions">
+            <!-- <button @click.stop="$emit('see-more-info', recipe)">
+                <i class="las la-arrow-alt-circle-right"></i>
+            </button> -->
+            <button @click.stop="$emit('select-recipe', recipe)">
+                <i class="las la-plus"></i>
             </button>
-            <button class="addToWeekPlan" @click="selectRecipe">
-                Add to this week plan
-                <i class="las la-arrow-right" style="font-size: 16px"></i>
-            </button>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -83,9 +82,10 @@ export default defineComponent({
             required: true,
         },
         slim: Boolean,
+        showActions: Boolean,
     },
 
-    emits: ['selectedRecipe', 'seeMoreInfoAboutRecipe'],
+    emits: ['select-recipe', 'see-more-info'],
 
     setup(props, { emit }) {
         const router = useRouter();
@@ -109,6 +109,11 @@ export default defineComponent({
         });
 
         function openRecipeDetails() {
+            if (props.showActions) {
+                emit('see-more-info', props.recipe);
+                return;
+            }
+
             const formattedTitle = props.recipe.title
                 .toLowerCase()
                 .replaceAll(' ', '-');
@@ -120,22 +125,12 @@ export default defineComponent({
             });
         }
 
-        function selectRecipe() {
-            emit('selectedRecipe', props.recipe);
-        }
-
-        function seeMoreInfoAboutRecipe() {
-            emit('seeMoreInfoAboutRecipe', props.recipe);
-        }
-
         return {
             authenticatedUser,
             isFavoriteRecipe,
             formattedTime,
             toggleFavRecipe,
             openRecipeDetails,
-            selectRecipe,
-            seeMoreInfoAboutRecipe,
         };
     },
 });
@@ -290,5 +285,15 @@ export default defineComponent({
 }
 .weekPlanButtons > *:hover {
     background-color: var(--secondary-color);
+}
+.actions {
+    padding: 1rem 0;
+    height: 91px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.actions i {
+    font-size: 28px;
 }
 </style>

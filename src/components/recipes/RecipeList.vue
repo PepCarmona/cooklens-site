@@ -7,9 +7,10 @@
         <template v-else v-for="recipe in recipes" :key="recipe._id">
             <RecipeCard
                 :recipe="recipe"
-                @selectedRecipe="selectRecipe"
-                @seeMoreInfoAboutRecipe="seeMoreInfoAboutRecipe"
                 :slim="slim"
+                :showActions="showActions"
+                @see-more-info="$emit('see-more-info', $event)"
+                @select-recipe="$emit('select-recipe', $event)"
             />
         </template>
         <button
@@ -53,6 +54,7 @@ export default defineComponent({
         },
         thin: Boolean,
         slim: Boolean,
+        showActions: Boolean,
     },
 
     components: {
@@ -60,12 +62,7 @@ export default defineComponent({
         Pagination,
     },
 
-    emits: [
-        'showAllRecipes',
-        'goToPage',
-        'selectedRecipe',
-        'seeMoreInfoAboutRecipe',
-    ],
+    emits: ['showAllRecipes', 'goToPage', 'select-recipe', 'see-more-info'],
 
     setup(_, { emit }) {
         const route = useRoute();
@@ -88,14 +85,6 @@ export default defineComponent({
             emit('showAllRecipes');
         }
 
-        function selectRecipe(recipe: Recipe) {
-            emit('selectedRecipe', recipe);
-        }
-
-        function seeMoreInfoAboutRecipe(recipe: Recipe) {
-            emit('seeMoreInfoAboutRecipe', recipe);
-        }
-
         return {
             currentPage,
             nextPageExists,
@@ -104,8 +93,6 @@ export default defineComponent({
             goToPreviousPage,
             goToNextPage,
             showAllRecipes,
-            selectRecipe,
-            seeMoreInfoAboutRecipe,
         };
     },
 });

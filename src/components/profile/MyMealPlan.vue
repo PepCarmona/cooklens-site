@@ -31,7 +31,10 @@
                 <!-- Select recipe for meal {{ selectedMeal }} -->
                 <RecipesMainComponent
                     @back="isAddingRecipeToMeal = false"
+                    @see-more-info="showMoreInfo($event)"
+                    @select-recipe="addRecipeToMeal(selectedMeal, $event)"
                     embedded
+                    showActions
                 />
             </div>
             <div v-else class="select-meal">
@@ -287,6 +290,14 @@ export default defineComponent({
                 ?.scrollIntoView({ block: 'center' });
         }
 
+        function showMoreInfo(recipe: Recipe) {
+            console.log(recipe);
+        }
+
+        function addRecipeToMeal(meal: Meal, recipe: Recipe) {
+            console.log(meal, recipe);
+        }
+
         function back() {
             router.push({
                 name: 'Profile',
@@ -314,6 +325,8 @@ export default defineComponent({
             selectedMeal,
             isAddingRecipeToMeal,
             capitalizeFirstLetter,
+            showMoreInfo,
+            addRecipeToMeal,
         };
     },
 });
