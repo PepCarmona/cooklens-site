@@ -4,7 +4,7 @@
             <template v-slot:title>My Favorite Recipes</template>
         </PageHeader>
         <LoadingModal v-if="isLoading" />
-        <RecipeList v-else :recipes="favRecipes" />
+        <RecipeList v-else :recipes="favRecipes" slim />
     </div>
 </template>
 

@@ -1,23 +1,21 @@
 <template>
-    <div
-        class="card"
-        :class="{ pointer: !isWeekPlan }"
-        @click="checkOpenRecipeDetails"
-    >
-        <template v-if="!isWeekPlan">
-            <!-- <div
-                v-if="!recipe.images || !recipe.images.length > 0"
-                class="image"
-                :style="`background: url(https://via.placeholder.com/400x300.webp) center center / cover;`"
-                :alt="recipe.title"
-            ></div> -->
+    <div class="card" :class="{ slim }" @click="openRecipeDetails">
+        <!-- <div
+            v-if="!recipe.images || !recipe.images.length > 0"
+            class="image"
+            :style="`background: url(https://via.placeholder.com/400x300.webp) center center / cover;`"
+            :alt="recipe.title"
+        ></div> -->
+        <div
+            v-if="recipe.images && recipe.images.length > 0"
+            class="image-container"
+        >
             <div
-                v-if="recipe.images && recipe.images.length > 0"
                 class="image"
                 :style="`background: url(${recipe.images[0]}) center center / cover;`"
                 :alt="recipe.title"
             ></div>
-        </template>
+        </div>
         <div class="content d-flex p-1">
             <div class="head">
                 <div class="title">
@@ -56,7 +54,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="isWeekPlan" class="weekPlanButtons">
+        <!-- <div v-if="isWeekPlan" class="weekPlanButtons">
             <button class="seeMore" @click="seeMoreInfoAboutRecipe">
                 See more
             </button>
@@ -64,7 +62,7 @@
                 Add to this week plan
                 <i class="las la-arrow-right" style="font-size: 16px"></i>
             </button>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -84,10 +82,7 @@ export default defineComponent({
             type: Object as PropType<Recipe>,
             required: true,
         },
-        isWeekPlan: {
-            type: Boolean,
-            default: false,
-        },
+        slim: Boolean,
     },
 
     emits: ['selectedRecipe', 'seeMoreInfoAboutRecipe'],
@@ -125,12 +120,6 @@ export default defineComponent({
             });
         }
 
-        function checkOpenRecipeDetails() {
-            if (!props.isWeekPlan) {
-                openRecipeDetails();
-            }
-        }
-
         function selectRecipe() {
             emit('selectedRecipe', props.recipe);
         }
@@ -145,7 +134,6 @@ export default defineComponent({
             formattedTime,
             toggleFavRecipe,
             openRecipeDetails,
-            checkOpenRecipeDetails,
             selectRecipe,
             seeMoreInfoAboutRecipe,
         };
@@ -163,19 +151,46 @@ export default defineComponent({
     border-radius: 1rem;
     height: fit-content;
 }
+.card.slim {
+    display: flex;
+    min-height: calc(2rem + 60px);
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    border-bottom: 1px solid var(--shadow-color);
+    max-width: none;
+}
 .card.pointer {
     cursor: pointer;
 }
 
-.image {
+.image-container {
     height: 280px;
+}
+.slim .image-container {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    margin-left: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.image {
+    height: 100%;
     border-radius: 1rem;
     margin: 1rem;
     margin-bottom: 0;
 }
+.slim .image {
+    margin: 0;
+    border-radius: 0.5rem;
+}
 .content {
     flex-wrap: wrap;
     min-height: 180px;
+}
+.slim .content {
+    min-height: auto;
 }
 .head {
     display: flex;
@@ -188,6 +203,10 @@ export default defineComponent({
     font-family: var(--title-font);
     font-size: 24px;
 }
+.slim .title {
+    font-size: 16px;
+}
+
 .details {
     display: flex;
     width: 100%;
@@ -195,8 +214,9 @@ export default defineComponent({
     justify-content: flex-end;
     align-self: flex-end;
 }
-.fav {
-    margin-left: 2rem;
+.slim .details {
+    margin-top: 0.5rem;
+    justify-content: flex-start;
 }
 
 .fav {
@@ -204,6 +224,10 @@ export default defineComponent({
     align-items: center;
     justify-content: flex-end;
     cursor: pointer;
+    margin-left: 2rem;
+}
+.slim .fav {
+    display: none;
 }
 .fav > i {
     font-size: 32px;
@@ -219,14 +243,28 @@ export default defineComponent({
     margin-left: 0.5rem;
     color: var(--grey-800);
 }
+.slim .details span {
+    font-size: 14px;
+}
 .details i {
     color: var(--grey-600);
+}
+.slim .details i {
+    font-size: 16px;
 }
 .time {
     display: flex;
     margin-left: 2rem;
     min-width: 130px;
     justify-content: flex-end;
+}
+.slim .rating,
+.slim .time {
+    align-items: center;
+}
+.slim .time {
+    min-width: auto;
+    margin-left: 1rem;
 }
 
 .pill {

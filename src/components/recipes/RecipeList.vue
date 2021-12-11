@@ -1,15 +1,15 @@
 <template>
     <div
         class="card-container"
-        :class="{ column: isWeekPlan, thin, 'pb-3': !isComponent }"
+        :class="{ column: slim, thin, 'pb-3': !isComponent }"
     >
         <div v-if="isLoading" class="loadingCard">Loading...</div>
         <template v-else v-for="recipe in recipes" :key="recipe._id">
             <RecipeCard
                 :recipe="recipe"
-                :isWeekPlan="isWeekPlan"
                 @selectedRecipe="selectRecipe"
                 @seeMoreInfoAboutRecipe="seeMoreInfoAboutRecipe"
+                :slim="slim"
             />
         </template>
         <button
@@ -51,11 +51,8 @@ export default defineComponent({
             type: Boolean,
             default: false,
         },
-        isWeekPlan: {
-            type: Boolean,
-            default: false,
-        },
         thin: Boolean,
+        slim: Boolean,
     },
 
     components: {
@@ -142,6 +139,7 @@ export default defineComponent({
     flex-direction: column;
     width: fit-content;
     flex-wrap: nowrap;
+    padding: 0;
 }
 .card-container > .card:first-child {
     margin-top: 0;

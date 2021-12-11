@@ -12,7 +12,7 @@
             </router-link>
         </div>
         <LoadingModal v-if="isLoading" />
-        <RecipeList :recipes="myRecipes" />
+        <RecipeList :recipes="myRecipes" slim />
     </div>
 </template>
 
