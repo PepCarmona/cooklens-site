@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div :class="{ embedded }">
         <div class="search">
             <SearchRecipe
                 @doSearch="doSearch($event.page, $event.searchQuery)"
+                @back="$emit('back')"
+                embedded
             />
         </div>
         <div v-if="isLoading">Loading...</div>
@@ -12,34 +14,36 @@
             :showFilteredRecipes="showFilteredRecipes && !isLoading"
             @showAllRecipes="showAllRecipes"
             @goToPage="goToPage"
+            :slim="embedded"
         />
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/components/recipes/SearchRecipe.vue';
 import RecipeList from '@/components/recipes/RecipeList.vue';
 
 import useRecipeState, { SearchQuery } from '@/store/recipe-state';
-import { SearchType } from '@/api/types/recipe';
 
 export default defineComponent({
-    name: 'RecipesMainView',
+    name: 'RecipesMainComponent',
+
+    props: {
+        embedded: Boolean,
+    },
 
     components: {
         SearchRecipe,
         RecipeList,
     },
 
+    emits: ['back'],
+
     setup() {
         const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
             useRecipeState();
-
-        const router = useRouter();
-        const route = useRoute();
 
         const showFilteredRecipes = ref(false);
 
@@ -51,44 +55,17 @@ export default defineComponent({
         };
 
         onMounted(() => {
-            if (route.query.searchBy && route.query.searchText) {
-                setSearch(
-                    route.query.searchBy.toString() as SearchType,
-                    route.query.searchText.toString()
-                );
-
-                doSearch(
-                    parseInt(route.query.page?.toString() ?? '1'),
-                    searchQuery.value
-                );
-            }
-
-            doSearch(parseInt(route.query.page?.toString() ?? '1'));
+            doSearch();
         });
-
-        function updateQueryString(page?: number, searchQuery?: SearchQuery) {
-            router.push({
-                name: 'RecipesMainView',
-                query: {
-                    searchBy: searchQuery ? searchQuery.type : undefined,
-                    searchText: searchQuery ? searchQuery.text : undefined,
-                    page: page && page > 1 ? page : undefined,
-                },
-            });
-        }
 
         function doSearch(page?: number, searchQuery?: SearchQuery) {
             showFilteredRecipes.value =
                 !!searchQuery && searchQuery.text.length > 0;
 
-            updateQueryString(page, searchQuery);
-
             searchRecipes(page);
         }
 
         function showAllRecipes() {
-            updateQueryString();
-
             setSearch('title', '');
 
             doSearch();
@@ -116,10 +93,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.search {
+div:not(.embedded) > .search {
     padding: 1rem;
     padding-top: calc(2rem + 50px);
     margin-top: -50px;
+}
+.embedded > .search {
+    margin-bottom: 1.5rem;
 }
 
 @media only screen and (min-width: 769px) {

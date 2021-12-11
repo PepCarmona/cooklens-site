@@ -14,15 +14,25 @@
                 "
             />
         </CustomModal>
-        <CustomModal :showIf="isAddingMeal" @close="isAddingMeal = false">
+        <CustomModal
+            :showIf="isAddingMeal"
+            @close="
+                isAddingMeal = false;
+                isAddingRecipeToMeal = false;
+            "
+        >
             <div v-if="isAddingRecipeToMeal" class="select-recipe">
-                <div
+                <!-- <div
                     class="back-to-select-meal"
                     @click="isAddingRecipeToMeal = false"
                 >
                     <i class="las la-angle-left"></i>
-                </div>
-                Select recipe for meal {{ selectedMeal }}
+                </div> -->
+                <!-- Select recipe for meal {{ selectedMeal }} -->
+                <RecipesMainComponent
+                    @back="isAddingRecipeToMeal = false"
+                    embedded
+                />
             </div>
             <div v-else class="select-meal">
                 <div class="select-meal-title">Add meal</div>
@@ -47,16 +57,16 @@
                     <span>{{ capitalizeFirstLetter(meal) }}</span>
                     <i class="advance-icon las la-angle-right"></i>
                 </button>
-            </div>
-            <div class="cancel">
-                <button
-                    @click="
-                        isAddingMeal = false;
-                        isAddingRecipeToMeal = false;
-                    "
-                >
-                    Cancel
-                </button>
+                <div class="cancel">
+                    <button
+                        @click="
+                            isAddingMeal = false;
+                            isAddingRecipeToMeal = false;
+                        "
+                    >
+                        Cancel
+                    </button>
+                </div>
             </div>
             <!-- select recipe after selecting meal OR add meal without recipe -->
         </CustomModal>
@@ -133,6 +143,7 @@ import Calendar, {
     CalendarBoundaries,
     WeekDay,
 } from '@/components/shared/Calendar.vue';
+import RecipesMainComponent from '@/components/recipes/RecipesMainComponent.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
@@ -167,6 +178,7 @@ export default defineComponent({
         Calendar,
         Swiper,
         SwiperSlide,
+        RecipesMainComponent,
     },
 
     setup() {
@@ -421,5 +433,8 @@ export default defineComponent({
     margin: auto;
     font-size: 20px;
     color: var(--accent-color);
+}
+.select-recipe {
+    min-height: 625px;
 }
 </style>

@@ -1,5 +1,8 @@
 <template>
     <div class="d-flex w-100 searchRow" :class="{ focus: isFocus }">
+        <button v-if="embedded" class="back" @click="$emit('back')">
+            <i class="las la-angle-left"></i>
+        </button>
         <input
             @input="changeSearchText"
             @keypress="autoSearch"
@@ -49,7 +52,11 @@ import useRecipeState from '@/store/recipe-state';
 export default defineComponent({
     name: 'SearchRecipe',
 
-    emits: ['doSearch'],
+    props: {
+        embedded: Boolean,
+    },
+
+    emits: ['doSearch', 'back'],
 
     setup(_, { emit }) {
         const { setSearch, searchQuery } = useRecipeState();
@@ -127,6 +134,10 @@ export default defineComponent({
     border-radius: 1rem;
     border: 1px solid var(--border-color);
     /* background: linear-gradient(45deg, #f9fffd 20%, #c8f5e6 100%); */
+}
+.back {
+    margin-left: 0.5rem;
+    color: var(--accent-color);
 }
 input {
     background-color: transparent;
