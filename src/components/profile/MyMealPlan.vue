@@ -14,20 +14,59 @@
                 "
             />
         </CustomModal>
+        <CustomModal :showIf="isAddingMeal" @close="isAddingMeal = false">
+            <div v-if="isAddingRecipeToMeal" class="select-recipe">
+                <div
+                    class="back-to-select-meal"
+                    @click="isAddingRecipeToMeal = false"
+                >
+                    <i class="las la-angle-left"></i>
+                </div>
+                Select recipe for meal {{ selectedMeal }}
+            </div>
+            <div v-else class="select-meal">
+                <div class="select-meal-title">Add meal</div>
+                <button
+                    v-for="meal in meals"
+                    :key="meal"
+                    :disabled="
+                        dayMeals.some((dayMeal) => dayMeal.meal === meal)
+                    "
+                    @click="
+                        selectedMeal = meal;
+                        isAddingRecipeToMeal = true;
+                    "
+                >
+                    <i
+                        class="meal-icon las"
+                        :class="{
+                            'la-sun': meal === 'lunch',
+                            'la-moon': meal === 'dinner',
+                        }"
+                    ></i>
+                    <span>{{ capitalizeFirstLetter(meal) }}</span>
+                    <i class="advance-icon las la-angle-right"></i>
+                </button>
+            </div>
+            <div class="cancel">
+                <button
+                    @click="
+                        isAddingMeal = false;
+                        isAddingRecipeToMeal = false;
+                    "
+                >
+                    Cancel
+                </button>
+            </div>
+            <!-- select recipe after selecting meal OR add meal without recipe -->
+        </CustomModal>
         <PageHeader @go-back="back">
             <template v-slot:title>My Meal Plan</template>
         </PageHeader>
         <div class="mealplan-header">
             <div class="title">
                 <span class="icon">
-                    <i
-                        v-if="
-                            swiper &&
-                            swiper.activeIndex !== NUMBER_OF_PAST_WEEKS
-                        "
-                        class="las la-map-pin"
-                        @click="showToday"
-                    ></i>
+                    <i class="las la-map-pin" @click="showSelectedDay"></i>
                 </span>
                 <span class="month-text">{{ currentMonth }}</span>
                 <span class="icon">
@@ -52,12 +91,12 @@
                             v-for="day in week"
                             :key="day"
                             class="day"
-                            :class="{ selected: day.date === selectedDay }"
-                            @click="selectedDay = day.date"
+                            :class="{ selected: day.date === selectedDay.date }"
+                            @click="selectedDay = day"
                             :disabled="day.isBeforeToday"
                         >
                             <span class="day-name">
-                                {{ day.dayName.toUpperCase() }}
+                                {{ day.dayNameShort.toUpperCase() }}
                             </span>
                             <span class="day-number">
                                 {{ day.dayNumber }}
@@ -68,7 +107,18 @@
             </Swiper>
         </div>
         <div class="content">
-            <div>Selected day: {{ selectedDay }}</div>
+            <div class="content-header">
+                <span class="content-day">
+                    {{ selectedDay.dayNameLong }} {{ selectedDay.dayNumber }}
+                </span>
+                <span
+                    v-if="!areAllMealsAdded"
+                    class="add"
+                    @click="isAddingMeal = true"
+                >
+                    <i class="las la-plus"></i>
+                </span>
+            </div>
         </div>
     </div>
 </template>
@@ -79,20 +129,34 @@ import { useRouter } from 'vue-router';
 
 import PageHeader from '@/components/shared/PageHeader.vue';
 import CustomModal from '@/components/shared/CustomModal.vue';
-import Calendar, { CalendarBoundaries } from '@/components/shared/Calendar.vue';
+import Calendar, {
+    CalendarBoundaries,
+    WeekDay,
+} from '@/components/shared/Calendar.vue';
+
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
-
+import 'swiper/swiper.min.css';
 import { Swiper as ISwiper } from '@/helpers/swiper';
+
 import { getLastItem } from '@/helpers/array';
 import { weekdaysShort } from '@/helpers/date';
+import { capitalizeFirstLetter } from '@/helpers/string';
 
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
-
 dayjs.extend(isoWeek);
-import 'swiper/swiper.min.css';
+
 import { Day, getWeek, Week } from '../shared/Calendar.vue';
+import { Recipe } from '@/api/types/recipe';
+
+const meals = ['lunch', 'dinner'] as const;
+type Meal = typeof meals[number];
+
+interface DayMeal {
+    meal?: Meal;
+    recipe?: Recipe;
+}
 
 export default defineComponent({
     name: 'MyMealPlan',
@@ -111,11 +175,10 @@ export default defineComponent({
 
         const router = useRouter();
 
-        const selectedDay = ref(dayjs().format('M-DD-YYYY'));
-
+        const selectedDay = ref<Day>(new WeekDay(new Date()));
         const showingWeek = ref<Week>(getWeek(new Date())) as Ref<Week>;
-
         const weeks = ref<Week[]>([]) as Ref<Week[]>;
+
         for (
             let i = 0;
             i < NUMBER_OF_FUTURE_WEEKS + NUMBER_OF_PAST_WEEKS;
@@ -133,8 +196,12 @@ export default defineComponent({
         const swiper = ref<ISwiper>();
 
         const calendarBoundaries = ref<CalendarBoundaries>({});
-
         const isShowingCalendar = ref(false);
+
+        const isAddingMeal = ref(false);
+        const isAddingRecipeToMeal = ref(false);
+        const dayMeals = ref<DayMeal[]>([]);
+        const selectedMeal = ref<Meal>();
 
         const currentMonth = computed(() => {
             const currentWeek = showingWeek.value.filter(
@@ -149,6 +216,12 @@ export default defineComponent({
             return text;
         });
 
+        const areAllMealsAdded = computed(() =>
+            meals.forEach((meal) =>
+                dayMeals.value.some((dayMeal) => dayMeal.meal === meal)
+            )
+        );
+
         watch(
             () => showingWeek.value,
             () => {
@@ -162,11 +235,11 @@ export default defineComponent({
             () => {
                 if (
                     !showingWeek.value.some(
-                        (day) => day?.date === selectedDay.value
+                        (day) => day?.date === selectedDay.value.date
                     )
                 ) {
                     const selectedWeek = weeks.value.find((week) =>
-                        week.some((day) => day?.date === selectedDay.value)
+                        week.some((day) => day?.date === selectedDay.value.date)
                     );
                     if (selectedWeek) {
                         showingWeek.value = selectedWeek;
@@ -175,8 +248,11 @@ export default defineComponent({
             }
         );
 
-        function showToday() {
-            swiper.value?.slideTo(NUMBER_OF_PAST_WEEKS);
+        function showSelectedDay() {
+            const selectedWeekIndex = weeks.value.findIndex((week) =>
+                week.some((day) => day?.date === selectedDay.value.date)
+            );
+            swiper.value?.slideTo(selectedWeekIndex);
         }
 
         async function showCalendar() {
@@ -204,6 +280,7 @@ export default defineComponent({
                 name: 'Profile',
             });
         }
+
         return {
             NUMBER_OF_PAST_WEEKS,
             selectedDay,
@@ -214,10 +291,17 @@ export default defineComponent({
             isShowingCalendar,
             weekdaysShort,
             swiper,
-            showToday,
+            showSelectedDay,
             showCalendar,
             back,
             Virtual,
+            meals,
+            dayMeals,
+            isAddingMeal,
+            areAllMealsAdded,
+            selectedMeal,
+            isAddingRecipeToMeal,
+            capitalizeFirstLetter,
         };
     },
 });
@@ -283,5 +367,59 @@ export default defineComponent({
 }
 .content {
     flex-grow: 1;
+}
+.content-header {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 1rem;
+}
+.content-day {
+    font-size: 24px;
+    font-weight: 600;
+    word-spacing: 5px;
+}
+
+.select-meal {
+    width: 100%;
+}
+.select-meal-title {
+    font-size: 24px;
+    margin-bottom: 1rem;
+}
+.select-meal > button {
+    width: 100%;
+    padding: 1rem;
+    justify-content: flex-start;
+    background-color: var(--background-color);
+    border-radius: 0.5rem;
+    position: relative;
+}
+.select-meal > button:not(:last-child) {
+    margin-bottom: 1rem;
+}
+.select-meal > button > span {
+    margin-left: 3rem;
+    font-size: 18px;
+}
+.select-meal .meal-icon {
+    position: absolute;
+    left: 1rem;
+}
+.select-meal .advance-icon {
+    position: absolute;
+    right: 1rem;
+}
+.cancel {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+.cancel > button {
+    margin: auto;
+    font-size: 20px;
+    color: var(--accent-color);
 }
 </style>

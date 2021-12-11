@@ -24,7 +24,7 @@
                     <div v-for="day in week" :key="day" class="calendar-day">
                         <button
                             v-if="day"
-                            :class="{ selected: day.date === selectedDay }"
+                            :class="{ selected: day.date === selectedDay.date }"
                             :disabled="day.isBeforeToday"
                             @click="$emit('selected-day', day.date)"
                         >
@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import dayjs from 'dayjs';
-import { weekdaysShort } from '@/helpers/date';
+import { weekdays, weekdaysShort } from '@/helpers/date';
 
 export interface CalendarBoundaries {
     startDate?: Date;
@@ -70,16 +70,18 @@ export type Week = [
 export interface Day {
     month: string;
     dayNumber: string;
-    dayName: string;
+    dayNameShort: string;
+    dayNameLong: string;
     weekday: number;
     date: string;
     isBeforeToday: boolean;
 }
 
-class WeekDay implements Day {
+export class WeekDay implements Day {
     month: string;
     dayNumber: string;
-    dayName: string;
+    dayNameShort: string;
+    dayNameLong: string;
     weekday: number;
     isBeforeToday: boolean;
     date: string;
@@ -90,7 +92,8 @@ class WeekDay implements Day {
 
         this.month = day.format('MMMM');
         this.dayNumber = day.format('D');
-        this.dayName = weekdaysShort[day.isoWeekday() - 1];
+        this.dayNameShort = weekdaysShort[day.isoWeekday() - 1];
+        this.dayNameLong = weekdays[day.isoWeekday() - 1];
         this.date = day.format('M-DD-YYYY');
         this.isBeforeToday = day
             .startOf('day')
@@ -121,7 +124,7 @@ export default defineComponent({
 
     props: {
         boundaries: Object as PropType<CalendarBoundaries>,
-        selectedDay: String,
+        selectedDay: Object as PropType<Day>,
     },
 
     emits: ['selected-day'],
@@ -162,7 +165,7 @@ export default defineComponent({
                         continue;
                     }
 
-                    if (day.isSame(dayjs(props.selectedDay))) {
+                    if (day.isSame(dayjs(props.selectedDay?.date))) {
                         isInView = true;
                     }
 
