@@ -141,7 +141,10 @@
                         </div>
                     </div>
                     <div class="content-meal-actions">
-                        <i @click="removeMeal(meal)" class="las la-minus"></i>
+                        <i
+                            @click.stop="removeMeal(meal)"
+                            class="las la-minus"
+                        ></i>
                     </div>
                 </div>
             </div>
