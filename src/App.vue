@@ -6,10 +6,12 @@
 
 <script lang="ts">
 import { defineComponent, watch } from 'vue';
-import Header from '@/components/Header.vue';
-import Footer from '@/components/Footer.vue';
-import useAuthState from './store/auth-state';
 import { useRoute, useRouter } from 'vue-router';
+
+import Header from '@/shared/Header.vue';
+import Footer from '@/shared/Footer.vue';
+
+import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
     components: {
@@ -20,7 +22,7 @@ export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
-        const { checkSession, authenticatedUser } = useAuthState();
+        const { checkSession, authenticatedUser } = useAuthenticationState();
 
         router.beforeEach(async (to, from, next) => {
             if (to.meta.requireAuth) {
@@ -63,7 +65,7 @@ export default defineComponent({
 </script>
 
 <style>
-@import './assets/styles/basic.css';
+@import './assets/basic.css';
 body,
 html {
     margin: 0;

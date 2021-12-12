@@ -5,7 +5,7 @@ import {
     PaginatedRecipes,
     Recipe,
     SearchType,
-} from '@/api/types/recipe';
+} from '@/recipes/types/RecipeTypes';
 
 interface RecipesEndpointInterface {
     addRecipe(recipe: Recipe): Promise<Recipe>;

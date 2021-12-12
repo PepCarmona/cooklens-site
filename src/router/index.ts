@@ -38,7 +38,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'CreateRecipe',
         component: () =>
             import(
-                /* webpackChunkName: "createRecipe" */ '../components/recipes/CreateRecipe.vue'
+                /* webpackChunkName: "createRecipe" */ '../recipes/CreateRecipe.vue'
             ),
     },
     {
@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Authentication',
         component: () =>
             import(
-                /* webpackChunkName: "register" */ '../components/profile/auth/Authentication.vue'
+                /* webpackChunkName: "register" */ '../auth/Authentication.vue'
             ),
         props: (route) => ({ nextUrl: route.query.nextUrl }),
         meta: { noFooter: true },
@@ -55,7 +55,7 @@ const routes: Array<RouteRecordRaw> = [
         path: '/profile',
         component: () =>
             import(
-                /* webpackChunkName: "profileWrapper" */ '../components/profile/ProfileWrapper.vue'
+                /* webpackChunkName: "profileWrapper" */ '../profile/components/ProfileWrapper.vue'
             ),
         children: [
             {
@@ -63,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'Profile',
                 component: () =>
                     import(
-                        /* webpackChunkName: "profile" */ '../components/profile/Profile.vue'
+                        /* webpackChunkName: "profile" */ '../profile/components/Profile.vue'
                     ),
                 meta: { requireAuth: true },
             },
@@ -72,7 +72,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'ownRecipes',
                 component: () =>
                     import(
-                        /* webpackChunkName: "ownRecipes" */ '../components/profile/MyRecipes.vue'
+                        /* webpackChunkName: "ownRecipes" */ '../profile/components/MyRecipes.vue'
                     ),
                 meta: { requireAuth: true, showAddRecipe: true },
             },
@@ -81,7 +81,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'favRecipes',
                 component: () =>
                     import(
-                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyFavRecipes.vue'
+                        /* webpackChunkName: "favRecipes" */ '../profile/components/MyFavRecipes.vue'
                     ),
                 meta: { requireAuth: true },
             },
@@ -90,7 +90,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'myWeekPlan',
                 component: () =>
                     import(
-                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyWeekPlan.vue'
+                        /* webpackChunkName: "favRecipes" */ '../profile/components/MyWeekPlan/MyWeekPlan.vue'
                     ),
                 meta: { requireAuth: true },
             },
@@ -99,7 +99,7 @@ const routes: Array<RouteRecordRaw> = [
                 name: 'myMealPlan',
                 component: () =>
                     import(
-                        /* webpackChunkName: "favRecipes" */ '../components/profile/MyMealPlan.vue'
+                        /* webpackChunkName: "favRecipes" */ '../profile/components/MyMealPlan.vue'
                     ),
                 meta: { requireAuth: true },
             },

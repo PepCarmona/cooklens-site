@@ -1,8 +1,8 @@
 import { Endpoint } from '.';
 import { URI } from '../config';
-import { PaginatedRecipes, Recipe } from '../types/recipe';
-import { User } from '../types/user';
-import { WeekPlan } from '../types/weekPlan';
+import { PaginatedRecipes, Recipe } from '../../recipes/types/RecipeTypes';
+import { User } from '../../profile/types/UserTypes';
+import { WeekPlan } from '../../profile/components/MyWeekPlan/WeekPlanTypes';
 
 interface UserEndpointInterface {
     addFavRecipe(recipe: Recipe): Promise<User>;

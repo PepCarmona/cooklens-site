@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div :class="{ embedded }">
         <div class="search">
             <SearchRecipe
                 @doSearch="doSearch($event.page, $event.searchQuery)"
+                @back="$emit('back')"
+                embedded
             />
         </div>
         <div v-if="isLoading">Loading...</div>
@@ -12,34 +14,41 @@
             :showFilteredRecipes="showFilteredRecipes && !isLoading"
             @showAllRecipes="showAllRecipes"
             @goToPage="goToPage"
+            :slim="embedded"
+            :showActions="showActions"
+            @see-more-info="$emit('see-more-info', $event)"
+            @select-recipe="$emit('select-recipe', $event)"
         />
     </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/SearchRecipe.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
-import { SearchType, SearchQuery } from '@/recipes/types/RecipeTypes';
+import { SearchQuery } from '@/recipes/types/RecipeTypes';
 
 export default defineComponent({
-    name: 'RecipesMainView',
+    name: 'RecipesMainComponent',
+
+    props: {
+        embedded: Boolean,
+        showActions: Boolean,
+    },
 
     components: {
         SearchRecipe,
         RecipeList,
     },
 
+    emits: ['back', 'select-recipe', 'see-more-info'],
+
     setup() {
         const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
             useRecipeState();
-
-        const router = useRouter();
-        const route = useRoute();
 
         const showFilteredRecipes = ref(false);
 
@@ -51,44 +60,17 @@ export default defineComponent({
         };
 
         onMounted(() => {
-            if (route.query.searchBy && route.query.searchText) {
-                setSearch(
-                    route.query.searchBy.toString() as SearchType,
-                    route.query.searchText.toString()
-                );
-
-                doSearch(
-                    parseInt(route.query.page?.toString() ?? '1'),
-                    searchQuery.value
-                );
-            }
-
-            doSearch(parseInt(route.query.page?.toString() ?? '1'));
+            doSearch();
         });
-
-        function updateQueryString(page?: number, searchQuery?: SearchQuery) {
-            router.push({
-                name: 'RecipesMainView',
-                query: {
-                    searchBy: searchQuery ? searchQuery.type : undefined,
-                    searchText: searchQuery ? searchQuery.text : undefined,
-                    page: page && page > 1 ? page : undefined,
-                },
-            });
-        }
 
         function doSearch(page?: number, searchQuery?: SearchQuery) {
             showFilteredRecipes.value =
                 !!searchQuery && searchQuery.text.length > 0;
 
-            updateQueryString(page, searchQuery);
-
             searchRecipes(page);
         }
 
         function showAllRecipes() {
-            updateQueryString();
-
             setSearch('title', '');
 
             doSearch();
@@ -116,10 +98,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.search {
+div:not(.embedded) > .search {
     padding: 1rem;
     padding-top: calc(2rem + 50px);
     margin-top: -50px;
+}
+.embedded > .search {
+    margin-bottom: 1.5rem;
 }
 
 @media only screen and (min-width: 769px) {

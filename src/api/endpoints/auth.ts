@@ -1,7 +1,7 @@
-import { URI } from '@/api/config';
-import { User } from '@/api/types/user';
-import useAuth from '@/store/auth-state';
 import { Endpoint } from '.';
+import { URI } from '@/api/config';
+import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { User } from '@/profile/types/UserTypes';
 
 interface AuthResponse {
     user: User;
@@ -34,7 +34,7 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
     }
 
     public checkSession(): Promise<User | null> {
-        const { token } = useAuth();
+        const { token } = useAuthenticationState();
 
         if (token.value === '') {
             console.warn('No token found');

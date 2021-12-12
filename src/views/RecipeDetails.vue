@@ -162,15 +162,17 @@
 </template>
 
 <script lang="ts">
-import { Ingredient, Recipe } from '@/api/types/recipe';
 import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import CustomModal from '@/components/shared/CustomModal.vue';
-import LoadingModal from '@/components/shared/LoadingModal.vue';
-import CustomNumberInput from '@/components/shared/CustomNumberInput.vue';
-import Rating from '@/components/shared/Rating.vue';
-import useRecipeState from '@/store/recipe-state';
-import useUserState from '@/store/user-state';
+
+import CustomModal from '@/shared/CustomModal.vue';
+import LoadingModal from '@/shared/LoadingModal.vue';
+import CustomNumberInput from '@/shared/CustomNumberInput.vue';
+import Rating from '@/shared/Rating.vue';
+
+import { Ingredient, Recipe } from '@/recipes/types/RecipeTypes';
+import useRecipeState from '@/recipes/state/RecipeState';
+import useUserState from '@/profile/state/UserState';
 
 export function getFormattedTitle(recipe: Recipe): string {
     return recipe.title.toLowerCase().replaceAll(' ', '-');

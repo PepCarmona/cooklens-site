@@ -1,6 +1,6 @@
 import { Endpoint } from '.';
 import { URI } from '../config';
-import { WeekPlan } from '../types/weekPlan';
+import { WeekPlan } from '../../profile/components/MyWeekPlan/WeekPlanTypes';
 
 export class WeekPlanEndpoint extends Endpoint {
     public getWeekPlanById(id: string): Promise<WeekPlan> {
