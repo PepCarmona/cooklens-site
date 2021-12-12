@@ -53,11 +53,9 @@ import {
     Calendar,
     CalendarBoundaries,
     Day,
-    Week,
-    WeekDay,
 } from '@/shared/Calendar/CalendarTypes';
 
-import { getEmptyWeek } from '@/shared/Calendar/CalendarModel';
+import { getCalendar } from '@/shared/Calendar/CalendarModel';
 
 export default defineComponent({
     name: 'Calendar',
@@ -71,65 +69,10 @@ export default defineComponent({
     emits: ['selected-day'],
 
     setup(props) {
-        const calendar = ref<Calendar>(getCalendar());
+        const calendar = ref<Calendar>(
+            getCalendar(props.boundaries, props.selectedDay)
+        );
 
-        function getCalendar() {
-            const startDate = props.boundaries?.startDate ?? Date.now();
-            const endDate =
-                props.boundaries?.endDate ??
-                dayjs(startDate)
-                    .add(props.boundaries?.duration ?? 730, 'days')
-                    .toDate();
-
-            const monthsDifference =
-                dayjs(endDate).diff(dayjs(startDate), 'months') + 1;
-
-            let calendar: Calendar = [];
-
-            for (let i = 0; i <= monthsDifference; i++) {
-                const date = dayjs(startDate).add(i, 'months');
-                const month = date.month();
-                const year = date.year();
-                const daysInMonth = dayjs().month(month).daysInMonth();
-
-                const weeks: Week[] = [];
-                let week: Week = getEmptyWeek();
-
-                let isInView = false;
-
-                for (let j = 1; j <= daysInMonth; j++) {
-                    const day = date.date(j);
-                    if (
-                        day.isBefore(dayjs(startDate)) ||
-                        day.isAfter(dayjs(endDate))
-                    ) {
-                        continue;
-                    }
-
-                    if (day.isSame(dayjs(props.selectedDay?.date))) {
-                        isInView = true;
-                    }
-
-                    const weekday = day.isoWeekday() - 1;
-                    week[weekday] = new WeekDay(day.toDate());
-
-                    if (weekday === 6 || j === daysInMonth) {
-                        weeks.push(week);
-                        week = getEmptyWeek();
-                    }
-                }
-
-                calendar.push({
-                    monthNumber: month,
-                    monthName: date.format('MMMM'),
-                    year,
-                    weeks,
-                    isInView,
-                });
-            }
-
-            return calendar;
-        }
         return {
             calendar,
             weekdaysShort,

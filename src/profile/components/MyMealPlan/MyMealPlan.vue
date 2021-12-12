@@ -9,22 +9,16 @@
                 :boundaries="calendarBoundaries"
                 :selectedDay="selectedDay"
                 @selected-day="
-                    selectedDay = $event;
+                    selectDay($event);
                     isShowingCalendar = false;
                 "
                 allowPast
             />
         </CustomModal>
-        <CustomModal
-            :showIf="isAddingMeal"
-            @close="
-                isAddingMeal = false;
-                isAddingRecipeToMeal = false;
-            "
-        >
+        <CustomModal :showIf="isAddingMeal" @close="closeMealSelector()">
             <div v-if="isAddingRecipeToMeal" class="select-recipe">
                 <RecipesMainComponent
-                    @back="isAddingRecipeToMeal = false"
+                    @back="closeRecipeSelector()"
                     @see-more-info="showMoreInfo($event)"
                     @select-recipe="addRecipeToMeal(selectedMeal, $event)"
                     embedded
@@ -41,7 +35,7 @@
                     "
                     @click="
                         selectedMeal = meal;
-                        isAddingRecipeToMeal = true;
+                        openRecipeSelector();
                     "
                 >
                     <i
@@ -55,14 +49,7 @@
                     <i class="advance-icon las la-angle-right"></i>
                 </button>
                 <div class="cancel">
-                    <button
-                        @click="
-                            isAddingMeal = false;
-                            isAddingRecipeToMeal = false;
-                        "
-                    >
-                        Cancel
-                    </button>
+                    <button @click="closeMealSelector()">Cancel</button>
                 </div>
             </div>
         </CustomModal>
@@ -112,7 +99,7 @@
                                 selected: day.date === selectedDay.date,
                                 past: day.isBeforeToday,
                             }"
-                            @click="selectedDay = day"
+                            @click="selectDay(day)"
                         >
                             <span class="day-name">
                                 {{ day.dayNameShort.toUpperCase() }}
@@ -133,7 +120,7 @@
                 <span
                     v-if="!selectedDay.isBeforeToday && !areAllMealsAdded"
                     class="add"
-                    @click="isAddingMeal = true"
+                    @click="openMealSelector()"
                 >
                     <i class="las la-plus"></i>
                 </span>
@@ -181,23 +168,17 @@ import { getLastItem } from '@/helpers/array';
 import { weekdaysShort } from '@/helpers/date';
 import { capitalizeFirstLetter } from '@/helpers/string';
 
-import dayjs from 'dayjs';
-
 import { Recipe } from '@/recipes/types/RecipeTypes';
-import {
-    DayMeal,
-    DayPlan,
-    Meal,
-    meals,
-} from '@/profile/components/MyMealPlan/MealPlanTypes';
-import {
-    CalendarBoundaries,
-    WeekDay,
-    Day,
-    Week,
-} from '@/shared/Calendar/CalendarTypes';
+import { Meal, meals } from '@/profile/components/MyMealPlan/MealPlanTypes';
+import { CalendarBoundaries, Day, Week } from '@/shared/Calendar/CalendarTypes';
 
 import { getWeek } from '@/shared/Calendar/CalendarModel';
+import {
+    getWeeks,
+    NUMBER_OF_PAST_WEEKS,
+} from '@/profile/components/MyMealPlan/MealPlanModel';
+
+import useMealPlanState from './MealPlanState';
 
 export default defineComponent({
     name: 'MyMealPlan',
@@ -213,40 +194,19 @@ export default defineComponent({
     },
 
     setup() {
-        const NUMBER_OF_FUTURE_WEEKS = 52;
-        const NUMBER_OF_PAST_WEEKS = 52; // TODO: start on registration date
-
         const router = useRouter();
+        const mealPlanState = useMealPlanState();
+        const { selectedDay, newDayPlan, getCalendarBoundaries } =
+            mealPlanState;
 
-        const selectedDay = ref<Day>(new WeekDay(new Date()));
+        const weeks = ref<Week[]>(getWeeks()) as Ref<Week[]>;
         const showingWeek = ref<Week>(getWeek(new Date())) as Ref<Week>;
-        const weeks = ref<Week[]>([]) as Ref<Week[]>;
-
-        for (
-            let i = 0;
-            i < NUMBER_OF_FUTURE_WEEKS + NUMBER_OF_PAST_WEEKS;
-            i++
-        ) {
-            weeks.value.push(
-                getWeek(
-                    dayjs()
-                        .add(i - NUMBER_OF_PAST_WEEKS, 'weeks')
-                        .toDate()
-                )
-            );
-        }
 
         const swiper = ref<ISwiper>();
 
         const calendarBoundaries = ref<CalendarBoundaries>({});
         const isShowingCalendar = ref(false);
 
-        const isAddingMeal = ref(false);
-        const isAddingRecipeToMeal = ref(false);
-        const dayPlan = ref<DayPlan>({
-            date: selectedDay.value.date,
-            meals: [],
-        });
         const selectedMeal = ref<Meal>();
 
         const recipeDetails = ref<string | null>(null);
@@ -263,12 +223,6 @@ export default defineComponent({
 
             return text;
         });
-
-        const areAllMealsAdded = computed(() =>
-            meals.every((meal) =>
-                dayPlan.value.meals.some((dayMeal) => dayMeal.meal === meal)
-            )
-        );
 
         watch(
             () => showingWeek.value,
@@ -294,8 +248,7 @@ export default defineComponent({
                     }
                 }
 
-                dayPlan.value.date = selectedDay.value.date;
-                dayPlan.value.meals = [];
+                newDayPlan();
             }
         );
 
@@ -307,15 +260,7 @@ export default defineComponent({
         }
 
         async function showCalendar() {
-            const firstDay = weeks.value[0].filter(
-                (day) => day !== null
-            )[0] as Day;
-            const lastDay = getLastItem(
-                getLastItem(weeks.value).filter((day) => day !== null) as Day[]
-            );
-
-            calendarBoundaries.value.startDate = dayjs(firstDay.date).toDate();
-            calendarBoundaries.value.endDate = dayjs(lastDay.date).toDate();
+            calendarBoundaries.value = getCalendarBoundaries(weeks.value);
 
             isShowingCalendar.value = true;
 
@@ -330,28 +275,6 @@ export default defineComponent({
             recipeDetails.value = recipe._id!;
         }
 
-        function addRecipeToMeal(meal: Meal, recipe: Recipe) {
-            dayPlan.value.meals.push({
-                meal,
-                recipe,
-            });
-
-            isAddingMeal.value = false;
-            isAddingRecipeToMeal.value = false;
-        }
-
-        function removeMeal(dayMeal: DayMeal) {
-            const index = dayPlan.value.meals.findIndex(
-                (meal) => meal.meal === dayMeal.meal
-            );
-
-            if (index === -1) {
-                return;
-            }
-
-            dayPlan.value.meals.splice(index, 1);
-        }
-
         function back() {
             router.push({
                 name: 'Profile',
@@ -359,6 +282,7 @@ export default defineComponent({
         }
 
         return {
+            ...mealPlanState,
             NUMBER_OF_PAST_WEEKS,
             selectedDay,
             showingWeek,
@@ -373,15 +297,9 @@ export default defineComponent({
             back,
             Virtual,
             meals,
-            dayPlan,
-            isAddingMeal,
-            areAllMealsAdded,
             selectedMeal,
-            isAddingRecipeToMeal,
             capitalizeFirstLetter,
             showMoreInfo,
-            addRecipeToMeal,
-            removeMeal,
             recipeDetails,
         };
     },
