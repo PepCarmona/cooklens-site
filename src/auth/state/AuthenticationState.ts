@@ -1,6 +1,8 @@
-import { AuthEndpoint } from '@/api/endpoints/auth';
-import { User } from '@/profile/types/UserTypes';
 import { readonly, ref, computed } from 'vue';
+
+import { AuthEndpoint } from '@/api/endpoints/auth';
+
+import { User } from '@/profile/types/UserTypes';
 
 const authService = new AuthEndpoint();
 

@@ -1,4 +1,4 @@
-import { computed, ref, Ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { UserEndpoint } from '@/api/endpoints/user';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
@@ -7,17 +7,6 @@ import useAuthenticationState from '@/auth/state/AuthenticationState';
 import usePaginationState from '@/shared/Pagination/PaginationState';
 
 import { Recipe } from '@/recipes/types/RecipeTypes';
-import { User } from '@/profile/types/UserTypes';
-
-interface UserState {
-    isLoading: Readonly<Ref<boolean>>;
-    favRecipes: Readonly<Ref<Recipe[]>>;
-    myRecipes: Readonly<Ref<Recipe[]>>;
-
-    toggleFavRecipe(recipe: Recipe): Promise<User>;
-    getFavRecipes(): Promise<void>;
-    getMyRecipes(): Promise<void>;
-}
 
 const userService = new UserEndpoint();
 const recipeService = new RecipesEndpoint();
@@ -71,7 +60,7 @@ function getMyRecipes(page = 1, limit = 10) {
         .finally(() => (isLoading.value = false));
 }
 
-export default function useUserState(): UserState {
+export default function useUserState() {
     return {
         isLoading: computed(() => isLoading.value),
         favRecipes: computed(() => favRecipes.value),

@@ -47,7 +47,7 @@ import { useRouter } from 'vue-router';
 
 import CustomInput from '@/shared/CustomInput.vue';
 
-import useAuthState from '@/auth/state/AuthenticationState';
+import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 import { User, UserClass } from '@/profile/types/UserTypes';
 
@@ -67,14 +67,14 @@ export default defineComponent({
 
         const user = ref<User>(new UserClass());
 
-        const { isLoading } = useAuthState();
+        const { isLoading } = useAuthenticationState();
 
         function register() {
             if (!isValidUser()) {
                 return;
             }
 
-            useAuthState()
+            useAuthenticationState()
                 .register(user.value)
                 .then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
         }

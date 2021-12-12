@@ -1,14 +1,4 @@
-import { readonly, ref, Ref } from 'vue';
-
-interface PaginationState {
-    currentPage: Readonly<Ref<number>>;
-    nextPageExists: Readonly<Ref<boolean>>;
-
-    goToPreviousPage(): void;
-    goToPage(page: number): void;
-    goToNextPage(): void;
-    checkIfNextPageExists(value: boolean): void;
-}
+import { readonly, ref } from 'vue';
 
 const currentPage = ref(1);
 const nextPageExists = ref(false);
@@ -29,7 +19,7 @@ function checkIfNextPageExists(value: boolean) {
     nextPageExists.value = value;
 }
 
-export default function usePaginationState(): PaginationState {
+export default function usePaginationState() {
     return {
         currentPage: readonly(currentPage),
         nextPageExists: readonly(nextPageExists),

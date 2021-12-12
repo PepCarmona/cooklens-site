@@ -15,6 +15,7 @@ import {
 } from '@/recipes/types/RecipeTypes';
 
 const recipeService = new RecipesEndpoint();
+
 const { checkIfNextPageExists, goToPage } = usePaginationState();
 const { authenticatedUser } = useAuthenticationState();
 
