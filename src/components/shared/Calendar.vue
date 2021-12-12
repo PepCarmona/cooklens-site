@@ -24,8 +24,11 @@
                     <div v-for="day in week" :key="day" class="calendar-day">
                         <button
                             v-if="day"
-                            :class="{ selected: day.date === selectedDay.date }"
-                            :disabled="day.isBeforeToday"
+                            :class="{
+                                selected: day.date === selectedDay.date,
+                                past: day.isBeforeToday,
+                            }"
+                            :disabled="!allowPast && day.isBeforeToday"
                             @click="$emit('selected-day', day)"
                         >
                             {{ day.dayNumber }}
@@ -125,6 +128,7 @@ export default defineComponent({
     props: {
         boundaries: Object as PropType<CalendarBoundaries>,
         selectedDay: Object as PropType<Day>,
+        allowPast: Boolean,
     },
 
     emits: ['selected-day'],
@@ -253,5 +257,8 @@ export default defineComponent({
     background-color: var(--accent-color);
     border-radius: 25px;
     color: var(--inverted-text-color);
+}
+.calendar-day > *.past:not(.selected) {
+    color: var(--grey-600);
 }
 </style>

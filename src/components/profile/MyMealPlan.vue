@@ -12,7 +12,7 @@
                     selectedDay = $event;
                     isShowingCalendar = false;
                 "
-                :disablePastDates="false"
+                allowPast
             />
         </CustomModal>
         <CustomModal
