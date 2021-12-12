@@ -42,85 +42,22 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
+
 import dayjs from 'dayjs';
-import { weekdays, weekdaysShort } from '@/helpers/date';
+import isoWeek from 'dayjs/plugin/isoWeek';
+dayjs.extend(isoWeek);
 
-export interface CalendarBoundaries {
-    startDate?: Date;
-    endDate?: Date;
-    duration?: number;
-}
-export type Calendar = CalendarMonth[];
+import { weekdaysShort } from '@/helpers/date';
 
-interface CalendarMonth {
-    monthNumber: number;
-    monthName: string;
-    year: number;
-    weeks: Week[];
-    isInView: boolean;
-}
+import {
+    Calendar,
+    CalendarBoundaries,
+    Day,
+    Week,
+    WeekDay,
+} from '@/shared/Calendar/CalendarTypes';
 
-export type Week = [
-    Day | null,
-    Day | null,
-    Day | null,
-    Day | null,
-    Day | null,
-    Day | null,
-    Day | null
-];
-
-export interface Day {
-    month: string;
-    dayNumber: string;
-    dayNameShort: string;
-    dayNameLong: string;
-    weekday: number;
-    date: string;
-    isBeforeToday: boolean;
-}
-
-export class WeekDay implements Day {
-    month: string;
-    dayNumber: string;
-    dayNameShort: string;
-    dayNameLong: string;
-    weekday: number;
-    isBeforeToday: boolean;
-    date: string;
-    unformattedDate: Date;
-
-    constructor(_day: Date) {
-        const day = dayjs(_day);
-
-        this.month = day.format('MMMM');
-        this.dayNumber = day.format('D');
-        this.dayNameShort = weekdaysShort[day.isoWeekday() - 1];
-        this.dayNameLong = weekdays[day.isoWeekday() - 1];
-        this.date = day.format('M-DD-YYYY');
-        this.isBeforeToday = day
-            .startOf('day')
-            .isBefore(dayjs().startOf('day'));
-        this.weekday = day.isoWeekday();
-        this.unformattedDate = day.toDate();
-    }
-}
-
-export function getEmptyWeek(): Week {
-    return [null, null, null, null, null, null, null];
-}
-
-export function getWeek(day: Date) {
-    const week: Week = getEmptyWeek();
-    const weekStart = dayjs(day).startOf('isoWeek');
-
-    for (let i = 0; i < 7; i++) {
-        const day = dayjs(weekStart).add(i, 'days');
-        week[i] = new WeekDay(day.toDate());
-    }
-
-    return week;
-}
+import { getEmptyWeek } from '@/shared/Calendar/CalendarModel';
 
 export default defineComponent({
     name: 'Calendar',

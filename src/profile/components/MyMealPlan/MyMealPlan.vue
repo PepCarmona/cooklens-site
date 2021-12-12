@@ -168,7 +168,7 @@ import { useRouter } from 'vue-router';
 
 import PageHeader from '@/shared/PageHeader.vue';
 import CustomModal from '@/shared/CustomModal.vue';
-import Calendar, { CalendarBoundaries, WeekDay } from '@/shared/Calendar.vue';
+import Calendar from '@/shared/Calendar/Calendar.vue';
 import RecipesMainComponent from '@/recipes/RecipesMainComponent.vue';
 import RecipeDetails from '@/views/RecipeDetails.vue';
 
@@ -182,25 +182,22 @@ import { weekdaysShort } from '@/helpers/date';
 import { capitalizeFirstLetter } from '@/helpers/string';
 
 import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
-dayjs.extend(isoWeek);
-
-import { Day, getWeek, Week } from '@/shared/Calendar.vue';
 
 import { Recipe } from '@/recipes/types/RecipeTypes';
+import {
+    DayMeal,
+    DayPlan,
+    Meal,
+    meals,
+} from '@/profile/components/MyMealPlan/MealPlanTypes';
+import {
+    CalendarBoundaries,
+    WeekDay,
+    Day,
+    Week,
+} from '@/shared/Calendar/CalendarTypes';
 
-const meals = ['lunch', 'dinner'] as const;
-type Meal = typeof meals[number];
-
-interface DayMeal {
-    meal?: Meal;
-    recipe?: Recipe;
-}
-
-interface DayPlan {
-    date: string;
-    meals: DayMeal[];
-}
+import { getWeek } from '@/shared/Calendar/CalendarModel';
 
 export default defineComponent({
     name: 'MyMealPlan',
