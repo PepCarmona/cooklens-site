@@ -10,11 +10,7 @@
                 />
             </transition>
             <transition name="slide">
-                <div
-                    v-if="showIf"
-                    class="modal"
-                    :class="({ transparent, thin }, mode)"
-                >
+                <div v-if="showIf" class="modal" :class="classList">
                     <button
                         v-if="mode === 'full'"
                         class="close"
@@ -30,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 
 export type modalLateralMode =
     | 'left'
@@ -51,12 +47,29 @@ export default defineComponent({
             type: String as PropType<modalLateralMode>,
             default: 'center',
         },
+        noPadding: Boolean,
     },
 
     emits: ['close'],
 
-    setup() {
-        return {};
+    setup(props) {
+        const classList = computed(() => {
+            const classList = [];
+            if (props.transparent) {
+                classList.push('transparent');
+            }
+            if (props.thin) {
+                classList.push('thin');
+            }
+            if (props.noPadding) {
+                classList.push('noPadding');
+            }
+
+            classList.push(props.mode);
+
+            return classList.join(' ');
+        });
+        return { classList };
     },
 });
 </script>
@@ -129,6 +142,9 @@ export default defineComponent({
     width: 100vw;
     border-radius: 0;
     padding: 1rem;
+}
+.modal.noPadding {
+    padding: 0;
 }
 
 .master-enter-active,

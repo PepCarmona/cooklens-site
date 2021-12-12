@@ -2,7 +2,7 @@
     <CustomModal v-if="isLoading && !id">
         <LoadingModal>Loading ...</LoadingModal>
     </CustomModal>
-    <div class="container" :class="{ thin: !!id }" v-else>
+    <div class="container" :class="{ thin: !!id, embedded }" v-else>
         <div v-if="isLoading & !!id">Loading...</div>
         <template v-else>
             <div class="gallery-and-icons">
@@ -80,7 +80,7 @@
                 </ul>
             </div>
 
-            <div v-if="!minified" class="row">
+            <div class="row">
                 <Rating :recipeRating="recipe.rating" @rate="editRating" />
             </div>
             <div class="main-info">
@@ -183,7 +183,7 @@ export default defineComponent({
 
     props: {
         id: String,
-        minified: Boolean,
+        embedded: Boolean,
     },
 
     components: {
@@ -193,7 +193,9 @@ export default defineComponent({
         Rating,
     },
 
-    setup(props) {
+    emits: ['back'],
+
+    setup(props, { emit }) {
         const {
             isLoading,
             canModifyServings,
@@ -280,7 +282,7 @@ export default defineComponent({
             () => new URL(recipe.value.url!).hostname
         );
 
-        const canGoBack = computed(() => !!route.query.cgb);
+        const canGoBack = computed(() => props.embedded || !!route.query.cgb);
 
         function getRecipeDetails() {
             const id = props.id ?? route.query.id?.toString();
@@ -332,6 +334,11 @@ export default defineComponent({
         }
 
         function goBack() {
+            if (props.embedded) {
+                emit('back');
+                return;
+            }
+
             router.back();
         }
 
@@ -366,6 +373,10 @@ export default defineComponent({
 .container * {
     text-align: left;
 }
+.container.embedded {
+    min-height: calc(100vh - 2rem);
+    justify-content: center;
+}
 
 .brief {
     width: auto;
@@ -375,6 +386,9 @@ export default defineComponent({
     margin: 0 1rem;
     margin-top: -50px;
     z-index: 9;
+}
+.embedded .brief {
+    background-color: var(--background-color);
 }
 .brief.no-image {
     margin-top: calc(2rem + 50px);
@@ -438,6 +452,9 @@ export default defineComponent({
     height: 50px;
     width: 50px;
 }
+.embedded .back {
+    background-color: var(--background-color);
+}
 .icons {
     position: absolute;
     display: flex;
@@ -454,6 +471,9 @@ export default defineComponent({
     height: 50px;
     width: 50px;
     margin-bottom: 1rem;
+}
+.embedded .icons > button {
+    background-color: var(--background-color);
 }
 .icons.no-image > button:not(:last-child) {
     margin-right: 1rem;
@@ -477,6 +497,9 @@ export default defineComponent({
     padding: 1rem;
     padding-bottom: 2rem;
     flex-grow: 1;
+}
+.embedded .main-info {
+    background-color: var(--background-color);
 }
 
 .tabs {

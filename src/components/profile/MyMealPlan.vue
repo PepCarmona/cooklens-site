@@ -23,13 +23,6 @@
             "
         >
             <div v-if="isAddingRecipeToMeal" class="select-recipe">
-                <!-- <div
-                    class="back-to-select-meal"
-                    @click="isAddingRecipeToMeal = false"
-                >
-                    <i class="las la-angle-left"></i>
-                </div> -->
-                <!-- Select recipe for meal {{ selectedMeal }} -->
                 <RecipesMainComponent
                     @back="isAddingRecipeToMeal = false"
                     @see-more-info="showMoreInfo($event)"
@@ -72,7 +65,17 @@
                     </button>
                 </div>
             </div>
-            <!-- select recipe after selecting meal OR add meal without recipe -->
+        </CustomModal>
+        <CustomModal
+            :showIf="!!recipeDetails"
+            @close="recipeDetails = null"
+            noPadding
+        >
+            <RecipeDetails
+                :id="recipeDetails"
+                @back="recipeDetails = null"
+                embedded
+            />
         </CustomModal>
         <PageHeader @go-back="back">
             <template v-slot:title>My Meal Plan</template>
@@ -140,6 +143,7 @@
                     v-for="meal in dayPlan.meals"
                     :key="meal.meal"
                     class="content-meal"
+                    @click="recipeDetails = meal.recipe._id"
                 >
                     <div class="content-meal-body">
                         <div class="content-meal-title">
@@ -169,6 +173,7 @@ import Calendar, {
     WeekDay,
 } from '@/components/shared/Calendar.vue';
 import RecipesMainComponent from '@/components/recipes/RecipesMainComponent.vue';
+import RecipeDetails from '@/views/RecipeDetails.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
@@ -209,6 +214,7 @@ export default defineComponent({
         Swiper,
         SwiperSlide,
         RecipesMainComponent,
+        RecipeDetails,
     },
 
     setup() {
@@ -247,6 +253,8 @@ export default defineComponent({
             meals: [],
         });
         const selectedMeal = ref<Meal>();
+
+        const recipeDetails = ref<string | null>(null);
 
         const currentMonth = computed(() => {
             const currentWeek = showingWeek.value.filter(
@@ -324,7 +332,7 @@ export default defineComponent({
         }
 
         function showMoreInfo(recipe: Recipe) {
-            console.log(recipe);
+            recipeDetails.value = recipe._id!;
         }
 
         function addRecipeToMeal(meal: Meal, recipe: Recipe) {
@@ -379,6 +387,7 @@ export default defineComponent({
             showMoreInfo,
             addRecipeToMeal,
             removeMeal,
+            recipeDetails,
         };
     },
 });
