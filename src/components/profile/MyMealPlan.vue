@@ -12,6 +12,7 @@
                     selectedDay = $event;
                     isShowingCalendar = false;
                 "
+                :disablePastDates="false"
             />
         </CustomModal>
         <CustomModal
@@ -104,9 +105,11 @@
                             v-for="day in week"
                             :key="day"
                             class="day"
-                            :class="{ selected: day.date === selectedDay.date }"
+                            :class="{
+                                selected: day.date === selectedDay.date,
+                                past: day.isBeforeToday,
+                            }"
                             @click="selectedDay = day"
-                            :disabled="day.isBeforeToday"
                         >
                             <span class="day-name">
                                 {{ day.dayNameShort.toUpperCase() }}
@@ -125,7 +128,7 @@
                     {{ selectedDay.dayNameLong }} {{ selectedDay.dayNumber }}
                 </span>
                 <span
-                    v-if="!areAllMealsAdded"
+                    v-if="!selectedDay.isBeforeToday && !areAllMealsAdded"
                     class="add"
                     @click="isAddingMeal = true"
                 >
@@ -438,6 +441,9 @@ export default defineComponent({
     background-color: var(--accent-color);
     border-radius: 25px;
     color: var(--inverted-text-color);
+}
+.day.past > * {
+    color: var(--grey-600);
 }
 .content {
     flex-grow: 1;
