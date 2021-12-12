@@ -26,7 +26,7 @@
                             v-if="day"
                             :class="{ selected: day.date === selectedDay.date }"
                             :disabled="day.isBeforeToday"
-                            @click="$emit('selected-day', day.date)"
+                            @click="$emit('selected-day', day)"
                         >
                             {{ day.dayNumber }}
                         </button>
