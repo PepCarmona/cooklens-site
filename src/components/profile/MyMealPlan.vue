@@ -43,7 +43,7 @@
                     v-for="meal in meals"
                     :key="meal"
                     :disabled="
-                        dayMeals.some((dayMeal) => dayMeal.meal === meal)
+                        dayPlan.meals.some((dayMeal) => dayMeal.meal === meal)
                     "
                     @click="
                         selectedMeal = meal;
@@ -132,6 +132,25 @@
                     <i class="las la-plus"></i>
                 </span>
             </div>
+            <div class="content-body">
+                <div
+                    v-for="meal in dayPlan.meals"
+                    :key="meal.meal"
+                    class="content-meal"
+                >
+                    <div class="content-meal-body">
+                        <div class="content-meal-title">
+                            {{ capitalizeFirstLetter(meal.meal) }}
+                        </div>
+                        <div class="content-meal-recipe">
+                            {{ meal.recipe.title }}
+                        </div>
+                    </div>
+                    <div class="content-meal-actions">
+                        <i @click="removeMeal(meal)" class="las la-minus"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -170,6 +189,11 @@ type Meal = typeof meals[number];
 interface DayMeal {
     meal?: Meal;
     recipe?: Recipe;
+}
+
+interface DayPlan {
+    date: string;
+    meals: DayMeal[];
 }
 
 export default defineComponent({
@@ -215,7 +239,10 @@ export default defineComponent({
 
         const isAddingMeal = ref(false);
         const isAddingRecipeToMeal = ref(false);
-        const dayMeals = ref<DayMeal[]>([]);
+        const dayPlan = ref<DayPlan>({
+            date: selectedDay.value.date,
+            meals: [],
+        });
         const selectedMeal = ref<Meal>();
 
         const currentMonth = computed(() => {
@@ -232,8 +259,8 @@ export default defineComponent({
         });
 
         const areAllMealsAdded = computed(() =>
-            meals.forEach((meal) =>
-                dayMeals.value.some((dayMeal) => dayMeal.meal === meal)
+            meals.every((meal) =>
+                dayPlan.value.meals.some((dayMeal) => dayMeal.meal === meal)
             )
         );
 
@@ -260,6 +287,9 @@ export default defineComponent({
                         showingWeek.value = selectedWeek;
                     }
                 }
+
+                dayPlan.value.date = selectedDay.value.date;
+                dayPlan.value.meals = [];
             }
         );
 
@@ -295,7 +325,25 @@ export default defineComponent({
         }
 
         function addRecipeToMeal(meal: Meal, recipe: Recipe) {
-            console.log(meal, recipe);
+            dayPlan.value.meals.push({
+                meal,
+                recipe,
+            });
+
+            isAddingMeal.value = false;
+            isAddingRecipeToMeal.value = false;
+        }
+
+        function removeMeal(dayMeal: DayMeal) {
+            const index = dayPlan.value.meals.findIndex(
+                (meal) => meal.meal === dayMeal.meal
+            );
+
+            if (index === -1) {
+                return;
+            }
+
+            dayPlan.value.meals.splice(index, 1);
         }
 
         function back() {
@@ -319,7 +367,7 @@ export default defineComponent({
             back,
             Virtual,
             meals,
-            dayMeals,
+            dayPlan,
             isAddingMeal,
             areAllMealsAdded,
             selectedMeal,
@@ -327,6 +375,7 @@ export default defineComponent({
             capitalizeFirstLetter,
             showMoreInfo,
             addRecipeToMeal,
+            removeMeal,
         };
     },
 });
@@ -449,5 +498,20 @@ export default defineComponent({
 }
 .select-recipe {
     min-height: 625px;
+}
+.content-body {
+    margin-top: 1rem;
+}
+.content-meal {
+    padding: 1rem;
+    border-bottom: 1px solid var(--shadow-color);
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.content-meal-title {
+    color: var(--accent-color);
+    margin-bottom: 0.4rem;
 }
 </style>
