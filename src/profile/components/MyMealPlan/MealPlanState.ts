@@ -1,3 +1,4 @@
+import { MealPlantEndpoint } from '@/api/endpoints/mealPlan';
 import { getLastItem } from '@/helpers/array';
 import { Recipe } from '@/recipes/types/RecipeTypes';
 import {
@@ -7,18 +8,40 @@ import {
     WeekDay,
 } from '@/shared/Calendar/CalendarTypes';
 import dayjs from 'dayjs';
-import { computed, readonly, ref } from 'vue';
-import { DayMeal, DayPlan, Meal, meals } from './MealPlanTypes';
+import { computed, readonly, ref, watch } from 'vue';
+import { DayMeal, DayPlan, Meal, MealPlan, meals } from './MealPlanTypes';
+
+const mealPlanService = new MealPlantEndpoint();
 
 const selectedDay = ref<Day>(new WeekDay(new Date()));
 
+const mealPlan = ref<MealPlan>();
 const dayPlan = ref<DayPlan>({
     date: selectedDay.value.date,
     meals: [],
 });
 
+const isLoading = ref(false);
 const isAddingMeal = ref(false);
 const isAddingRecipeToMeal = ref(false);
+
+watch(selectedDay, () => (dayPlan.value = getDayPlan()), { immediate: true });
+watch(
+    dayPlan,
+    (newValue: DayPlan, oldValue: DayPlan) => {
+        if (
+            dayPlan.value.meals.length > 0 &&
+            !mealPlan.value?.days.find((day) => day.date === dayPlan.value.date)
+        ) {
+            mealPlan.value?.days.push(dayPlan.value);
+        }
+
+        if (oldValue.date === newValue.date) {
+            updateMealPlan();
+        }
+    },
+    { deep: true }
+);
 
 const areAllMealsAdded = computed(() =>
     meals.every((meal) =>
@@ -26,10 +49,57 @@ const areAllMealsAdded = computed(() =>
     )
 );
 
-function newDayPlan() {
-    dayPlan.value.date = selectedDay.value.date;
-    dayPlan.value.meals = [];
+function getMealPlan(): Promise<MealPlan> {
+    isLoading.value = true;
+
+    return mealPlanService
+        .getMealPlan()
+        .then((serverMealPlan) => {
+            mealPlan.value = serverMealPlan;
+
+            if (dayPlan.value.meals.length === 0) {
+                dayPlan.value = getDayPlan();
+            }
+
+            return serverMealPlan;
+        })
+        .finally(() => (isLoading.value = false));
 }
+
+function updateMealPlan(): void {
+    if (!mealPlan.value) {
+        return;
+    }
+
+    mealPlanService.updateMealPlan(mealPlan.value);
+}
+
+function getDayPlan(): DayPlan {
+    if (!mealPlan.value) {
+        return {
+            date: selectedDay.value.date,
+            meals: [],
+        };
+    }
+
+    const index = mealPlan.value.days.findIndex(
+        (day) => day.date === selectedDay.value.date
+    );
+
+    if (index < 0) {
+        return {
+            date: selectedDay.value.date,
+            meals: [],
+        };
+    }
+
+    return mealPlan.value.days[index];
+}
+
+// function newDayPlan() {
+//     dayPlan.value.date = selectedDay.value.date;
+//     dayPlan.value.meals = [];
+// }
 
 function addRecipeToMeal(meal: Meal, recipe: Recipe) {
     dayPlan.value.meals.push({
@@ -68,13 +138,15 @@ function getCalendarBoundaries(weeks: Week[]): CalendarBoundaries {
 export default function useMealPlanState() {
     return {
         selectedDay: readonly(selectedDay),
+        mealPlan: readonly(mealPlan),
         dayPlan: readonly(dayPlan),
         isAddingMeal: readonly(isAddingMeal),
         isAddingRecipeToMeal: readonly(isAddingRecipeToMeal),
         areAllMealsAdded: readonly(areAllMealsAdded),
 
         getCalendarBoundaries,
-        newDayPlan,
+        getMealPlan,
+        // newDayPlan,
         addRecipeToMeal,
         removeMeal,
         selectDay: (day: Day) => (selectedDay.value = day),

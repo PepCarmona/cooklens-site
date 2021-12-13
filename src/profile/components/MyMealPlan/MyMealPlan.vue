@@ -140,7 +140,10 @@
                             {{ meal.recipe.title }}
                         </div>
                     </div>
-                    <div class="content-meal-actions">
+                    <div
+                        v-if="!selectedDay.isBeforeToday"
+                        class="content-meal-actions"
+                    >
                         <i
                             @click.stop="removeMeal(meal)"
                             class="las la-minus"
@@ -199,8 +202,10 @@ export default defineComponent({
     setup() {
         const router = useRouter();
         const mealPlanState = useMealPlanState();
-        const { selectedDay, newDayPlan, getCalendarBoundaries } =
+        const { selectedDay, getCalendarBoundaries, getMealPlan } =
             mealPlanState;
+
+        getMealPlan();
 
         const weeks = ref<Week[]>(getWeeks()) as Ref<Week[]>;
         const showingWeek = ref<Week>(getWeek(new Date())) as Ref<Week>;
@@ -251,7 +256,7 @@ export default defineComponent({
                     }
                 }
 
-                newDayPlan();
+                // newDayPlan();
             }
         );
 

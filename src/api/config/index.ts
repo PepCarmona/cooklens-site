@@ -30,7 +30,7 @@ export const URI = {
         removeFavRecipe: `${proxy}/user/removeFavRecipe`,
         getFavRecipes: `${proxy}/user/getFavRecipes`,
     },
-    mealPlan: {
+    weekPlan: {
         getAll: `${proxy}/plans/getAll`,
         getById: `${proxy}/plans/getById`,
         getMyWeekPlans: `${proxy}/plans/getMyWeekPlans`,
@@ -39,5 +39,9 @@ export const URI = {
         delete: `${proxy}/plans/deleteWeekPlan`,
         subscribe: `${proxy}/plans/subscribeToWeekPlan`,
         unsubscribe: `${proxy}/plans/unsubscribeToWeekPlan`,
+    },
+    mealPlan: {
+        get: `${proxy}/mealPlan/getMealPlan`,
+        update: `${proxy}/mealPlan/updateMealPlan`,
     },
 };

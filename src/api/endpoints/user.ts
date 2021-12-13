@@ -33,6 +33,6 @@ export class UserEndpoint extends Endpoint implements UserEndpointInterface {
     }
 
     public getMyWeekPlans(): Promise<WeekPlan[]> {
-        return this.get(URI.mealPlan.getMyWeekPlans);
+        return this.get(URI.weekPlan.getMyWeekPlans);
     }
 }

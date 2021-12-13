@@ -12,3 +12,9 @@ export interface DayPlan {
     date: string;
     meals: DayMeal[];
 }
+
+export interface MealPlan {
+    _id?: string;
+    users: string[];
+    days: DayPlan[];
+}
