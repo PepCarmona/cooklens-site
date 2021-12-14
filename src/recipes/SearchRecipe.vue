@@ -5,7 +5,6 @@
         </button>
         <input
             @input="changeSearchText"
-            @keypress="autoSearch"
             @focus="isFocus = true"
             @blur="isFocus = false"
             ref="searchInput"
@@ -50,6 +49,9 @@ import { SearchType } from '@/recipes/types/RecipeTypes';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 
+import { fromEvent, Observable } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
 export default defineComponent({
     name: 'SearchRecipe',
 
@@ -68,6 +70,19 @@ export default defineComponent({
 
         onMounted(() => {
             searchInput.value?.focus();
+
+            if (!searchInput.value) {
+                return;
+            }
+
+            const searchInputTyping = fromEvent(
+                searchInput.value,
+                'keydown'
+            ) as Observable<KeyboardEvent>;
+
+            searchInputTyping
+                .pipe(debounceTime(200))
+                .subscribe(() => doSearch());
         });
 
         function doSearch(page?: number) {
@@ -95,18 +110,11 @@ export default defineComponent({
             setSearch(searchBy || 'title', searchText || '');
         }
 
-        function autoSearch(event: KeyboardEvent) {
-            if (event.key === 'Enter') {
-                doSearch();
-            }
-        }
-
         return {
             doSearch,
             changeSearchType,
             searchInput,
             isFocus,
-            autoSearch,
             searchQuery,
             changeSearchText,
         };

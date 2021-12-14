@@ -2,13 +2,6 @@
     <div class="card-container" :class="{ column: slim, thin, 'pb-3': !slim }">
         <div v-if="isLoading" class="loadingCard">Loading...</div>
         <template v-else>
-            <button
-                v-if="showFilteredRecipes"
-                @click="showAllRecipes"
-                class="seeAll"
-            >
-                See all
-            </button>
             <RecipeCard
                 v-for="recipe in recipes"
                 :key="recipe._id"
@@ -49,10 +42,6 @@ export default defineComponent({
             type: Array as PropType<Recipe[]>,
             required: true,
         },
-        showFilteredRecipes: {
-            type: Boolean,
-            default: false,
-        },
         thin: Boolean,
         slim: Boolean,
         showActions: Boolean,
@@ -63,7 +52,7 @@ export default defineComponent({
         Pagination,
     },
 
-    emits: ['showAllRecipes', 'goToPage', 'select-recipe', 'see-more-info'],
+    emits: ['goToPage', 'select-recipe', 'see-more-info'],
 
     setup(_, { emit }) {
         const { currentPage, nextPageExists } = usePaginationState();
@@ -77,17 +66,12 @@ export default defineComponent({
             emit('goToPage', currentPage.value + 1);
         }
 
-        function showAllRecipes() {
-            emit('showAllRecipes');
-        }
-
         return {
             currentPage,
             nextPageExists,
             isLoading,
             goToPreviousPage,
             goToNextPage,
-            showAllRecipes,
         };
     },
 });

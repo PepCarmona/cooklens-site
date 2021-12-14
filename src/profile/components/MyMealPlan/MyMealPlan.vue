@@ -431,7 +431,8 @@ export default defineComponent({
     color: var(--accent-color);
 }
 .select-recipe {
-    min-height: 625px;
+    width: 100%;
+    min-height: calc(100vh - 5rem);
 }
 .content-body {
     margin-top: 1rem;

@@ -11,8 +11,6 @@
         <RecipeList
             v-else
             :recipes="recipes"
-            :showFilteredRecipes="showFilteredRecipes && !isLoading"
-            @showAllRecipes="showAllRecipes"
             @goToPage="goToPage"
             :slim="embedded"
             :showActions="showActions"
@@ -92,8 +90,14 @@ export default defineComponent({
             router.push({
                 name: 'RecipesMainView',
                 query: {
-                    searchBy: searchQuery ? searchQuery.type : undefined,
-                    searchText: searchQuery ? searchQuery.text : undefined,
+                    searchBy:
+                        searchQuery && searchQuery.text !== ''
+                            ? searchQuery.type
+                            : undefined,
+                    searchText:
+                        searchQuery && searchQuery.text !== ''
+                            ? searchQuery.text
+                            : undefined,
                     page: page && page > 1 ? page : undefined,
                 },
             });
@@ -128,7 +132,6 @@ export default defineComponent({
         return {
             ...data,
             doSearch,
-            showAllRecipes,
             recipes,
             searchQuery,
             goToPage,
