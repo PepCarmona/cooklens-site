@@ -108,9 +108,6 @@ export default defineComponent({
 footer {
     z-index: 10;
 }
-i {
-    color: black;
-}
 i.current {
     color: var(--accent-color);
 }

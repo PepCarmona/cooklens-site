@@ -1,8 +1,17 @@
 <template>
     <div class="card-container" :class="{ column: slim, thin, 'pb-3': !slim }">
         <div v-if="isLoading" class="loadingCard">Loading...</div>
-        <template v-else v-for="recipe in recipes" :key="recipe._id">
+        <template v-else>
+            <button
+                v-if="showFilteredRecipes"
+                @click="showAllRecipes"
+                class="seeAll"
+            >
+                See all
+            </button>
             <RecipeCard
+                v-for="recipe in recipes"
+                :key="recipe._id"
                 :recipe="recipe"
                 :slim="slim"
                 :showActions="showActions"
@@ -10,13 +19,6 @@
                 @select-recipe="$emit('select-recipe', $event)"
             />
         </template>
-        <button
-            v-if="showFilteredRecipes"
-            @click="showAllRecipes"
-            class="seeAll"
-        >
-            See all
-        </button>
         <div v-if="recipes.length === 0">No recipes match this search</div>
         <Pagination
             v-if="!(currentPage === 1 && !nextPageExists) && !isLoading"
@@ -93,16 +95,15 @@ export default defineComponent({
 
 <style scoped>
 .seeAll {
-    position: absolute;
-    background-color: var(--main-dark-color);
-    color: var(--main-light-color);
+    background-color: var(--accent-color-complementary);
+    color: var(--inverted-text-color);
     padding-top: 0.2rem;
     padding-bottom: 0.2rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
     border-radius: 50px;
-    font-size: 1.05rem;
-    margin-top: -2rem;
+    width: fit-content;
+    margin: auto;
     cursor: pointer;
 }
 

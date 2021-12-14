@@ -1,18 +1,4 @@
 :root {
-    /* --main-color: grey;
-    --secondary-color: lightgrey;
-    --terciary-color: gray;
-    
-    --main-light-color: white;
-    --secondary-light-color: rgb(236, 236, 236);
-    
-    --main-dark-color: #000000;
-
-    --main-transparent-color: rgba(212, 212, 212, 0.815);
-    --secondary-transparent-color: rgba(255, 255, 255, 0.75);
-    --third-transparent-color: rgba(255, 255, 255, 0.5);
-    
-    --text-main-color: #2c3e50; */
     --background-color: #F2F3F4;
     --background-contrast-color: #FFFFFF;
 
@@ -26,12 +12,11 @@
     --shadow-color: #0000001A;
     --dark-shadow-color: #00000045;
 
-    --main-text-color: #000000;
     --inverted-text-color: #FFFFFF;
 
     --grey-100: #F2F3F4;
-    --grey-600: #B3B4BA;
-    --grey-800: #636773;
+    --grey-600: #A9B6BA;
+    --grey-800: #546D75;
 
     --title-font: 'Roboto Slab', serif;
     --main-text-font: 'Roboto', sans-serif;
@@ -43,6 +28,7 @@
     font-size: 16px;
     line-height: 140%;
     letter-spacing: 0.023em;
+    color: var(--accent-color-complementary)
 }
 
 .row {
@@ -350,6 +336,10 @@ a {
 
 i {
     font-size: 24px;
+}
+
+input::placeholder {
+    color: var(--grey-800)
 }
 
 @media only screen and (min-width: 769px) {

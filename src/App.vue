@@ -65,7 +65,7 @@ export default defineComponent({
 </script>
 
 <style>
-@import './assets/basic.css';
+@import './assets/global.css';
 body,
 html {
     margin: 0;
