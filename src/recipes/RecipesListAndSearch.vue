@@ -90,7 +90,7 @@ export default defineComponent({
             }
 
             router.push({
-                name: 'RecipesListAndSearch',
+                name: 'RecipesMainView',
                 query: {
                     searchBy: searchQuery ? searchQuery.type : undefined,
                     searchText: searchQuery ? searchQuery.text : undefined,

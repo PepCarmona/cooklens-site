@@ -45,7 +45,6 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { SearchType } from '@/recipes/types/RecipeTypes';
 
@@ -62,8 +61,6 @@ export default defineComponent({
 
     setup(_, { emit }) {
         const { setSearch, searchQuery } = useRecipeState();
-
-        const router = useRouter();
 
         const searchInput = ref<HTMLInputElement>();
 
@@ -98,17 +95,6 @@ export default defineComponent({
             setSearch(searchBy || 'title', searchText || '');
         }
 
-        function updateQueryString(page?: number) {
-            router.push({
-                name: 'RecipesMainView',
-                query: {
-                    searchBy: searchQuery.value.type,
-                    searchText: searchQuery.value.text,
-                    page: page && page > 1 ? page : undefined,
-                },
-            });
-        }
-
         function autoSearch(event: KeyboardEvent) {
             if (event.key === 'Enter') {
                 doSearch();
@@ -118,7 +104,6 @@ export default defineComponent({
         return {
             doSearch,
             changeSearchType,
-            updateQueryString,
             searchInput,
             isFocus,
             autoSearch,
