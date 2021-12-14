@@ -17,7 +17,7 @@
         </CustomModal>
         <CustomModal :showIf="isAddingMeal" @close="closeMealSelector()">
             <div v-if="isAddingRecipeToMeal" class="select-recipe">
-                <RecipesMainView
+                <RecipesListAndSearch
                     @back="closeRecipeSelector()"
                     @see-more-info="showMoreInfo($event)"
                     @select-recipe="addRecipeToMeal(selectedMeal, $event)"
@@ -162,7 +162,7 @@ import { useRouter } from 'vue-router';
 import PageHeader from '@/shared/PageHeader.vue';
 import CustomModal from '@/shared/CustomModal.vue';
 import Calendar from '@/shared/Calendar/Calendar.vue';
-import RecipesMainView from '@/recipes/RecipesMainView.vue';
+import RecipesListAndSearch from '@/recipes/RecipesListAndSearch.vue';
 import RecipeDetails from '@/recipes/RecipeDetails.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
@@ -195,7 +195,7 @@ export default defineComponent({
         Calendar,
         Swiper,
         SwiperSlide,
-        RecipesMainView,
+        RecipesListAndSearch,
         RecipeDetails,
     },
 

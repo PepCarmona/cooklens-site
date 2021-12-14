@@ -33,7 +33,7 @@ import useRecipeState from '@/recipes/state/RecipeState';
 import { SearchType, SearchQuery } from '@/recipes/types/RecipeTypes';
 
 export default defineComponent({
-    name: 'RecipesMainView',
+    name: 'RecipesListAndSearch',
 
     props: {
         embedded: Boolean,
@@ -90,7 +90,7 @@ export default defineComponent({
             }
 
             router.push({
-                name: 'RecipesMainView',
+                name: 'RecipesListAndSearch',
                 query: {
                     searchBy: searchQuery ? searchQuery.type : undefined,
                     searchText: searchQuery ? searchQuery.text : undefined,

@@ -21,7 +21,9 @@
                 <router-link to="/recipes">
                     <i
                         class="las la-search"
-                        :class="{ current: routeName === 'RecipesMainView' }"
+                        :class="{
+                            current: routeName === 'RecipesMainView',
+                        }"
                     ></i>
                 </router-link>
             </div>

@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'RecipesMainView',
         component: () =>
             import(
-                /* webpackChunkName: "about" */ '../recipes/RecipesMainView.vue'
+                /* webpackChunkName: "about" */ '../recipes/RecipesListAndSearch.vue'
             ),
         meta: { invertedBG: true, showAddRecipe: true },
     },
