@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div :class="{ embedded }">
         <div class="search">
             <SearchRecipe
                 @doSearch="doSearch($event.page, $event.searchQuery)"
+                @back="$emit('back')"
+                :embedded="embedded"
             />
         </div>
         <div v-if="isLoading">Loading...</div>
@@ -12,6 +14,10 @@
             :showFilteredRecipes="showFilteredRecipes && !isLoading"
             @showAllRecipes="showAllRecipes"
             @goToPage="goToPage"
+            :slim="embedded"
+            :showActions="showActions"
+            @see-more-info="$emit('see-more-info', $event)"
+            @select-recipe="$emit('select-recipe', $event)"
         />
     </div>
 </template>
@@ -29,12 +35,19 @@ import { SearchType, SearchQuery } from '@/recipes/types/RecipeTypes';
 export default defineComponent({
     name: 'RecipesMainView',
 
+    props: {
+        embedded: Boolean,
+        showActions: Boolean,
+    },
+
     components: {
         SearchRecipe,
         RecipeList,
     },
 
-    setup() {
+    emits: ['back', 'select-recipe', 'see-more-info'],
+
+    setup(props) {
         const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
             useRecipeState();
 
@@ -51,6 +64,11 @@ export default defineComponent({
         };
 
         onMounted(() => {
+            if (props.embedded) {
+                showAllRecipes();
+                return;
+            }
+
             if (route.query.searchBy && route.query.searchText) {
                 setSearch(
                     route.query.searchBy.toString() as SearchType,
@@ -67,6 +85,10 @@ export default defineComponent({
         });
 
         function updateQueryString(page?: number, searchQuery?: SearchQuery) {
+            if (props.embedded) {
+                return;
+            }
+
             router.push({
                 name: 'RecipesMainView',
                 query: {
@@ -116,10 +138,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.search {
+div:not(.embedded) > .search {
     padding: 1rem;
     padding-top: calc(2rem + 50px);
     margin-top: -50px;
+}
+.embedded > .search {
+    margin-bottom: 1.5rem;
 }
 
 @media only screen and (min-width: 769px) {

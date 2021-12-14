@@ -16,10 +16,7 @@ const mealPlanService = new MealPlantEndpoint();
 const selectedDay = ref<Day>(new WeekDay(new Date()));
 
 const mealPlan = ref<MealPlan>();
-const dayPlan = ref<DayPlan>({
-    date: selectedDay.value.date,
-    meals: [],
-});
+const dayPlan = ref<DayPlan>(newDayPlan());
 
 const isLoading = ref(false);
 const isAddingMeal = ref(false);
@@ -76,10 +73,7 @@ function updateMealPlan(): void {
 
 function getDayPlan(): DayPlan {
     if (!mealPlan.value) {
-        return {
-            date: selectedDay.value.date,
-            meals: [],
-        };
+        return newDayPlan();
     }
 
     const index = mealPlan.value.days.findIndex(
@@ -87,19 +81,18 @@ function getDayPlan(): DayPlan {
     );
 
     if (index < 0) {
-        return {
-            date: selectedDay.value.date,
-            meals: [],
-        };
+        return newDayPlan();
     }
 
     return mealPlan.value.days[index];
 }
 
-// function newDayPlan() {
-//     dayPlan.value.date = selectedDay.value.date;
-//     dayPlan.value.meals = [];
-// }
+function newDayPlan(): DayPlan {
+    return {
+        date: selectedDay.value.date,
+        meals: [],
+    };
+}
 
 function addRecipeToMeal(meal: Meal, recipe: Recipe) {
     dayPlan.value.meals.push({
@@ -146,7 +139,6 @@ export default function useMealPlanState() {
 
         getCalendarBoundaries,
         getMealPlan,
-        // newDayPlan,
         addRecipeToMeal,
         removeMeal,
         selectDay: (day: Day) => (selectedDay.value = day),

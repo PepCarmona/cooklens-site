@@ -252,7 +252,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 import CreateRecipe from '@/recipes/CreateRecipe.vue';
-import RecipeDetails from '@/views/RecipeDetails.vue';
+import RecipeDetails from '@/recipes/RecipeDetails.vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 import useWeekPlanState from '@/profile/components/MyWeekPlan/WeekPlanState';

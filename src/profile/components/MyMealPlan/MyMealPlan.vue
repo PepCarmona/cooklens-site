@@ -17,7 +17,7 @@
         </CustomModal>
         <CustomModal :showIf="isAddingMeal" @close="closeMealSelector()">
             <div v-if="isAddingRecipeToMeal" class="select-recipe">
-                <RecipesMainComponent
+                <RecipesMainView
                     @back="closeRecipeSelector()"
                     @see-more-info="showMoreInfo($event)"
                     @select-recipe="addRecipeToMeal(selectedMeal, $event)"
@@ -162,8 +162,8 @@ import { useRouter } from 'vue-router';
 import PageHeader from '@/shared/PageHeader.vue';
 import CustomModal from '@/shared/CustomModal.vue';
 import Calendar from '@/shared/Calendar/Calendar.vue';
-import RecipesMainComponent from '@/recipes/RecipesMainComponent.vue';
-import RecipeDetails from '@/views/RecipeDetails.vue';
+import RecipesMainView from '@/recipes/RecipesMainView.vue';
+import RecipeDetails from '@/recipes/RecipeDetails.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
@@ -195,7 +195,7 @@ export default defineComponent({
         Calendar,
         Swiper,
         SwiperSlide,
-        RecipesMainComponent,
+        RecipesMainView,
         RecipeDetails,
     },
 
@@ -255,8 +255,6 @@ export default defineComponent({
                         showingWeek.value = selectedWeek;
                     }
                 }
-
-                // newDayPlan();
             }
         );
 

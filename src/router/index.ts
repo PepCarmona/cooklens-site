@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'RecipesMainView',
         component: () =>
             import(
-                /* webpackChunkName: "about" */ '../views/RecipesMainView.vue'
+                /* webpackChunkName: "about" */ '../recipes/RecipesMainView.vue'
             ),
         meta: { invertedBG: true, showAddRecipe: true },
     },
@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'RecipeDetails',
         component: () =>
             import(
-                /* webpackChunkName: "recipeDetails" */ '../views/RecipeDetails.vue'
+                /* webpackChunkName: "recipeDetails" */ '../recipes/RecipeDetails.vue'
             ),
         props: (route) => ({ id: route.query.id, random: route.query.random }),
         meta: { invertedBG: true },
