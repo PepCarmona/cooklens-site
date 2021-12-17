@@ -171,8 +171,11 @@ import CustomNumberInput from '@/shared/CustomNumberInput.vue';
 import Rating from '@/shared/Rating.vue';
 
 import { Ingredient, Recipe } from '@/recipes/types/RecipeTypes';
+
 import useRecipeState from '@/recipes/state/RecipeState';
 import useUserState from '@/profile/state/UserState';
+
+import { isMobile } from '@/helpers/media';
 
 export function getFormattedTitle(recipe: Recipe): string {
     return recipe.title.toLowerCase().replaceAll(' ', '-');
@@ -217,8 +220,6 @@ export default defineComponent({
 
         const showTab = ref<Tab>('introduction');
 
-        const isMobile = ref(window.innerWidth < 768);
-
         const data = {
             isLoading,
             recipe,
@@ -238,11 +239,6 @@ export default defineComponent({
             } else {
                 getRecipeDetails();
             }
-
-            window.addEventListener(
-                'resize',
-                () => (isMobile.value = window.innerWidth < 768)
-            );
         });
 
         watch(route, () => {

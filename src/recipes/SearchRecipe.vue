@@ -51,6 +51,7 @@ import useRecipeState from '@/recipes/state/RecipeState';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { isMobile } from '@/helpers/media';
 
 export default defineComponent({
     name: 'SearchRecipe',
@@ -69,10 +70,12 @@ export default defineComponent({
         const isFocus = ref(false);
 
         onMounted(() => {
-            searchInput.value?.focus();
-
             if (!searchInput.value) {
                 return;
+            }
+
+            if (!isMobile) {
+                searchInput.value.focus();
             }
 
             const searchInputTyping = fromEvent(

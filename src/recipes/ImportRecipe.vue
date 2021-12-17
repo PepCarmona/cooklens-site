@@ -8,8 +8,10 @@
         />
         <div class="separator"></div>
         <button @click="importFromUrl">
-            <span v-if="isLoading"><i class="las la-circle-notch"></i></span>
-            <span v-else>IMPORT</span>
+            <template v-if="isLoading">
+                <i class="las la-circle-notch" />i>
+            </template>
+            <template v-else>IMPORT</template>
         </button>
         <div v-if="importErrors" class="errors">
             {{ importErrors }}
@@ -18,11 +20,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 
 import { Recipe } from '@/recipes/types/RecipeTypes';
+
+import { isMobile } from '@/helpers/media';
 
 export default defineComponent({
     name: 'ImportRecipe',
@@ -38,20 +42,13 @@ export default defineComponent({
 
         const importErrors = ref<string | null>(null);
 
-        const windowWidth = ref<number>(window.innerWidth);
-
         const { isLoading, importRecipe } = useRecipeState();
 
         onMounted(() => {
-            window.addEventListener(
-                'resize',
-                () => (windowWidth.value = window.innerWidth)
-            );
-
-            input.value?.focus();
+            if (!isMobile) {
+                input.value?.focus();
+            }
         });
-
-        const isMobile = computed(() => windowWidth.value < 768);
 
         function importFromUrl() {
             const inputUrl = input.value?.value ?? '';
@@ -82,7 +79,6 @@ export default defineComponent({
             input,
             importErrors,
             isLoading,
-            isMobile,
             importFromUrl,
             autoImport,
         };
