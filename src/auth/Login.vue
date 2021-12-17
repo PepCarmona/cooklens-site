@@ -74,18 +74,8 @@ export default defineComponent({
 				return false;
 			}
 
-			if (user.value.username.length < 3 || user.value.username.length > 15) {
-				console.error('Username must have between 3 and 15 characters');
-				return false;
-			}
-
 			if (!user.value.password) {
 				console.error('Password is mandatory');
-				return false;
-			}
-
-			if (user.value.password.length < 5 || user.value.password.length > 15) {
-				console.error('Password must have between 5 and 15 characters');
 				return false;
 			}
 
