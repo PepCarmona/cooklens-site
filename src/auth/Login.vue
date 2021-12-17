@@ -39,7 +39,7 @@ import CustomInput from '@/shared/CustomInput.vue';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
-import { User, UserClass } from '@/profile/types/UserTypes';
+import { User, UserInfo } from '@/profile/types/UserTypes';
 
 export default defineComponent({
     name: 'Login',
@@ -54,7 +54,7 @@ export default defineComponent({
 
     setup(props) {
         const router = useRouter();
-        const user = ref<User>(new UserClass());
+        const user = ref<UserInfo>(new User());
 
         const { isLoading } = useAuthenticationState();
 

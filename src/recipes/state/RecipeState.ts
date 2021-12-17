@@ -5,7 +5,7 @@ import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import usePaginationState from '@/shared/Pagination/PaginationState';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
-import { User } from '@/profile/types/UserTypes';
+import { UserInfo } from '@/profile/types/UserTypes';
 import {
     IntegratedSite,
     Recipe,
@@ -111,7 +111,7 @@ function getRecipe(id: string) {
             isOwnRecipe.value =
                 !!resultRecipe.author &&
                 authenticatedUser.value?._id ===
-                    (resultRecipe.author as User)._id;
+                    (resultRecipe.author as UserInfo)._id;
         })
         .finally(() => (isLoading.value = false));
 }

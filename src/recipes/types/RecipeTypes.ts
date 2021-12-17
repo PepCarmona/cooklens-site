@@ -1,5 +1,5 @@
 import { PaginatedResponse } from '@/api/endpoints';
-import { User } from '@/profile/types/UserTypes';
+import { UserInfo } from '@/profile/types/UserTypes';
 
 export interface SearchQuery {
     type: SearchType;
@@ -50,7 +50,7 @@ export interface Recipe {
     tags: Tag[];
     images?: string[];
     rating: number;
-    author?: string | User;
+    author?: string | UserInfo;
 }
 
 export class RecipeTimeClass implements RecipeTime {

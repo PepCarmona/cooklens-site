@@ -2,15 +2,15 @@ import { readonly, ref, computed } from 'vue';
 
 import { AuthEndpoint } from '@/api/endpoints/auth';
 
-import { User } from '@/profile/types/UserTypes';
+import { UserInfo } from '@/profile/types/UserTypes';
 
 const authService = new AuthEndpoint();
 
 const isLoading = ref(false);
-const authenticatedUser = ref<User | null>();
+const authenticatedUser = ref<UserInfo | null>();
 const token = ref(localStorage.getItem('userToken') || '');
 
-function register(user: User) {
+function register(user: UserInfo) {
     isLoading.value = true;
 
     return authService
@@ -22,7 +22,7 @@ function register(user: User) {
         .finally(() => (isLoading.value = false));
 }
 
-function logIn(user: User) {
+function logIn(user: UserInfo) {
     isLoading.value = true;
 
     return authService
