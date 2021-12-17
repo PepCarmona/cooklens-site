@@ -56,16 +56,16 @@ export default defineComponent({
 		const router = useRouter();
 		const user = ref<UserInfo>(new User());
 
-		const { isLoading } = useAuthenticationState();
+		const { isLoading, logIn: authLogin } = useAuthenticationState();
 
 		function logIn() {
 			if (!isValidUser()) {
 				return;
 			}
 
-			useAuthenticationState()
-				.logIn(user.value)
-				.then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
+			authLogin(user.value).then(() =>
+				router.push(props.nextUrl ?? { name: 'Profile' })
+			);
 		}
 
 		function isValidUser(): boolean {

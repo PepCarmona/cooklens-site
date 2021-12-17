@@ -377,6 +377,7 @@ export default defineComponent({
 			integratedSites,
 			addRecipe,
 			editRecipe,
+			deleteRecipe: deleteRecipeState,
 		} = useRecipeState();
 
 		const newRecipe = reactive<Recipe>(new RecipeClass());
@@ -594,13 +595,11 @@ export default defineComponent({
 
 		function deleteRecipe() {
 			if (route.query.edit) {
-				useRecipeState()
-					.deleteRecipe(recipe.value)
-					.then(() =>
-						router.push({
-							name: 'RecipesMainView',
-						})
-					);
+				deleteRecipeState(recipe.value).then(() =>
+					router.push({
+						name: 'RecipesMainView',
+					})
+				);
 				return;
 			}
 		}

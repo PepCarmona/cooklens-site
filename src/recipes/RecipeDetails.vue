@@ -193,6 +193,7 @@ export default defineComponent({
 			getRecipe,
 			recipe,
 			editRating,
+			getRandomRecipe: getRandomRecipeState,
 		} = useRecipeState();
 		const { toggleFavRecipe } = useUserState();
 
@@ -281,8 +282,7 @@ export default defineComponent({
 		}
 
 		function getRandomRecipe() {
-			useRecipeState()
-				.getRandomRecipe()
+			getRandomRecipeState()
 				.then(() => {
 					const formattedTitle = recipe.value.title
 						.toLowerCase()

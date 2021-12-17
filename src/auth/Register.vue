@@ -67,16 +67,16 @@ export default defineComponent({
 
 		const user = ref<UserInfo>(new User());
 
-		const { isLoading } = useAuthenticationState();
+		const { isLoading, register: authRegister } = useAuthenticationState();
 
 		function register() {
 			if (!isValidUser()) {
 				return;
 			}
 
-			useAuthenticationState()
-				.register(user.value)
-				.then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
+			authRegister(user.value).then(() =>
+				router.push(props.nextUrl ?? { name: 'Profile' })
+			);
 		}
 
 		function isValidUser(): boolean {
