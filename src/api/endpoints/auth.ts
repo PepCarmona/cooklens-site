@@ -8,7 +8,7 @@ interface AuthResponse {
 	token: string;
 }
 interface AuthEndpointInterface {
-	register(user: User): Promise<AuthResponse>;
+	register(user: User): Promise<void>;
 
 	logIn(user: User): Promise<AuthResponse>;
 
@@ -18,8 +18,8 @@ interface AuthEndpointInterface {
 }
 
 export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
-	public register(user: User): Promise<AuthResponse> {
-		return this.post(URI.auth.register, user);
+	public register(user: User, nextUrl?: string): Promise<void> {
+		return this.post(URI.auth.register, { user, nextUrl });
 	}
 
 	public logIn(user: User): Promise<AuthResponse> {

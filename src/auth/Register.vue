@@ -1,5 +1,11 @@
 <template>
 	<div class="auth-container">
+		<CustomModal
+			:showIf="isShowingVerifyMail"
+			@close="isShowingVerifyMail = false"
+		>
+			<div class="verify-mail">Please, verify your email before login</div>
+		</CustomModal>
 		<CustomInput
 			label="Username"
 			v-model="user.username"
@@ -43,9 +49,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import CustomInput from '@/shared/CustomInput.vue';
+import CustomModal from '@/shared/CustomModal.vue';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
@@ -56,6 +62,7 @@ export default defineComponent({
 
 	components: {
 		CustomInput,
+		CustomModal,
 	},
 
 	props: {
@@ -63,8 +70,6 @@ export default defineComponent({
 	},
 
 	setup(props) {
-		const router = useRouter();
-
 		const user = ref<UserInfo>(new User());
 
 		const {
@@ -73,13 +78,15 @@ export default defineComponent({
 			validatePassword,
 		} = useAuthenticationState();
 
+		const isShowingVerifyMail = ref(false);
+
 		function register() {
 			if (!isValidUser()) {
 				return;
 			}
 
-			authRegister(user.value).then(() =>
-				router.push(props.nextUrl ?? { name: 'Profile' })
+			authRegister(user.value, props.nextUrl).then(
+				() => (isShowingVerifyMail.value = true)
 			);
 		}
 
@@ -117,6 +124,7 @@ export default defineComponent({
 		return {
 			user,
 			isLoading,
+			isShowingVerifyMail,
 			register,
 		};
 	},

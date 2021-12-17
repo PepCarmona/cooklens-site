@@ -10,15 +10,11 @@ const isLoading = ref(false);
 const authenticatedUser = ref<UserInfo | null>();
 const token = ref(localStorage.getItem('userToken') || '');
 
-function register(user: UserInfo) {
+function register(user: UserInfo, nextUrl?: string) {
 	isLoading.value = true;
 
 	return authService
-		.register(user)
-		.then((authResponse) => {
-			localStorage.setItem('userToken', authResponse.token);
-			authenticatedUser.value = authResponse.user;
-		})
+		.register(user, nextUrl)
 		.finally(() => (isLoading.value = false));
 }
 
