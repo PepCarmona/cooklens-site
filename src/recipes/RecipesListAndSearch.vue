@@ -28,7 +28,7 @@ import SearchRecipe from '@/recipes/SearchRecipe.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
-import { SearchType, SearchQuery } from '@/recipes/types/RecipeTypes';
+import { SearchType, SearchQuery } from 'cooklens-types';
 
 export default defineComponent({
 	name: 'RecipesListAndSearch',

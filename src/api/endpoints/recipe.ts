@@ -5,7 +5,7 @@ import {
 	PaginatedRecipes,
 	Recipe,
 	SearchType,
-} from '@/recipes/types/RecipeTypes';
+} from 'cooklens-types';
 
 interface RecipesEndpointInterface {
 	addRecipe(recipe: Recipe): Promise<Recipe>;

@@ -6,7 +6,7 @@ import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 import usePaginationState from '@/shared/Pagination/PaginationState';
 
-import { Recipe } from '@/recipes/types/RecipeTypes';
+import { Recipe } from 'cooklens-types';
 
 const userService = new UserEndpoint();
 const recipeService = new RecipesEndpoint();

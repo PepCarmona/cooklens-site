@@ -1,4 +1,4 @@
-import { MealPlan } from '@/profile/components/MyMealPlan/MealPlanTypes';
+import { MealPlan } from 'cooklens-types';
 import { Endpoint } from '.';
 import { URI } from '../config';
 

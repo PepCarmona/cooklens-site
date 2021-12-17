@@ -1,8 +1,6 @@
 import { Endpoint } from '.';
 import { URI } from '../config';
-import { PaginatedRecipes, Recipe } from '../../recipes/types/RecipeTypes';
-import { User } from '../../profile/types/UserTypes';
-import { WeekPlan } from '../../profile/components/MyWeekPlan/WeekPlanTypes';
+import { PaginatedRecipes, Recipe, User } from 'cooklens-types';
 
 interface UserEndpointInterface {
 	addFavRecipe(recipe: Recipe): Promise<User>;
@@ -27,9 +25,5 @@ export class UserEndpoint extends Endpoint implements UserEndpointInterface {
 		url.searchParams.append('limit', limit.toString());
 
 		return this.get(url.toString());
-	}
-
-	public getMyWeekPlans(): Promise<WeekPlan[]> {
-		return this.get(URI.weekPlan.getMyWeekPlans);
 	}
 }

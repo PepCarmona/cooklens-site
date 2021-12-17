@@ -42,7 +42,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 
-import { SearchType } from '@/recipes/types/RecipeTypes';
+import { SearchType } from 'cooklens-types';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 

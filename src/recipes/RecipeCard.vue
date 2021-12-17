@@ -69,7 +69,7 @@ import useAuthenticationState from '@/auth/state/AuthenticationState';
 import useUserState from '@/profile/state/UserState';
 import useRecipeState from '@/recipes/state/RecipeState';
 
-import { Recipe } from '@/recipes/types/RecipeTypes';
+import { Recipe } from 'cooklens-types';
 
 export default defineComponent({
 	name: 'RecipeCard',
@@ -272,16 +272,16 @@ export default defineComponent({
 	color: var(--main-light-color);
 }
 
-.weekPlanButtons {
+.mealPlanButtons {
 	display: flex;
 	margin-top: 1rem;
 }
-.weekPlanButtons > * {
+.mealPlanButtons > * {
 	width: 50%;
 	padding: 0.5rem;
 	background-color: var(--secondary-light-color);
 }
-.weekPlanButtons > *:hover {
+.mealPlanButtons > *:hover {
 	background-color: var(--secondary-color);
 }
 .actions {

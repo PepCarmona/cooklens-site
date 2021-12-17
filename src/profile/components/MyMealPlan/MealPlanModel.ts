@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { Week } from '@/shared/Calendar/CalendarTypes';
+import { Week } from 'cooklens-types';
 import { getWeek } from '@/shared/Calendar/CalendarModel';
 
 export const NUMBER_OF_FUTURE_WEEKS = 52;

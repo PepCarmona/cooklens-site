@@ -1,7 +1,7 @@
 import { Endpoint } from '.';
 import { URI } from '@/api/config';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
-import { User } from '@/profile/types/UserTypes';
+import { User } from 'cooklens-types';
 
 interface AuthResponse {
 	user: User;

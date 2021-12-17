@@ -1,9 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
-export interface PaginatedResponse {
-	result: any[];
-	next: boolean;
-}
 export class Endpoint {
 	private http: AxiosInstance;
 

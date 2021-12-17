@@ -168,9 +168,14 @@ import { getLastItem } from '@/helpers/array';
 import { weekdaysShort } from '@/helpers/date';
 import { capitalizeFirstLetter } from '@/helpers/string';
 
-import { Recipe } from '@/recipes/types/RecipeTypes';
-import { Meal, meals } from '@/profile/components/MyMealPlan/MealPlanTypes';
-import { CalendarBoundaries, Day, Week } from '@/shared/Calendar/CalendarTypes';
+import {
+	Recipe,
+	Meal,
+	meals,
+	CalendarBoundaries,
+	Day,
+	Week,
+} from 'cooklens-types';
 
 import { getWeek } from '@/shared/Calendar/CalendarModel';
 import {

@@ -19,7 +19,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 
-import { Recipe } from '@/recipes/types/RecipeTypes';
+import { Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
 

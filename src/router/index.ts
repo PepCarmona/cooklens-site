@@ -84,15 +84,6 @@ const routes: Array<RouteRecordRaw> = [
 				meta: { requireAuth: true },
 			},
 			{
-				path: 'myWeekPlan',
-				name: 'myWeekPlan',
-				component: () =>
-					import(
-						/* webpackChunkName: "favRecipes" */ '../profile/components/MyWeekPlan/MyWeekPlan.vue'
-					),
-				meta: { requireAuth: true },
-			},
-			{
 				path: 'myMealPlan',
 				name: 'myMealPlan',
 				component: () =>

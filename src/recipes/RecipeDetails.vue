@@ -153,7 +153,7 @@ import LoadingModal from '@/shared/LoadingModal.vue';
 import CustomNumberInput from '@/shared/CustomNumberInput.vue';
 import Rating from '@/shared/Rating.vue';
 
-import { Ingredient, Recipe } from '@/recipes/types/RecipeTypes';
+import { Ingredient, Recipe } from 'cooklens-types';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 import useUserState from '@/profile/state/UserState';

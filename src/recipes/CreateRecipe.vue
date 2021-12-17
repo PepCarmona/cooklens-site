@@ -343,7 +343,7 @@ import {
 	RecipeClass,
 	StepClass,
 	TagClass,
-} from '@/recipes/types/RecipeTypes';
+} from 'cooklens-types';
 
 import { AxiosError } from 'axios';
 

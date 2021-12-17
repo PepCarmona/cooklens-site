@@ -32,7 +32,7 @@ import Pagination from '@/shared/Pagination/Pagination.vue';
 import usePaginationState from '@/shared/Pagination/PaginationState';
 import useRecipeState from '@/recipes/state/RecipeState';
 
-import { Recipe } from '@/recipes/types/RecipeTypes';
+import { Recipe } from 'cooklens-types';
 
 export default defineComponent({
 	name: 'RecipeList',

@@ -5,14 +5,14 @@ import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import usePaginationState from '@/shared/Pagination/PaginationState';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
-import { UserInfo } from '@/profile/types/UserTypes';
 import {
+	UserInfo,
 	IntegratedSite,
 	Recipe,
 	RecipeClass,
 	SearchQuery,
 	SearchType,
-} from '@/recipes/types/RecipeTypes';
+} from 'cooklens-types';
 
 const recipeService = new RecipesEndpoint();
 

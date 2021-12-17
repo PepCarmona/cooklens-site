@@ -45,13 +45,9 @@ dayjs.extend(isoWeek);
 
 import { weekdaysShort } from '@/helpers/date';
 
-import {
-	Calendar,
-	CalendarBoundaries,
-	Day,
-} from '@/shared/Calendar/CalendarTypes';
-
 import { getCalendar } from '@/shared/Calendar/CalendarModel';
+
+import { CalendarBoundaries, Day, Calendar } from 'cooklens-types';
 
 export default defineComponent({
 	name: 'Calendar',

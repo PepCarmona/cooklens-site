@@ -49,7 +49,7 @@ import CustomInput from '@/shared/CustomInput.vue';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
-import { User, UserInfo } from '@/profile/types/UserTypes';
+import { User, UserInfo } from 'cooklens-types';
 
 export default defineComponent({
 	name: 'Register',

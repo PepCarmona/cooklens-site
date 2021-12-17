@@ -2,13 +2,8 @@ import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isoWeek);
 
-import {
-	Calendar,
-	CalendarBoundaries,
-	Day,
-	Week,
-	WeekDay,
-} from './CalendarTypes';
+import { Week, CalendarBoundaries, Day, Calendar } from 'cooklens-types';
+import { WeekDay } from './CalendarTypes';
 
 export function getEmptyWeek(): Week {
 	return [null, null, null, null, null, null, null];

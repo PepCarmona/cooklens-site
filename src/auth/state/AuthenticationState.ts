@@ -2,7 +2,7 @@ import { readonly, ref, computed } from 'vue';
 
 import { AuthEndpoint } from '@/api/endpoints/auth';
 
-import { UserInfo } from '@/profile/types/UserTypes';
+import { UserInfo } from 'cooklens-types';
 
 const authService = new AuthEndpoint();
 

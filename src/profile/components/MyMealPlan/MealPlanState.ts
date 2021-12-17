@@ -1,15 +1,22 @@
+import { computed, readonly, ref, watch } from 'vue';
+
 import { MealPlantEndpoint } from '@/api/endpoints/mealPlan';
+
 import { getLastItem } from '@/helpers/array';
-import { Recipe } from '@/recipes/types/RecipeTypes';
+
+import dayjs from 'dayjs';
 import {
+	DayMeal,
+	DayPlan,
+	Meal,
+	MealPlan,
+	meals,
 	CalendarBoundaries,
 	Day,
 	Week,
-	WeekDay,
-} from '@/shared/Calendar/CalendarTypes';
-import dayjs from 'dayjs';
-import { computed, readonly, ref, watch } from 'vue';
-import { DayMeal, DayPlan, Meal, MealPlan, meals } from './MealPlanTypes';
+	Recipe,
+} from 'cooklens-types';
+import { WeekDay } from '@/shared/Calendar/CalendarTypes';
 
 const mealPlanService = new MealPlantEndpoint();
 
