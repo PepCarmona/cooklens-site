@@ -449,4 +449,10 @@ export default defineComponent({
     color: var(--accent-color);
     margin-bottom: 0.4rem;
 }
+.select-meal > button > .meal-icon {
+    color: var(--accent-color);
+}
+button:disabled {
+    opacity: 0.4;
+}
 </style>
