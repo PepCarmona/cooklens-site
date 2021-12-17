@@ -49,6 +49,28 @@ function checkSession() {
 		.finally(() => (isLoading.value = false));
 }
 
+function validatePassword(password: string) {
+	if (password.length < 5 || password.length > 15) {
+		return {
+			isValid: false,
+			error: 'Password must have between 5 and 15 characters',
+		};
+	}
+	if (!password.match(/[0-9]/)) {
+		return {
+			isValid: false,
+			error: 'Password must include at least one digit',
+		};
+	}
+	if (!password.match(/[^A-Za-z0-9]/)) {
+		return {
+			isValid: false,
+			error: 'Password must include at least one special character',
+		};
+	}
+	return { isValid: true };
+}
+
 export default function useAuthenticationState() {
 	return {
 		isLoading: readonly(isLoading),
@@ -59,5 +81,6 @@ export default function useAuthenticationState() {
 		logIn,
 		logOut,
 		checkSession,
+		validatePassword,
 	};
 }

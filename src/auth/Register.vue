@@ -67,7 +67,11 @@ export default defineComponent({
 
 		const user = ref<UserInfo>(new User());
 
-		const { isLoading, register: authRegister } = useAuthenticationState();
+		const {
+			isLoading,
+			register: authRegister,
+			validatePassword,
+		} = useAuthenticationState();
 
 		function register() {
 			if (!isValidUser()) {
@@ -95,8 +99,10 @@ export default defineComponent({
 				return false;
 			}
 
-			if (user.value.password.length < 5 || user.value.password.length > 15) {
-				console.error('Password must have between 5 and 15 characters');
+			const validatedPassword = validatePassword(user.value.password);
+
+			if (!validatedPassword.isValid) {
+				console.error(validatedPassword.error);
 				return false;
 			}
 
