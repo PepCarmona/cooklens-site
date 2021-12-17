@@ -41,7 +41,9 @@
                     <i
                         class="meal-icon las"
                         :class="{
+                            'la-coffee': meal === 'breakfast',
                             'la-sun': meal === 'lunch',
+                            'la-cookie-bite': meal === 'snack',
                             'la-moon': meal === 'dinner',
                         }"
                     ></i>

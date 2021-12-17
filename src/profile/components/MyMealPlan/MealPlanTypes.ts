@@ -1,6 +1,6 @@
 import { Recipe } from '@/recipes/types/RecipeTypes';
 
-export const meals = ['lunch', 'dinner'] as const;
+export const meals = ['breakfast', 'lunch', 'snack', 'dinner'] as const;
 export type Meal = typeof meals[number];
 
 export interface DayMeal {
