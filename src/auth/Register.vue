@@ -1,44 +1,44 @@
 <template>
-    <div class="auth-container">
-        <CustomInput
-            label="Username"
-            v-model="user.username"
-            type="text"
-            id="userName"
-            :autoCapitalize="false"
-            @keydown.enter="register"
-            required
-        />
+	<div class="auth-container">
+		<CustomInput
+			label="Username"
+			v-model="user.username"
+			type="text"
+			id="userName"
+			:autoCapitalize="false"
+			@keydown.enter="register"
+			required
+		/>
 
-        <CustomInput
-            label="Email"
-            v-model="user.email"
-            type="email"
-            id="email"
-            :autoCapitalize="false"
-            @keydown.enter="register"
-            required
-        />
+		<CustomInput
+			label="Email"
+			v-model="user.email"
+			type="email"
+			id="email"
+			:autoCapitalize="false"
+			@keydown.enter="register"
+			required
+		/>
 
-        <CustomInput
-            label="Password"
-            v-model="user.password"
-            type="password"
-            id="password"
-            :autoCapitalize="false"
-            @keydown.enter="register"
-            required
-        />
+		<CustomInput
+			label="Password"
+			v-model="user.password"
+			type="password"
+			id="password"
+			:autoCapitalize="false"
+			@keydown.enter="register"
+			required
+		/>
 
-        <div v-if="false" class="errors">Errors go here</div>
+		<div v-if="false" class="errors">Errors go here</div>
 
-        <button @click="register" :disabled="isLoading">
-            <span v-if="isLoading">
-                <i class="las la-circle-notch"></i>
-            </span>
-            <span v-else>Register</span>
-        </button>
-    </div>
+		<button @click="register" :disabled="isLoading">
+			<span v-if="isLoading">
+				<i class="las la-circle-notch"></i>
+			</span>
+			<span v-else>Register</span>
+		</button>
+	</div>
 </template>
 
 <script lang="ts">
@@ -52,74 +52,68 @@ import useAuthenticationState from '@/auth/state/AuthenticationState';
 import { User, UserInfo } from '@/profile/types/UserTypes';
 
 export default defineComponent({
-    name: 'Register',
+	name: 'Register',
 
-    components: {
-        CustomInput,
-    },
+	components: {
+		CustomInput,
+	},
 
-    props: {
-        nextUrl: String,
-    },
+	props: {
+		nextUrl: String,
+	},
 
-    setup(props) {
-        const router = useRouter();
+	setup(props) {
+		const router = useRouter();
 
-        const user = ref<UserInfo>(new User());
+		const user = ref<UserInfo>(new User());
 
-        const { isLoading } = useAuthenticationState();
+		const { isLoading } = useAuthenticationState();
 
-        function register() {
-            if (!isValidUser()) {
-                return;
-            }
+		function register() {
+			if (!isValidUser()) {
+				return;
+			}
 
-            useAuthenticationState()
-                .register(user.value)
-                .then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
-        }
+			useAuthenticationState()
+				.register(user.value)
+				.then(() => router.push(props.nextUrl ?? { name: 'Profile' }));
+		}
 
-        function isValidUser(): boolean {
-            if (!user.value.username) {
-                console.error('Username is mandatory');
-                return false;
-            }
+		function isValidUser(): boolean {
+			if (!user.value.username) {
+				console.error('Username is mandatory');
+				return false;
+			}
 
-            if (
-                user.value.username.length < 3 ||
-                user.value.username.length > 15
-            ) {
-                console.error('Username must have between 3 and 15 characters');
-                return false;
-            }
+			if (user.value.username.length < 3 || user.value.username.length > 15) {
+				console.error('Username must have between 3 and 15 characters');
+				return false;
+			}
 
-            if (!user.value.password) {
-                console.error('Password is mandatory');
-                return false;
-            }
+			if (!user.value.password) {
+				console.error('Password is mandatory');
+				return false;
+			}
 
-            if (
-                user.value.password.length < 5 ||
-                user.value.password.length > 15
-            ) {
-                console.error('Password must have between 5 and 15 characters');
-                return false;
-            }
+			if (user.value.password.length < 5 || user.value.password.length > 15) {
+				console.error('Password must have between 5 and 15 characters');
+				return false;
+			}
 
-            if (!user.value.email) {
-                console.error('Email is mandatory');
-                return false;
-            }
+			if (!user.value.email) {
+				console.error('Email is mandatory');
+				return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        return {
-            user,
-            isLoading,
-            register,
-        };
-    },
+		return {
+			user,
+			isLoading,
+			register,
+		};
+	},
 });
 </script>
 

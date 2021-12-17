@@ -6,16 +6,16 @@ dayjs.extend(localeData);
 dayjs.extend(updateLocale);
 
 dayjs.updateLocale('en', {
-    weekdaysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    weekdays: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
-    ],
+	weekdaysShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+	weekdays: [
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+		'Sunday',
+	],
 });
 
 export const weekdaysShort = dayjs.weekdaysShort() as string[];

@@ -1,24 +1,24 @@
 module.exports = {
-    root: true,
-    env: {
-        node: true,
-    },
-    extends: [
-        'plugin:vue/vue3-essential',
-        'eslint:recommended',
-        '@vue/typescript/recommended',
-        '@vue/prettier',
-        '@vue/prettier/@typescript-eslint',
-    ],
-    parserOptions: {
-        ecmaVersion: 2020,
-    },
-    rules: {
-        'no-console': ['warn', { allow: ['warn', 'error'] }],
-        'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-        'prettier/prettier': ['warn', { singleQuote: true, tabWidth: 4 }],
-        '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/explicit-module-boundary-types': 'off',
-    },
+	root: true,
+	env: {
+		node: true,
+	},
+	extends: [
+		'plugin:vue/vue3-essential',
+		'eslint:recommended',
+		'@vue/typescript/recommended',
+		'@vue/prettier',
+		'@vue/prettier/@typescript-eslint',
+	],
+	parserOptions: {
+		ecmaVersion: 2020,
+	},
+	rules: {
+		'no-console': ['warn', { allow: ['warn', 'error'] }],
+		'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+		'prettier/prettier': ['warn', { singleQuote: true, useTabs: true }],
+		'@typescript-eslint/no-non-null-assertion': 'off',
+		'@typescript-eslint/no-explicit-any': 'off',
+		'@typescript-eslint/explicit-module-boundary-types': 'off',
+	},
 };

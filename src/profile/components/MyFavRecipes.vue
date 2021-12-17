@@ -1,11 +1,11 @@
 <template>
-    <div class="my-fav-recipes-container">
-        <PageHeader @go-back="back">
-            <template v-slot:title>My Favorite Recipes</template>
-        </PageHeader>
-        <LoadingModal v-if="isLoading" />
-        <RecipeList v-else :recipes="favRecipes" slim />
-    </div>
+	<div class="my-fav-recipes-container">
+		<PageHeader @go-back="back">
+			<template v-slot:title>My Favorite Recipes</template>
+		</PageHeader>
+		<LoadingModal v-if="isLoading" />
+		<RecipeList v-else :recipes="favRecipes" slim />
+	</div>
 </template>
 
 <script lang="ts">
@@ -19,38 +19,38 @@ import RecipeList from '@/recipes/RecipeList.vue';
 import useUserState from '@/profile/state/UserState';
 
 export default defineComponent({
-    name: 'MyFavRecipes',
+	name: 'MyFavRecipes',
 
-    components: {
-        LoadingModal,
-        RecipeList,
-        PageHeader,
-    },
+	components: {
+		LoadingModal,
+		RecipeList,
+		PageHeader,
+	},
 
-    setup() {
-        const { getFavRecipes, favRecipes, isLoading } = useUserState();
+	setup() {
+		const { getFavRecipes, favRecipes, isLoading } = useUserState();
 
-        const router = useRouter();
+		const router = useRouter();
 
-        onBeforeMount(() => getFavRecipes());
+		onBeforeMount(() => getFavRecipes());
 
-        function back() {
-            router.push({
-                name: 'Profile',
-            });
-        }
+		function back() {
+			router.push({
+				name: 'Profile',
+			});
+		}
 
-        return {
-            favRecipes,
-            isLoading,
-            back,
-        };
-    },
+		return {
+			favRecipes,
+			isLoading,
+			back,
+		};
+	},
 });
 </script>
 
 <style scoped>
 .my-fav-recipes-container {
-    background-color: var(--background-color);
+	background-color: var(--background-color);
 }
 </style>

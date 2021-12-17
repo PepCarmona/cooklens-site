@@ -2,10 +2,10 @@ import { MealPlantEndpoint } from '@/api/endpoints/mealPlan';
 import { getLastItem } from '@/helpers/array';
 import { Recipe } from '@/recipes/types/RecipeTypes';
 import {
-    CalendarBoundaries,
-    Day,
-    Week,
-    WeekDay,
+	CalendarBoundaries,
+	Day,
+	Week,
+	WeekDay,
 } from '@/shared/Calendar/CalendarTypes';
 import dayjs from 'dayjs';
 import { computed, readonly, ref, watch } from 'vue';
@@ -24,130 +24,130 @@ const isAddingRecipeToMeal = ref(false);
 
 watch(selectedDay, () => (dayPlan.value = getDayPlan()), { immediate: true });
 watch(
-    dayPlan,
-    (newValue: DayPlan, oldValue: DayPlan) => {
-        if (
-            dayPlan.value.meals.length > 0 &&
-            !mealPlan.value?.days.find((day) => day.date === dayPlan.value.date)
-        ) {
-            mealPlan.value?.days.push(dayPlan.value);
-        }
+	dayPlan,
+	(newValue: DayPlan, oldValue: DayPlan) => {
+		if (
+			dayPlan.value.meals.length > 0 &&
+			!mealPlan.value?.days.find((day) => day.date === dayPlan.value.date)
+		) {
+			mealPlan.value?.days.push(dayPlan.value);
+		}
 
-        if (oldValue.date === newValue.date) {
-            updateMealPlan();
-        }
-    },
-    { deep: true }
+		if (oldValue.date === newValue.date) {
+			updateMealPlan();
+		}
+	},
+	{ deep: true }
 );
 
 const areAllMealsAdded = computed(() =>
-    meals.every((meal) =>
-        dayPlan.value.meals.some((dayMeal) => dayMeal.meal === meal)
-    )
+	meals.every((meal) =>
+		dayPlan.value.meals.some((dayMeal) => dayMeal.meal === meal)
+	)
 );
 
 function getMealPlan(): Promise<MealPlan> {
-    isLoading.value = true;
+	isLoading.value = true;
 
-    return mealPlanService
-        .getMealPlan()
-        .then((serverMealPlan) => {
-            mealPlan.value = serverMealPlan;
+	return mealPlanService
+		.getMealPlan()
+		.then((serverMealPlan) => {
+			mealPlan.value = serverMealPlan;
 
-            if (dayPlan.value.meals.length === 0) {
-                dayPlan.value = getDayPlan();
-            }
+			if (dayPlan.value.meals.length === 0) {
+				dayPlan.value = getDayPlan();
+			}
 
-            return serverMealPlan;
-        })
-        .finally(() => (isLoading.value = false));
+			return serverMealPlan;
+		})
+		.finally(() => (isLoading.value = false));
 }
 
 function updateMealPlan(): void {
-    if (!mealPlan.value) {
-        return;
-    }
+	if (!mealPlan.value) {
+		return;
+	}
 
-    mealPlanService.updateMealPlan(mealPlan.value);
+	mealPlanService.updateMealPlan(mealPlan.value);
 }
 
 function getDayPlan(): DayPlan {
-    if (!mealPlan.value) {
-        return newDayPlan();
-    }
+	if (!mealPlan.value) {
+		return newDayPlan();
+	}
 
-    const index = mealPlan.value.days.findIndex(
-        (day) => day.date === selectedDay.value.date
-    );
+	const index = mealPlan.value.days.findIndex(
+		(day) => day.date === selectedDay.value.date
+	);
 
-    if (index < 0) {
-        return newDayPlan();
-    }
+	if (index < 0) {
+		return newDayPlan();
+	}
 
-    return mealPlan.value.days[index];
+	return mealPlan.value.days[index];
 }
 
 function newDayPlan(): DayPlan {
-    return {
-        date: selectedDay.value.date,
-        meals: [],
-    };
+	return {
+		date: selectedDay.value.date,
+		meals: [],
+	};
 }
 
 function addRecipeToMeal(meal: Meal, recipe: Recipe) {
-    dayPlan.value.meals.push({
-        meal,
-        recipe,
-    });
+	dayPlan.value.meals.push({
+		meal,
+		recipe,
+	});
 
-    isAddingMeal.value = false;
-    isAddingRecipeToMeal.value = false;
+	isAddingMeal.value = false;
+	isAddingRecipeToMeal.value = false;
 }
 
 function removeMeal(dayMeal: DayMeal) {
-    const index = dayPlan.value.meals.findIndex(
-        (meal) => meal.meal === dayMeal.meal
-    );
+	const index = dayPlan.value.meals.findIndex(
+		(meal) => meal.meal === dayMeal.meal
+	);
 
-    if (index === -1) {
-        return;
-    }
+	if (index === -1) {
+		return;
+	}
 
-    dayPlan.value.meals.splice(index, 1);
+	dayPlan.value.meals.splice(index, 1);
 }
 
 function getCalendarBoundaries(weeks: Week[]): CalendarBoundaries {
-    const firstDay = weeks[0].filter((day) => day !== null)[0] as Day;
-    const lastDay = getLastItem(
-        getLastItem(weeks).filter((day) => day !== null) as Day[]
-    );
+	const firstDay = weeks[0].filter((day) => day !== null)[0] as Day;
+	const lastDay = getLastItem(
+		getLastItem(weeks).filter((day) => day !== null) as Day[]
+	);
 
-    return {
-        startDate: dayjs(firstDay.date).toDate(),
-        endDate: dayjs(lastDay.date).toDate(),
-    };
+	return {
+		startDate: dayjs(firstDay.date).toDate(),
+		endDate: dayjs(lastDay.date).toDate(),
+	};
 }
 
 export default function useMealPlanState() {
-    return {
-        selectedDay: readonly(selectedDay),
-        mealPlan: readonly(mealPlan),
-        dayPlan: readonly(dayPlan),
-        isAddingMeal: readonly(isAddingMeal),
-        isAddingRecipeToMeal: readonly(isAddingRecipeToMeal),
-        areAllMealsAdded: readonly(areAllMealsAdded),
+	return {
+		selectedDay: readonly(selectedDay),
+		mealPlan: readonly(mealPlan),
+		dayPlan: readonly(dayPlan),
+		isAddingMeal: readonly(isAddingMeal),
+		isAddingRecipeToMeal: readonly(isAddingRecipeToMeal),
+		areAllMealsAdded: readonly(areAllMealsAdded),
 
-        getCalendarBoundaries,
-        getMealPlan,
-        addRecipeToMeal,
-        removeMeal,
-        selectDay: (day: Day) => (selectedDay.value = day),
-        openMealSelector: () => (isAddingMeal.value = true),
-        closeMealSelector: () => {
-            isAddingMeal.value = false;
-            isAddingRecipeToMeal.value = false;
-        },
-        openRecipeSelector: () => (isAddingRecipeToMeal.value = true),
-        closeRecipeSelector: () => (isAddingRecipeToMeal.value = false),
-    };
+		getCalendarBoundaries,
+		getMealPlan,
+		addRecipeToMeal,
+		removeMeal,
+		selectDay: (day: Day) => (selectedDay.value = day),
+		openMealSelector: () => (isAddingMeal.value = true),
+		closeMealSelector: () => {
+			isAddingMeal.value = false;
+			isAddingRecipeToMeal.value = false;
+		},
+		openRecipeSelector: () => (isAddingRecipeToMeal.value = true),
+		closeRecipeSelector: () => (isAddingRecipeToMeal.value = false),
+	};
 }

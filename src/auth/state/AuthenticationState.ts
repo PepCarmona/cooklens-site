@@ -11,53 +11,53 @@ const authenticatedUser = ref<UserInfo | null>();
 const token = ref(localStorage.getItem('userToken') || '');
 
 function register(user: UserInfo) {
-    isLoading.value = true;
+	isLoading.value = true;
 
-    return authService
-        .register(user)
-        .then((authResponse) => {
-            localStorage.setItem('userToken', authResponse.token);
-            authenticatedUser.value = authResponse.user;
-        })
-        .finally(() => (isLoading.value = false));
+	return authService
+		.register(user)
+		.then((authResponse) => {
+			localStorage.setItem('userToken', authResponse.token);
+			authenticatedUser.value = authResponse.user;
+		})
+		.finally(() => (isLoading.value = false));
 }
 
 function logIn(user: UserInfo) {
-    isLoading.value = true;
+	isLoading.value = true;
 
-    return authService
-        .logIn(user)
-        .then((authResponse) => {
-            localStorage.setItem('userToken', authResponse.token);
-            authenticatedUser.value = authResponse.user;
-        })
-        .finally(() => (isLoading.value = false));
+	return authService
+		.logIn(user)
+		.then((authResponse) => {
+			localStorage.setItem('userToken', authResponse.token);
+			authenticatedUser.value = authResponse.user;
+		})
+		.finally(() => (isLoading.value = false));
 }
 
 async function logOut() {
-    authenticatedUser.value = null;
+	authenticatedUser.value = null;
 
-    await authService.logOut();
+	await authService.logOut();
 }
 
 function checkSession() {
-    isLoading.value = true;
+	isLoading.value = true;
 
-    return authService
-        .checkSession()
-        .then((loggedUser) => (authenticatedUser.value = loggedUser))
-        .finally(() => (isLoading.value = false));
+	return authService
+		.checkSession()
+		.then((loggedUser) => (authenticatedUser.value = loggedUser))
+		.finally(() => (isLoading.value = false));
 }
 
 export default function useAuthenticationState() {
-    return {
-        isLoading: readonly(isLoading),
-        authenticatedUser: computed(() => authenticatedUser.value),
-        token: readonly(token),
+	return {
+		isLoading: readonly(isLoading),
+		authenticatedUser: computed(() => authenticatedUser.value),
+		token: readonly(token),
 
-        register,
-        logIn,
-        logOut,
-        checkSession,
-    };
+		register,
+		logIn,
+		logOut,
+		checkSession,
+	};
 }

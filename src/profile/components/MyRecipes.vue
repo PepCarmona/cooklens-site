@@ -1,19 +1,19 @@
 <template>
-    <div class="my-recipes-container">
-        <PageHeader @go-back="back">
-            <template v-slot:title>My Recipes</template>
-        </PageHeader>
-        <div class="createRecipe">
-            <router-link :to="{ name: 'CreateRecipe' }">
-                <button>
-                    <span>Create Recipe</span>
-                    <i class="las la-plus"></i>
-                </button>
-            </router-link>
-        </div>
-        <LoadingModal v-if="isLoading" />
-        <RecipeList :recipes="myRecipes" slim />
-    </div>
+	<div class="my-recipes-container">
+		<PageHeader @go-back="back">
+			<template v-slot:title>My Recipes</template>
+		</PageHeader>
+		<div class="createRecipe">
+			<router-link :to="{ name: 'CreateRecipe' }">
+				<button>
+					<span>Create Recipe</span>
+					<i class="las la-plus"></i>
+				</button>
+			</router-link>
+		</div>
+		<LoadingModal v-if="isLoading" />
+		<RecipeList :recipes="myRecipes" slim />
+	</div>
 </template>
 
 <script lang="ts">
@@ -27,54 +27,54 @@ import RecipeList from '@/recipes/RecipeList.vue';
 import useUserState from '@/profile/state/UserState';
 
 export default defineComponent({
-    name: 'MyRecipes',
+	name: 'MyRecipes',
 
-    components: {
-        LoadingModal,
-        RecipeList,
-        PageHeader,
-    },
+	components: {
+		LoadingModal,
+		RecipeList,
+		PageHeader,
+	},
 
-    setup() {
-        const { getMyRecipes, myRecipes, isLoading } = useUserState();
+	setup() {
+		const { getMyRecipes, myRecipes, isLoading } = useUserState();
 
-        const router = useRouter();
+		const router = useRouter();
 
-        onBeforeMount(() => getMyRecipes());
+		onBeforeMount(() => getMyRecipes());
 
-        function back() {
-            router.push({
-                name: 'Profile',
-            });
-        }
+		function back() {
+			router.push({
+				name: 'Profile',
+			});
+		}
 
-        return {
-            myRecipes,
-            isLoading,
-            back,
-        };
-    },
+		return {
+			myRecipes,
+			isLoading,
+			back,
+		};
+	},
 });
 </script>
 
 <style scoped>
 .my-recipes-container {
-    background-color: var(--background-color);
+	background-color: var(--background-color);
 }
 .createRecipe {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
 }
 .createRecipe > a {
-    margin: 0 0.5rem;
+	margin: 0 0.5rem;
 }
 .createRecipe button {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--main-color);
+	padding: 0.5rem 1rem;
+	border: 1px solid var(--main-color);
 }
 .createRecipe button > *:last-child {
-    margin-left: 0.5rem;
+	margin-left: 0.5rem;
 }
 </style>
