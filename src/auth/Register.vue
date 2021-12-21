@@ -1,6 +1,9 @@
 <template>
 	<div class="auth-container">
-		<CustomModal :showIf="true" @close="isShowingVerifyMail = false">
+		<CustomModal
+			:showIf="isShowingVerifyMail"
+			@close="isShowingVerifyMail = false"
+		>
 			<i class="mail-icon las la-envelope"></i>
 			<div class="verify-mail">
 				We have sent you an email to confirm your account. Please check your
