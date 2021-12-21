@@ -940,16 +940,6 @@ button.cancel {
 .showIntegratedSites > i.rotate {
 	transform: rotate(90deg);
 }
-.integratedSites > .closeModal {
-	font-size: 20px;
-	font-weight: 500;
-	width: 100%;
-	margin-top: 1.5rem;
-	padding-top: 0.5rem;
-	text-align: center;
-	color: var(--accent-color);
-	border-top: 1px solid var(--border-color);
-}
 
 @media only screen and (max-width: 768px) {
 	.container {

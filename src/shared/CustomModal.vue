@@ -112,7 +112,8 @@ export default defineComponent({
 	margin: auto;
 	height: fit-content;
 	max-height: calc(100% - 2rem);
-	overflow: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
 	width: calc(100% - 2rem);
 	padding: 1.5rem;
 	border-radius: 1rem;
