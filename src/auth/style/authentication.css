@@ -85,5 +85,39 @@
 	text-decoration: underline;
 }
 .verify-mail {
-	font-size: 24px;
+	font-size: 18px;
+}
+.mail-icon {
+	font-size: 64px;
+	margin-bottom: 1rem;
+	color: var(--accent-color);
+	animation-name: slide-in-out;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+}
+@keyframes slide-in-out {
+	0% {
+		opacity: 0;
+		transform: translateX(-100vw);
+	}
+
+	30% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	65% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	70% {
+		opacity: 1;
+		transform: translateX(-40px);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateX(100vw);
+	}
 }
