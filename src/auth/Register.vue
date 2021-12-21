@@ -1,10 +1,14 @@
 <template>
 	<div class="auth-container">
-		<CustomModal
-			:showIf="isShowingVerifyMail"
-			@close="isShowingVerifyMail = false"
-		>
-			<div class="verify-mail">Please, verify your email before login</div>
+		<CustomModal :showIf="true" @close="isShowingVerifyMail = false">
+			<i class="mail-icon las la-envelope"></i>
+			<div class="verify-mail">
+				We have sent you an email to confirm your account. Please check your
+				inbox.
+			</div>
+			<button class="closeModal" @click="isShowingVerifyMail = false">
+				Got it!
+			</button>
 		</CustomModal>
 		<CustomInput
 			label="Username"
@@ -38,7 +42,7 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<button @click="register" :disabled="isLoading">
+		<button class="action" @click="register" :disabled="isLoading">
 			<span v-if="isLoading">
 				<i class="las la-circle-notch"></i>
 			</span>

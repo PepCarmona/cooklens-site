@@ -22,7 +22,7 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<button @click="logIn" :disabled="isLoading">
+		<button class="action" @click="logIn" :disabled="isLoading">
 			<span v-if="isLoading">
 				<i class="las la-circle-notch"></i>
 			</span>
