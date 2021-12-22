@@ -37,13 +37,13 @@ export default defineComponent({
 	top: 1rem;
 	left: 1rem;
 	right: 1rem;
-	border-radius: 1rem;
+	border-radius: 0.5rem;
 	padding: 1rem;
 	z-index: 999;
 }
 .floating-notification.error {
 	background-color: var(--light-error-color);
-	box-shadow: 0 0 3px 0 var(--error-color);
+	box-shadow: 0 0 5px 0px var(--shadow-color);
 }
 .floating-notification.error * {
 	color: var(--error-color);

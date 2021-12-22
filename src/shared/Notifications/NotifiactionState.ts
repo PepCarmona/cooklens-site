@@ -7,7 +7,7 @@ const notificationMessage = ref('');
 const showNotification = ref(false);
 const autoCloseNotification = ref(true);
 
-function notify(
+export function notify(
 	msg: string,
 	type: NotificationType = 'light',
 	autoClose = true
@@ -34,7 +34,6 @@ export default function useNotificationState() {
 		showNotification: readonly(showNotification),
 		autoCloseNotification: readonly(autoCloseNotification),
 
-		notify,
 		closeNotification,
 	};
 }

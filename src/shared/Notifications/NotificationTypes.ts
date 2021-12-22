@@ -5,4 +5,4 @@ export type NotificationType =
 	| 'dark'
 	| 'light';
 
-export const DEFAULT_OPEN_TIME = 4500;
+export const DEFAULT_OPEN_TIME = 3000;

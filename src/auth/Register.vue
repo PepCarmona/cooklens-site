@@ -63,6 +63,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 import { User, UserInfo } from 'cooklens-types';
+import { notify } from '@/shared/Notifications/NotifiactionState';
 
 export default defineComponent({
 	name: 'Register',
@@ -92,9 +93,9 @@ export default defineComponent({
 				return;
 			}
 
-			authRegister(user.value, props.nextUrl).then(
-				() => (isShowingVerifyMail.value = true)
-			);
+			authRegister(user.value, props.nextUrl)
+				.then(() => (isShowingVerifyMail.value = true))
+				.catch((err) => notify(err, 'error'));
 		}
 
 		function isValidUser(): boolean {
