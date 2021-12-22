@@ -28,22 +28,30 @@ export class Endpoint {
 	}
 
 	public async get(path: string): Promise<any> {
-		const result = await this.http.get(path);
-		return result.data;
+		return this.http
+			.get(path)
+			.then((result) => result.data)
+			.catch((err) => Promise.reject(err));
 	}
 
 	public async post(path: string, data: any): Promise<any> {
-		const result = await this.http.post(path, data);
-		return result.data;
+		return this.http
+			.post(path, data)
+			.then((result) => result.data)
+			.catch((err) => Promise.reject(err));
 	}
 
 	public async put(path: string, data: any): Promise<any> {
-		const result = await this.http.put(path, data);
-		return result.data;
+		return this.http
+			.put(path, data)
+			.then((result) => result.data)
+			.catch((err) => Promise.reject(err));
 	}
 
 	public async delete(path: string): Promise<any> {
-		const result = await this.http.delete(path);
-		return result.data;
+		return this.http
+			.delete(path)
+			.then((result) => result.data)
+			.catch((err) => Promise.reject(err));
 	}
 }
