@@ -67,6 +67,18 @@ function validatePassword(password: string) {
 	return { isValid: true };
 }
 
+function verifyUser(code: string) {
+	isLoading.value = true;
+
+	return authService
+		.verifyUser(code)
+		.then((authResponse) => {
+			localStorage.setItem('userToken', authResponse.token);
+			authenticatedUser.value = authResponse.user;
+		})
+		.finally(() => (isLoading.value = false));
+}
+
 export default function useAuthenticationState() {
 	return {
 		isLoading: readonly(isLoading),
@@ -78,5 +90,6 @@ export default function useAuthenticationState() {
 		logOut,
 		checkSession,
 		validatePassword,
+		verifyUser,
 	};
 }

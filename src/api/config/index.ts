@@ -22,6 +22,7 @@ export const URI = {
 	},
 	auth: {
 		register: `${proxy}/auth/signup`,
+		verify: `${proxy}/auth/verifyUser`,
 		login: `${proxy}/auth/signin`,
 		loginFromToken: `${proxy}/auth/signinFromToken`,
 	},

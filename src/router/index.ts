@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
+import useAuthenticationState from '@/auth/state/AuthenticationState';
+
+const { verifyUser } = useAuthenticationState();
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -45,9 +48,23 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/auth',
 		name: 'Authentication',
 		component: () =>
-			import(/* webpackChunkName: "register" */ '../auth/Authentication.vue'),
+			import(
+				/* webpackChunkName: "authentication" */ '../auth/Authentication.vue'
+			),
 		props: (route) => ({ nextUrl: route.query.nextUrl }),
 		meta: { noFooter: true },
+		beforeEnter: (to, from, next) => {
+			const code = to.query.code?.toString();
+
+			if (!code) {
+				next();
+				return;
+			}
+
+			verifyUser(code)
+				.then(() => next({ name: 'Profile' }))
+				.catch(() => next());
+		},
 	},
 	{
 		path: '/profile',

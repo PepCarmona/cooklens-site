@@ -7,17 +7,8 @@ interface AuthResponse {
 	user: User;
 	token: string;
 }
-interface AuthEndpointInterface {
-	register(user: User): Promise<void>;
 
-	logIn(user: User): Promise<AuthResponse>;
-
-	logOut(): Promise<void>;
-
-	checkSession(): Promise<User | null>;
-}
-
-export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
+export class AuthEndpoint extends Endpoint {
 	public register(user: User, nextUrl?: string): Promise<void> {
 		return this.post(URI.auth.register, { user, nextUrl });
 	}
@@ -49,5 +40,14 @@ export class AuthEndpoint extends Endpoint implements AuthEndpointInterface {
 				}
 			}
 		);
+	}
+
+	public verifyUser(code: string): Promise<AuthResponse> {
+		const url = new URL(URI.auth.verify);
+		url.searchParams.append('code', code);
+
+		return this.get(url.toString()).then((x) => {
+			return x;
+		});
 	}
 }
