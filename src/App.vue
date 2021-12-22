@@ -1,6 +1,9 @@
 <template>
 	<Header />
-	<router-view />
+	<main>
+		<FloatingNotification />
+		<router-view />
+	</main>
 	<Footer />
 </template>
 
@@ -8,6 +11,7 @@
 import { defineComponent, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import FloatingNotification from '@/shared/Notifications/FloatingNotification.vue';
 import Header from '@/shared/Header.vue';
 import Footer from '@/shared/Footer.vue';
 
@@ -15,6 +19,7 @@ import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
 	components: {
+		FloatingNotification,
 		Header,
 		Footer,
 	},
@@ -92,7 +97,10 @@ body * {
 #app.no-footer {
 	padding-bottom: 0;
 }
-#app > div {
+#app > main {
+	position: relative;
+}
+#app > main > div {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
