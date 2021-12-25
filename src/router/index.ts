@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
 import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { notify } from '@/shared/Notifications/NotifiactionState';
 
 const { verifyUser } = useAuthenticationState();
 
@@ -63,7 +64,10 @@ const routes: Array<RouteRecordRaw> = [
 
 			verifyUser(code)
 				.then(() => next({ name: 'Profile' }))
-				.catch(() => next());
+				.catch((err) => {
+					next();
+					notify(err, 'error');
+				});
 		},
 	},
 	{

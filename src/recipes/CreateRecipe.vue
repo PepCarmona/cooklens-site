@@ -611,6 +611,8 @@ export default defineComponent({
 
 			await nextTick();
 
+			showRecipeForm.value = true;
+
 			importedRecipeTitle.value?.scrollIntoView({ behavior: 'smooth' });
 
 			textAreaRefs.value.forEach((textArea) => textArea.resizeTextArea(null));

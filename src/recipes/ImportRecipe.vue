@@ -4,7 +4,7 @@
 		<div class="separator"></div>
 		<button @click="importFromUrl">
 			<template v-if="isLoading">
-				<i class="las la-circle-notch" />i>
+				<i class="las la-circle-notch" />
 			</template>
 			<template v-else>IMPORT</template>
 		</button>
