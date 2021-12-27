@@ -93,6 +93,9 @@ export default defineComponent({
 		const { isFavoriteRecipe } = useRecipeState();
 
 		const formattedTime = computed(() => {
+			if (!props.recipe.time) {
+				return;
+			}
 			const totalTime = props.recipe.time.preparation
 				? props.recipe.time.preparation + props.recipe.time.cooking
 				: props.recipe.time.cooking;
@@ -107,6 +110,11 @@ export default defineComponent({
 		});
 
 		function openRecipeDetails() {
+			if (!props.recipe.isIntegrated) {
+				window.open(props.recipe.url, '_blank');
+				return;
+			}
+
 			if (props.showActions) {
 				emit('see-more-info', props.recipe);
 				return;

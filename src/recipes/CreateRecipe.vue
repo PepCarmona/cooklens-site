@@ -41,10 +41,18 @@
 		<PageHeader @go-back="handleGoBack">
 			<template v-slot:title>Add Recipe</template>
 			<template v-slot:actions>
-				<span v-if="showRecipeForm" class="save-recipe" @click="saveRecipe">
+				<span
+					v-if="showRecipeForm && newRecipe.isIntegrated"
+					class="save-recipe"
+					@click="saveRecipe"
+				>
 					Save
 				</span>
-				<span v-else class="info" @click="showInfoModal = true">
+				<span
+					v-else-if="!showRecipeForm"
+					class="info"
+					@click="showInfoModal = true"
+				>
 					<i class="las la-question-circle"></i>
 				</span>
 				<span
@@ -57,7 +65,7 @@
 				</span>
 			</template>
 			<template v-slot:second-row>
-				<div v-if="showRecipeForm" class="tabs">
+				<div v-if="showRecipeForm && newRecipe.isIntegrated" class="tabs">
 					<button
 						@click="showTab = 'introduction'"
 						:class="{ selected: showTab === 'introduction' }"
@@ -81,225 +89,247 @@
 		</PageHeader>
 		<div class="container" :class="{ thin }">
 			<template v-if="showRecipeForm">
-				<template v-if="showTab === 'introduction'">
-					<div class="row justify-center">
-						<h2
-							v-if="importedRecipe"
-							class="m-0 p-1 pt-2"
-							ref="importedRecipeTitle"
-						>
-							{{ newRecipe.title }}
-						</h2>
+				<template v-if="!newRecipe.isIntegrated">
+					<div class="not-integrated-notice">
+						Since this website is not integrated yet, this recipe will be
+						imported as a link to the provided url
 					</div>
-					<div class="row mt-0">
-						<CustomInput
-							v-if="!importedRecipe"
-							class="w-100"
-							label="Title"
-							ref="titleInput"
-							v-model="newRecipe.title"
-							type="text"
-							id="title"
-							:autoComplete="'off'"
-							required
-						/>
-					</div>
-
-					<div class="row">
-						<CustomNumberInput
-							id="prepTime"
-							class="w-100"
-							label="Preparation Time (min)"
-							v-model="newRecipe.time.preparation"
-							:min="0"
-							emptyIf0
-						/>
-					</div>
-
-					<div class="row">
-						<CustomNumberInput
-							id="cookTime"
-							class="w-100"
-							label="Cooking Time (min)"
-							v-model="newRecipe.time.cooking"
-							:min="5"
-						/>
-					</div>
-
-					<div class="row">
-						<template v-if="newRecipe.images && newRecipe.images.length > 0">
-							<div
-								class="edit-images"
-								v-for="image in newRecipe.images"
-								:key="image"
-								:style="`background-image: url(${image});`"
+					<CustomInput
+						class="w-100"
+						label="Title"
+						ref="titleInput"
+						v-model="newRecipe.title"
+						type="text"
+						id="title"
+						:autoComplete="'off'"
+						required
+					/>
+					<button class="save-link" @click="saveRecipe">
+						<i class="las la-link"></i>
+						<span>Save as link</span>
+					</button>
+				</template>
+				<template v-else>
+					<template v-if="showTab === 'introduction'">
+						<div class="row justify-center">
+							<h2
+								v-if="importedRecipe"
+								class="m-0 p-1 pt-2"
+								ref="importedRecipeTitle"
 							>
+								{{ newRecipe.title }}
+							</h2>
+						</div>
+						<div class="row mt-0">
+							<CustomInput
+								v-if="!importedRecipe"
+								class="w-100"
+								label="Title"
+								ref="titleInput"
+								v-model="newRecipe.title"
+								type="text"
+								id="title"
+								:autoComplete="'off'"
+								required
+							/>
+						</div>
+
+						<div class="row">
+							<CustomNumberInput
+								id="prepTime"
+								class="w-100"
+								label="Preparation Time (min)"
+								v-model="newRecipe.time.preparation"
+								:min="0"
+								emptyIf0
+							/>
+						</div>
+
+						<div class="row">
+							<CustomNumberInput
+								id="cookTime"
+								class="w-100"
+								label="Cooking Time (min)"
+								v-model="newRecipe.time.cooking"
+								:min="5"
+							/>
+						</div>
+
+						<div class="row">
+							<template v-if="newRecipe.images && newRecipe.images.length > 0">
+								<div
+									class="edit-images"
+									v-for="image in newRecipe.images"
+									:key="image"
+									:style="`background-image: url(${image});`"
+								>
+									<button>
+										<i class="las la-pen"></i>
+									</button>
+								</div>
+							</template>
+							<div v-else class="add-images">
 								<button>
-									<i class="las la-pen"></i>
-								</button>
-							</div>
-						</template>
-						<div v-else class="add-images">
-							<button>
-								<span>Add images</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="row">
-						<CustomInput
-							type="textarea"
-							class="w-100"
-							label="Description"
-							id="descriptionInput"
-							v-model="newRecipe.description"
-							:ref="(el) => textAreaRefs.push(el)"
-						/>
-					</div>
-
-					<div class="row w-50">
-						<CustomNumberInput
-							id="servingsInput"
-							label="Servings"
-							v-model="newRecipe.servings"
-							:min="1"
-							showArrows
-						/>
-					</div>
-					<div v-if="false" class="row align-center tags">
-						Tags:
-						<div class="d-flex" ref="tagInput">
-							<div
-								v-for="(tag, index) in newRecipe.tags"
-								:key="tag._id"
-								class="pill ml-05"
-							>
-								<CustomInput
-									type="text"
-									v-model="tag.value"
-									autoResize
-									:autoComplete="'off'"
-								/>
-								<button class="close tag" @click="deleteTag(index)">
-									<i class="las la-times"></i>
+									<span>Add images</span>
 								</button>
 							</div>
 						</div>
-						<div class="ml-05">
-							<button class="add" @click="addTag">
-								<i class="las la-plus-circle"></i>
-							</button>
-						</div>
-					</div>
-				</template>
 
-				<template v-if="showTab === 'ingredients'">
-					<div class="row ingredients">
-						<div class="row mt-0" ref="ingredientInput">
-							<div
-								class="row ingredient"
-								v-for="(ingredient, index) in newRecipe.ingredients"
-								:key="ingredient._id"
-								ref="lastInputWrapper"
-							>
-								<div class="handle">
-									<i class="las la-grip-lines grab"></i>
-								</div>
-								<div v-if="showAdvancedIngredientsForm">
-									<CustomNumberInput
-										label="Qty"
-										v-model="ingredient.quantity"
-										:min="0"
-										slim
-										emptyIf0
-										showArrows
+						<div class="row">
+							<CustomInput
+								type="textarea"
+								class="w-100"
+								label="Description"
+								id="descriptionInput"
+								v-model="newRecipe.description"
+								:ref="(el) => textAreaRefs.push(el)"
+							/>
+						</div>
+
+						<div class="row w-50">
+							<CustomNumberInput
+								id="servingsInput"
+								label="Servings"
+								v-model="newRecipe.servings"
+								:min="1"
+								showArrows
+							/>
+						</div>
+						<div v-if="false" class="row align-center tags">
+							Tags:
+							<div class="d-flex" ref="tagInput">
+								<div
+									v-for="(tag, index) in newRecipe.tags"
+									:key="tag._id"
+									class="pill ml-05"
+								>
+									<CustomInput
+										type="text"
+										v-model="tag.value"
+										autoResize
+										:autoComplete="'off'"
 									/>
-								</div>
-								<CustomInput
-									v-if="showAdvancedIngredientsForm"
-									class="w-20"
-									v-model="ingredient.units"
-									type="text"
-									label="Units"
-									:autoComplete="'off'"
-								/>
-								<CustomInput
-									class="ingredient-query"
-									v-model="ingredient.name"
-									type="text"
-									:label="showAdvancedIngredientsForm && 'Ingredient'"
-									:placeholder="
-										!showAdvancedIngredientsForm && 'Add ingredient'
-									"
-									:autoComplete="'off'"
-									ref="lastInput"
-								/>
-								<div class="w-10 delete-ingredient">
-									<button class="close" @click="deleteIngredient(index)">
+									<button class="close tag" @click="deleteTag(index)">
 										<i class="las la-times"></i>
 									</button>
 								</div>
 							</div>
-						</div>
-
-						<div v-if="false" class="row">
-							<div class="toggleAdvancedForm">
-								<span
-									v-if="showAdvancedIngredientsForm"
-									@click="showAdvancedIngredientsForm = false"
-								>
-									See simple form
-								</span>
-								<span
-									v-else-if="newRecipe.ingredients.length > 0"
-									@click="showAdvancedIngredientsForm = true"
-								>
-									See advanced form
-								</span>
+							<div class="ml-05">
+								<button class="add" @click="addTag">
+									<i class="las la-plus-circle"></i>
+								</button>
 							</div>
 						</div>
+					</template>
 
-						<button class="add" @click="addIngredient">
-							<i class="las la-plus"></i>
-						</button>
-					</div>
-				</template>
-
-				<template v-if="showTab === 'steps'">
-					<div class="row steps">
-						<div class="row mt-0" ref="stepInput">
-							<div
-								class="row step"
-								v-for="(step, index) in newRecipe.instructions"
-								:key="step._id"
-								ref="lastInputWrapper"
-							>
-								<div class="handle">
-									<i class="las la-grip-lines grab"></i>
-								</div>
-								<CustomInput
-									type="textarea"
-									class="w-80"
-									v-model="step.content"
-									:id="`instructionInput-${step.position}`"
-									:ref="(el) => textAreaRefs.push(el)"
-								/>
-								<div class="w-10 delete-step">
-									<button class="close" @click="deleteStep(index)">
-										<i class="las la-times"></i>
-									</button>
+					<template v-if="showTab === 'ingredients'">
+						<div class="row ingredients">
+							<div class="row mt-0" ref="ingredientInput">
+								<div
+									class="row ingredient"
+									v-for="(ingredient, index) in newRecipe.ingredients"
+									:key="ingredient._id"
+									ref="lastInputWrapper"
+								>
+									<div class="handle">
+										<i class="las la-grip-lines grab"></i>
+									</div>
+									<div v-if="showAdvancedIngredientsForm">
+										<CustomNumberInput
+											label="Qty"
+											v-model="ingredient.quantity"
+											:min="0"
+											slim
+											emptyIf0
+											showArrows
+										/>
+									</div>
+									<CustomInput
+										v-if="showAdvancedIngredientsForm"
+										class="w-20"
+										v-model="ingredient.units"
+										type="text"
+										label="Units"
+										:autoComplete="'off'"
+									/>
+									<CustomInput
+										class="ingredient-query"
+										v-model="ingredient.name"
+										type="text"
+										:label="showAdvancedIngredientsForm && 'Ingredient'"
+										:placeholder="
+											!showAdvancedIngredientsForm && 'Add ingredient'
+										"
+										:autoComplete="'off'"
+										ref="lastInput"
+									/>
+									<div class="w-10 delete-ingredient">
+										<button class="close" @click="deleteIngredient(index)">
+											<i class="las la-times"></i>
+										</button>
+									</div>
 								</div>
 							</div>
+
+							<div v-if="false" class="row">
+								<div class="toggleAdvancedForm">
+									<span
+										v-if="showAdvancedIngredientsForm"
+										@click="showAdvancedIngredientsForm = false"
+									>
+										See simple form
+									</span>
+									<span
+										v-else-if="newRecipe.ingredients.length > 0"
+										@click="showAdvancedIngredientsForm = true"
+									>
+										See advanced form
+									</span>
+								</div>
+							</div>
+
+							<button class="add" @click="addIngredient">
+								<i class="las la-plus"></i>
+							</button>
 						</div>
-						<button class="add" @click="addStep">
-							<i class="las la-plus"></i>
-						</button>
+					</template>
+
+					<template v-if="showTab === 'steps'">
+						<div class="row steps">
+							<div class="row mt-0" ref="stepInput">
+								<div
+									class="row step"
+									v-for="(step, index) in newRecipe.instructions"
+									:key="step._id"
+									ref="lastInputWrapper"
+								>
+									<div class="handle">
+										<i class="las la-grip-lines grab"></i>
+									</div>
+									<CustomInput
+										type="textarea"
+										class="w-80"
+										v-model="step.content"
+										:id="`instructionInput-${step.position}`"
+										:ref="(el) => textAreaRefs.push(el)"
+									/>
+									<div class="w-10 delete-step">
+										<button class="close" @click="deleteStep(index)">
+											<i class="las la-times"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+							<button class="add" @click="addStep">
+								<i class="las la-plus"></i>
+							</button>
+						</div>
+					</template>
+
+					<div v-if="saveErrors" class="row mt-05 errors">
+						{{ saveErrors }}
 					</div>
 				</template>
-
-				<div v-if="saveErrors" class="row mt-05 errors">
-					{{ saveErrors }}
-				</div>
 			</template>
 			<div v-else class="import-wrapper">
 				<div class="title">Import Recipe</div>
@@ -380,7 +410,7 @@ export default defineComponent({
 			deleteRecipe: deleteRecipeState,
 		} = useRecipeState();
 
-		const newRecipe = reactive<Recipe>(new RecipeClass());
+		const newRecipe = reactive<Recipe>(new RecipeClass()) as Recipe;
 		const saveErrors = ref<string | null>(null);
 
 		const titleInput = ref<HTMLInputElement>();
@@ -535,8 +565,9 @@ export default defineComponent({
 			}
 
 			if (
-				sanitizedRecipe.value.ingredients.length === 0 ||
-				sanitizedRecipe.value.instructions.length === 0
+				sanitizedRecipe.value.isIntegrated &&
+				(sanitizedRecipe.value.ingredients.length === 0 ||
+					sanitizedRecipe.value.instructions.length === 0)
 			) {
 				const confirm = window.confirm(
 					'Ingredients and/or instructions are empty. Do you stil want to save this recipe?'
@@ -941,6 +972,30 @@ button.cancel {
 }
 .showIntegratedSites > i.rotate {
 	transform: rotate(90deg);
+}
+
+.not-integrated-notice {
+	background-color: var(--light-warning-color);
+	color: var(--warning-color);
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+	text-align: justify;
+	margin: 1rem 0;
+	box-shadow: 0 1px 0 1px #c59e0254;
+}
+
+.save-link {
+	background-color: var(--accent-color);
+	padding: 1rem 2rem;
+	border-radius: 0.5rem;
+	margin: 2rem auto;
+}
+.save-link > * {
+	color: var(--inverted-text-color);
+}
+.save-link > i {
+	margin-right: 1rem;
+	font-size: 20px;
 }
 
 @media only screen and (max-width: 768px) {
