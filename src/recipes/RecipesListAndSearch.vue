@@ -140,6 +140,11 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.embedded {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
 div:not(.embedded) > .search {
 	padding: 1rem;
 	padding-top: calc(2rem + 50px);

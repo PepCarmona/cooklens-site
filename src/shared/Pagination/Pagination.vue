@@ -74,6 +74,8 @@ i {
 	width: 100%;
 	display: flex;
 	justify-content: center;
+	flex-grow: 1;
+	align-items: flex-end;
 }
 
 .pagination-inner-container {
@@ -101,11 +103,11 @@ i {
 }
 
 .empty-left {
-	margin-left: calc(0.5rem + 32px);
+	margin-left: calc(0.5rem + 16px);
 	text-align: right;
 }
 .empty-right {
-	margin-right: calc(0.5rem + 32px);
+	margin-right: calc(0.5rem + 16px);
 	text-align: left;
 }
 </style>

@@ -95,6 +95,7 @@ export default defineComponent({
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-around;
+	flex-grow: 1;
 	padding: 1rem;
 	max-width: 1000px;
 	margin-left: auto;

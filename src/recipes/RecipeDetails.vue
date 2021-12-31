@@ -48,8 +48,8 @@
 				<div v-if="recipe.author" class="author">
 					By: {{ recipe.author.username }}
 				</div>
-				<div class="basic-info">
-					<div class="time">
+				<div v-if="recipe.isIntegrated" class="basic-info">
+					<div v-if="totalTime" class="time">
 						<i class="las la-clock"></i>
 						<span>{{ totalTime }}</span>
 					</div>
@@ -74,10 +74,10 @@
 				</ul>
 			</div>
 
-			<div class="row">
+			<div class="row rating">
 				<Rating :recipeRating="recipe.rating" @rate="editRating" />
 			</div>
-			<div class="main-info">
+			<div v-if="recipe.isIntegrated" class="main-info">
 				<div class="tabs">
 					<button
 						@click="showTab = 'introduction'"
@@ -127,8 +127,8 @@
 						<ul class="steps-list">
 							<li v-for="step in recipe.instructions" :key="step._id">
 								<!-- <div class="stepPosition">
-                                        {{ step.position }}
-                                    </div> -->
+										{{ step.position }}
+									</div> -->
 								<div class="stepHead">
 									<span class="bullet"></span>
 								</div>
@@ -140,6 +140,10 @@
 					</div>
 				</div>
 			</div>
+			<button v-else class="view-recipe" @click="openLink">
+				<span>View recipe</span>
+				<i class="las la-arrow-right"></i>
+			</button>
 		</template>
 	</div>
 </template>
@@ -255,6 +259,9 @@ export default defineComponent({
 		);
 
 		const totalTime = computed(() => {
+			if (!recipe.value.time) {
+				return;
+			}
 			return getFormattedTime(
 				(recipe.value.time.preparation ?? 0) + recipe.value.time.cooking
 			);
@@ -328,6 +335,10 @@ export default defineComponent({
 			});
 		}
 
+		function openLink() {
+			window.open(recipe.value.url, '_blank');
+		}
+
 		return {
 			...data,
 			ingredientsToShow,
@@ -340,6 +351,7 @@ export default defineComponent({
 			getFormattedTitle,
 			goBack,
 			showEditRecipe,
+			openLink,
 		};
 	},
 });
@@ -353,7 +365,7 @@ export default defineComponent({
 	text-align: left;
 }
 .container.embedded {
-	min-height: calc(100vh - 2rem);
+	height: calc(100vh - 2rem);
 	justify-content: center;
 }
 
@@ -370,7 +382,7 @@ export default defineComponent({
 	background-color: var(--background-color);
 }
 .brief.no-image {
-	margin-top: calc(2rem + 50px);
+	margin-top: 1rem;
 }
 .title,
 .author,
@@ -420,7 +432,7 @@ export default defineComponent({
 	margin-top: -50px;
 }
 .back {
-	position: absolute;
+	position: sticky;
 	left: 1rem;
 	top: 1rem;
 	display: flex;
@@ -439,6 +451,9 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	right: 1rem;
+	top: 0;
+}
+.embedded .icons {
 	top: 1rem;
 }
 .icons.no-image {
@@ -468,7 +483,11 @@ export default defineComponent({
 }
 
 .rating-container {
-	margin: 1rem auto;
+	margin: auto;
+}
+.rating {
+	flex-grow: 0.5;
+	min-height: 4rem;
 }
 
 .main-info {
@@ -562,6 +581,27 @@ export default defineComponent({
 	padding-bottom: 0.2rem;
 	padding-left: 0.6rem;
 	padding-right: 0.6rem;
+}
+
+.view-recipe {
+	position: relative;
+	background-color: var(--accent-color);
+	padding: 1rem 2rem;
+	margin: 0 auto;
+	border-radius: 0.5rem;
+	width: 70%;
+	flex-grow: 0;
+	max-height: 60px;
+}
+.view-recipe > * {
+	color: var(--inverted-text-color);
+}
+.view-recipe > span {
+	font-size: 18px;
+}
+.view-recipe > i {
+	position: absolute;
+	right: 1rem;
 }
 
 @media only screen and (min-width: 769px) {

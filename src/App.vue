@@ -99,11 +99,15 @@ body * {
 }
 #app > main {
 	position: relative;
+	display: flex;
+	flex-grow: 1;
 }
 #app > main > div {
 	display: flex;
 	flex-direction: column;
 	flex-grow: 1;
+	height: auto;
+	width: 100%;
 }
 @media only screen and (min-width: 769px) {
 	#app {

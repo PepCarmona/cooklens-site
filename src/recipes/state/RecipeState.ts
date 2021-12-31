@@ -96,7 +96,9 @@ function getRecipe(id: string) {
 		.getRecipe(id)
 		.then((resultRecipe) => {
 			// TODO: remove when all recipes in db are sanitized
-			resultRecipe.time.preparation = resultRecipe.time.preparation ?? 0;
+			if (resultRecipe.time) {
+				resultRecipe.time.preparation = resultRecipe.time.preparation ?? 0;
+			}
 
 			recipe.value = resultRecipe;
 

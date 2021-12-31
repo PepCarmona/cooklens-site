@@ -39,9 +39,12 @@
 				<div class="rating">
 					<i class="lar la-star"></i> <span>{{ recipe.rating }}</span>
 				</div>
-				<div class="time">
+				<div v-if="recipe.time" class="time">
 					<i class="las la-clock"></i>
 					<span>{{ formattedTime }}</span>
+				</div>
+				<div v-if="!recipe.isIntegrated" class="link-icon">
+					<i class="las la-link"></i>
 				</div>
 			</div>
 			<div v-if="recipe.tags && recipe.tags.length > 0" class="row">
@@ -110,11 +113,6 @@ export default defineComponent({
 		});
 
 		function openRecipeDetails() {
-			if (!props.recipe.isIntegrated) {
-				window.open(props.recipe.url, '_blank');
-				return;
-			}
-
 			if (props.showActions) {
 				emit('see-more-info', props.recipe);
 				return;
@@ -169,12 +167,10 @@ export default defineComponent({
 	height: 280px;
 }
 .slim .image-container {
-	width: 60px;
-	height: 60px;
+	width: 80px;
+	height: 80px;
 	flex-shrink: 0;
-	margin-left: 1rem;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	align-self: center;
 }
 .image {
 	height: 100%;
@@ -217,7 +213,6 @@ export default defineComponent({
 }
 .slim .details {
 	margin-top: 0.5rem;
-	justify-content: flex-start;
 }
 
 .fav {
@@ -253,7 +248,8 @@ export default defineComponent({
 .slim .details i {
 	font-size: 16px;
 }
-.time {
+.time,
+.link-icon {
 	display: flex;
 	margin-left: 2rem;
 	min-width: 130px;
@@ -263,9 +259,11 @@ export default defineComponent({
 .slim .time {
 	align-items: center;
 }
-.slim .time {
-	min-width: auto;
+.slim .time,
+.slim .link-icon {
+	min-width: 110px;
 	margin-left: 1rem;
+	padding-right: 1rem;
 }
 
 .pill {
