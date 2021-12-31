@@ -21,8 +21,10 @@
 					@back="closeRecipeSelector()"
 					@see-more-info="showMoreInfo($event)"
 					@select-recipe="addRecipeToMeal(selectedMeal, $event)"
+					@create-recipe="isShowingCreateRecipe = true"
 					embedded
 					showActions
+					showCreateRecipe
 				/>
 			</div>
 			<div v-else class="select-meal">
@@ -61,6 +63,13 @@
 			<RecipeDetails
 				:id="recipeDetails"
 				@back="recipeDetails = null"
+				embedded
+			/>
+		</CustomModal>
+		<CustomModal :showIf="isShowingCreateRecipe" noPadding>
+			<CreateRecipe
+				@go-back="isShowingCreateRecipe = false"
+				@newRecipeSaved="addRecipeToMeal(selectedMeal, $event)"
 				embedded
 			/>
 		</CustomModal>
@@ -158,6 +167,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 import Calendar from '@/shared/Calendar/Calendar.vue';
 import RecipesListAndSearch from '@/recipes/RecipesListAndSearch.vue';
 import RecipeDetails from '@/recipes/RecipeDetails.vue';
+import CreateRecipe from '@/recipes/CreateRecipe.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
@@ -196,6 +206,7 @@ export default defineComponent({
 		SwiperSlide,
 		RecipesListAndSearch,
 		RecipeDetails,
+		CreateRecipe,
 	},
 
 	setup() {
@@ -216,6 +227,8 @@ export default defineComponent({
 		const selectedMeal = ref<Meal>();
 
 		const recipeDetails = ref<string | null>(null);
+
+		const isShowingCreateRecipe = ref(false);
 
 		const currentMonth = computed(() => {
 			const currentWeek = showingWeek.value.filter(
@@ -303,6 +316,7 @@ export default defineComponent({
 			capitalizeFirstLetter,
 			showMoreInfo,
 			recipeDetails,
+			isShowingCreateRecipe,
 		};
 	},
 });

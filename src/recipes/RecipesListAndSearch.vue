@@ -8,15 +8,24 @@
 			/>
 		</div>
 		<div v-if="isLoading">Loading...</div>
-		<RecipeList
-			v-else
-			:recipes="recipes"
-			@goToPage="goToPage"
-			:slim="embedded"
-			:showActions="showActions"
-			@see-more-info="$emit('see-more-info', $event)"
-			@select-recipe="$emit('select-recipe', $event)"
-		/>
+		<template v-else>
+			<button
+				v-if="showCreateRecipe"
+				class="create-recipe"
+				@click="$emit('create-recipe')"
+			>
+				<span>Create new recipe</span>
+				<i class="las la-arrow-right"></i>
+			</button>
+			<RecipeList
+				:recipes="recipes"
+				@goToPage="goToPage"
+				:slim="embedded"
+				:showActions="showActions"
+				@see-more-info="$emit('see-more-info', $event)"
+				@select-recipe="$emit('select-recipe', $event)"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -36,6 +45,7 @@ export default defineComponent({
 	props: {
 		embedded: Boolean,
 		showActions: Boolean,
+		showCreateRecipe: Boolean,
 	},
 
 	components: {
@@ -43,7 +53,7 @@ export default defineComponent({
 		RecipeList,
 	},
 
-	emits: ['back', 'select-recipe', 'see-more-info'],
+	emits: ['back', 'select-recipe', 'see-more-info', 'create-recipe'],
 
 	setup(props) {
 		const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
@@ -152,6 +162,23 @@ div:not(.embedded) > .search {
 }
 .embedded > .search {
 	margin-bottom: 1.5rem;
+}
+
+.embedded > .card-container {
+	padding-bottom: 1rem;
+}
+
+.create-recipe {
+	position: relative;
+	background-color: var(--grey-800);
+	padding: 1rem;
+	margin-bottom: 1rem;
+	display: flex;
+	border-radius: 0.5rem;
+	justify-content: space-between;
+}
+.create-recipe > * {
+	color: var(--inverted-text-color);
 }
 
 @media only screen and (min-width: 769px) {

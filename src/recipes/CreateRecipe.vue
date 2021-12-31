@@ -38,7 +38,7 @@
 				<button class="closeModal" @click="showInfoModal = false">Ok</button>
 			</div>
 		</CustomModal>
-		<PageHeader @go-back="handleGoBack">
+		<PageHeader @go-back="handleGoBack" :class="{ embedded }">
 			<template v-slot:title>Add Recipe</template>
 			<template v-slot:actions>
 				<span
@@ -65,7 +65,10 @@
 				</span>
 			</template>
 			<template v-slot:second-row>
-				<div v-if="showRecipeForm && newRecipe.isIntegrated" class="tabs">
+				<div
+					v-if="showRecipeForm && (newRecipe.isIntegrated || !newRecipe.url)"
+					class="tabs"
+				>
 					<button
 						@click="showTab = 'introduction'"
 						:class="{ selected: showTab === 'introduction' }"
@@ -87,9 +90,9 @@
 				</div>
 			</template>
 		</PageHeader>
-		<div class="container" :class="{ thin }">
+		<div class="container" :class="{ thin, embedded }">
 			<template v-if="showRecipeForm">
-				<template v-if="!newRecipe.isIntegrated">
+				<template v-if="newRecipe.url && !newRecipe.isIntegrated">
 					<div class="not-integrated-notice">
 						Since this website is not integrated yet, this recipe will be
 						imported as a link to the provided url
@@ -339,7 +342,13 @@
 				</div>
 				<ImportRecipe :thin="!!thin" @importedRecipe="importRecipe" />
 
-				<span class="openRecipeForm" @click="showRecipeForm = true">
+				<span
+					class="openRecipeForm"
+					@click="
+						resetNewRecipe();
+						showRecipeForm = true;
+					"
+				>
 					or use our recipe form
 				</span>
 			</div>
@@ -384,6 +393,7 @@ export default defineComponent({
 
 	props: {
 		thin: Boolean,
+		embedded: Boolean,
 	},
 
 	components: {
@@ -394,9 +404,9 @@ export default defineComponent({
 		PageHeader,
 	},
 
-	emits: ['newRecipeSaved'],
+	emits: ['newRecipeSaved', 'go-back'],
 
-	setup(_, { emit }) {
+	setup(props, { emit }) {
 		const route = useRoute();
 		const router = useRouter();
 
@@ -565,6 +575,7 @@ export default defineComponent({
 			}
 
 			if (
+				// @ts-ignore
 				sanitizedRecipe.value.isIntegrated &&
 				(sanitizedRecipe.value.ingredients.length === 0 ||
 					sanitizedRecipe.value.instructions.length === 0)
@@ -587,9 +598,11 @@ export default defineComponent({
 
 			addRecipe(sanitizedRecipe.value)
 				.then((savedRecipe) => {
-					router.push({
-						name: 'RecipesMainView',
-					});
+					if (!props.embedded) {
+						router.push({
+							name: 'RecipesMainView',
+						});
+					}
 
 					emit('newRecipeSaved', savedRecipe);
 				})
@@ -650,11 +663,36 @@ export default defineComponent({
 		}
 
 		function handleGoBack() {
-			if (isEditting.value || !showRecipeForm.value) {
-				router.back();
-			} else {
+			if (showRecipeForm.value && !isEditting.value) {
 				showRecipeForm.value = false;
+				return;
 			}
+
+			if (props.embedded) {
+				emit('go-back');
+				return;
+			}
+
+			router.back();
+		}
+
+		function resetNewRecipe() {
+			Object.assign(newRecipe, new RecipeClass());
+			// @ts-ignore
+			newRecipe.isIntegrated = undefined;
+			// @ts-ignore
+			newRecipe.time = undefined;
+
+			if (!newRecipe.url && !newRecipe.time) {
+				newRecipe.time = {
+					preparation: 0,
+					cooking: 0,
+				};
+			}
+
+			newRecipe.url = undefined;
+
+			importedRecipe.value = false;
 		}
 
 		return {
@@ -671,12 +709,24 @@ export default defineComponent({
 			saveErrors,
 			textAreaRefs,
 			handleGoBack,
+			resetNewRecipe,
 		};
 	},
 });
 </script>
 
 <style scoped>
+.container.embedded {
+	margin-bottom: 1rem;
+	height: calc(100vh - 109px);
+}
+
+.header.embedded {
+	position: sticky;
+	top: 0;
+	z-index: 99;
+}
+
 .stepPosition {
 	display: flex;
 	justify-content: center;
