@@ -6,7 +6,12 @@
 		<div v-if="isLoading & !!id">Loading...</div>
 		<template v-else>
 			<div class="gallery-and-icons">
-				<button v-if="canGoBack" class="back" @click="goBack">
+				<button
+					v-if="canGoBack"
+					class="back"
+					:class="{ 'no-image': !recipeHasImages }"
+					@click="goBack"
+				>
 					<i class="las la-angle-left"></i>
 				</button>
 				<div v-if="recipeHasImages" class="gallery" ref="gallery">
@@ -366,7 +371,6 @@ export default defineComponent({
 }
 .container.embedded {
 	height: calc(100vh - 2rem);
-	justify-content: center;
 }
 
 .brief {
@@ -382,7 +386,7 @@ export default defineComponent({
 	background-color: var(--background-color);
 }
 .brief.no-image {
-	margin-top: 1rem;
+	margin-top: 2rem;
 }
 .title,
 .author,
@@ -426,13 +430,19 @@ export default defineComponent({
 .gallery-and-icons {
 	position: relative;
 }
+.embedded .back {
+	position: sticky;
+}
+.embedded .back.no-image {
+	margin-top: 1rem;
+}
 .image {
 	width: 100%;
 	height: 400px;
 	margin-top: -50px;
 }
 .back {
-	position: sticky;
+	position: absolute;
 	left: 1rem;
 	top: 1rem;
 	display: flex;
@@ -451,9 +461,6 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	right: 1rem;
-	top: 0;
-}
-.embedded .icons {
 	top: 1rem;
 }
 .icons.no-image {
@@ -486,8 +493,10 @@ export default defineComponent({
 	margin: auto;
 }
 .rating {
-	flex-grow: 0.5;
 	min-height: 4rem;
+}
+.embedded .rating {
+	min-height: 6rem;
 }
 
 .main-info {
@@ -590,8 +599,6 @@ export default defineComponent({
 	margin: 0 auto;
 	border-radius: 0.5rem;
 	width: 70%;
-	flex-grow: 0;
-	max-height: 60px;
 }
 .view-recipe > * {
 	color: var(--inverted-text-color);

@@ -423,7 +423,7 @@
 	margin-left: auto;
 	margin-right: auto;
 	display: flex;
-	flex-wrap: wrap;
+	flex-direction: column;
 	height: 100%;
 }
 .container.thin {
