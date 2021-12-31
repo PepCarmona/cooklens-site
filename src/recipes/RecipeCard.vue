@@ -149,6 +149,7 @@ export default defineComponent({
 	border: 1px solid var(--border-color);
 	border-radius: 1rem;
 	height: fit-content;
+	overflow: hidden;
 }
 .card.slim {
 	display: flex;
@@ -174,9 +175,6 @@ export default defineComponent({
 }
 .image {
 	height: 100%;
-	border-radius: 1rem;
-	margin: 1rem;
-	margin-bottom: 0;
 }
 .slim .image {
 	margin: 0;
@@ -184,7 +182,6 @@ export default defineComponent({
 }
 .content {
 	flex-wrap: wrap;
-	min-height: 180px;
 }
 .slim .content {
 	min-height: auto;
@@ -207,7 +204,7 @@ export default defineComponent({
 .details {
 	display: flex;
 	width: 100%;
-	margin-top: 2rem;
+	margin-top: 1rem;
 	justify-content: flex-end;
 	align-self: flex-end;
 }
