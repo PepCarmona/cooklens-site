@@ -28,6 +28,7 @@ const dayPlan = ref<DayPlan>(newDayPlan());
 const isLoading = ref(false);
 const isAddingMeal = ref(false);
 const isAddingRecipeToMeal = ref(false);
+const isAddingNewRecipeToMeal = ref(false);
 
 watch(selectedDay, () => (dayPlan.value = getDayPlan()), { immediate: true });
 watch(
@@ -153,6 +154,7 @@ export default function useMealPlanState() {
 		closeMealSelector: () => {
 			isAddingMeal.value = false;
 			isAddingRecipeToMeal.value = false;
+			isAddingNewRecipeToMeal.value = false;
 		},
 		openRecipeSelector: () => (isAddingRecipeToMeal.value = true),
 		closeRecipeSelector: () => (isAddingRecipeToMeal.value = false),

@@ -21,10 +21,16 @@
 					@back="closeRecipeSelector()"
 					@see-more-info="showMoreInfo($event)"
 					@select-recipe="addRecipeToMeal(selectedMeal, $event)"
-					@create-recipe="isShowingCreateRecipe = true"
+					@create-recipe="isAddingNewRecipeToMeal = true"
 					embedded
 					showActions
 					showCreateRecipe
+				/>
+				<CreateRecipe
+					v-if="isAddingNewRecipeToMeal"
+					@go-back="isAddingNewRecipeToMeal = false"
+					@newRecipeSaved="addRecipeToMeal(selectedMeal, $event)"
+					embedded
 				/>
 			</div>
 			<div v-else class="select-meal">
@@ -63,13 +69,6 @@
 			<RecipeDetails
 				:id="recipeDetails"
 				@back="recipeDetails = null"
-				embedded
-			/>
-		</CustomModal>
-		<CustomModal :showIf="isShowingCreateRecipe" noPadding>
-			<CreateRecipe
-				@go-back="isShowingCreateRecipe = false"
-				@newRecipeSaved="addRecipeToMeal(selectedMeal, $event)"
 				embedded
 			/>
 		</CustomModal>
@@ -228,8 +227,6 @@ export default defineComponent({
 
 		const recipeDetails = ref<string | null>(null);
 
-		const isShowingCreateRecipe = ref(false);
-
 		const currentMonth = computed(() => {
 			const currentWeek = showingWeek.value.filter(
 				(day) => day !== null
@@ -316,7 +313,6 @@ export default defineComponent({
 			capitalizeFirstLetter,
 			showMoreInfo,
 			recipeDetails,
-			isShowingCreateRecipe,
 		};
 	},
 });
