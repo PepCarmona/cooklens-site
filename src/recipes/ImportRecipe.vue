@@ -2,12 +2,10 @@
 	<div class="import-container" :class="{ thin }">
 		<input ref="input" type="text" placeholder="Url" @keypress="autoImport" />
 		<div class="separator"></div>
-		<button @click="importFromUrl">
-			<template v-if="isLoading">
-				<i class="las la-circle-notch" />
-			</template>
-			<template v-else>IMPORT</template>
-		</button>
+
+		<Button @click="importFromUrl" :loading="isLoading" primary>
+			IMPORT
+		</Button>
 		<div v-if="importErrors" class="errors">
 			{{ importErrors }}
 		</div>
@@ -100,10 +98,6 @@ input:focus::placeholder {
 	opacity: 0;
 }
 button {
-	background-color: var(--accent-color);
-	color: var(--inverted-text-color);
-	border-radius: 0.5rem;
-	padding: 1rem;
 	margin-top: 1.5rem;
 	margin-bottom: 2rem;
 	width: 100%;

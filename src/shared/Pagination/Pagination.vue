@@ -1,14 +1,14 @@
 <template>
 	<div class="pagination-container">
 		<div class="pagination-inner-container">
-			<button
+			<Button
 				v-if="currentPage > 1"
 				@click="previousPage"
 				class="mr-05"
 				title="previous page"
 			>
 				<i class="las la-angle-left"></i>
-			</button>
+			</Button>
 			<div
 				v-if="currentPage"
 				class="numbers"
@@ -25,14 +25,14 @@
 					{{ currentPage + 1 }}
 				</span>
 			</div>
-			<button
+			<Button
 				v-if="nextPageExists"
 				@click="nextPage"
 				class="ml-05"
 				title="next page"
 			>
 				<i class="las la-angle-right"></i>
-			</button>
+			</Button>
 		</div>
 	</div>
 </template>

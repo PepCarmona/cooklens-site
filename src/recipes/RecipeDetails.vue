@@ -1,19 +1,19 @@
 <template>
 	<CustomModal v-if="isLoading && !id">
-		<LoadingModal>Loading ...</LoadingModal>
+		<LoadingSpinner />
 	</CustomModal>
 	<div class="container" :class="{ thin: !!id, embedded }" v-else>
-		<div v-if="isLoading & !!id">Loading...</div>
+		<div v-if="isLoading & !!id"><LoadingSpinner /></div>
 		<template v-else>
 			<div class="gallery-and-icons">
-				<button
+				<Button
 					v-if="canGoBack"
 					class="back"
 					:class="{ 'no-image': !recipeHasImages }"
 					@click="goBack"
 				>
 					<i class="las la-angle-left"></i>
-				</button>
+				</Button>
 				<div v-if="recipeHasImages" class="gallery" ref="gallery">
 					<div
 						class="image"
@@ -21,23 +21,23 @@
 					></div>
 				</div>
 				<div class="icons" :class="{ 'no-image': !recipeHasImages }">
-					<button
+					<Button
 						class="editButton"
 						v-if="isOwnRecipe && !isMobile"
 						@click="showEditRecipe"
 					>
 						<i class="las la-pen"></i>
-					</button>
-					<button @click="toggleFavRecipe(recipe)">
+					</Button>
+					<Button @click="toggleFavRecipe(recipe)">
 						<i v-if="isFavoriteRecipe(recipe)" class="las la-heart"></i>
 						<i v-else class="lar la-heart"></i>
-					</button>
-					<button>
+					</Button>
+					<Button>
 						<i class="las la-calendar-week"></i>
-					</button>
-					<button>
+					</Button>
+					<Button>
 						<i class="las la-share-alt"></i>
-					</button>
+					</Button>
 				</div>
 			</div>
 			<div class="brief" :class="{ 'no-image': !recipeHasImages }">
@@ -84,26 +84,26 @@
 			</div>
 			<div v-if="recipe.isIntegrated" class="main-info">
 				<div class="tabs">
-					<button
+					<Button
 						@click="showTab = 'introduction'"
 						:class="{
 							selected: showTab === 'introduction',
 						}"
 					>
 						Intro
-					</button>
-					<button
+					</Button>
+					<Button
 						@click="showTab = 'ingredients'"
 						:class="{ selected: showTab === 'ingredients' }"
 					>
 						Ingredients
-					</button>
-					<button
+					</Button>
+					<Button
 						@click="showTab = 'steps'"
 						:class="{ selected: showTab === 'steps' }"
 					>
 						Steps
-					</button>
+					</Button>
 				</div>
 				<div class="content">
 					<div v-if="showTab === 'introduction'" class="introduction">
@@ -145,10 +145,10 @@
 					</div>
 				</div>
 			</div>
-			<button v-else class="view-recipe" @click="openLink">
+			<Button v-else class="view-recipe" @click="openLink">
 				<span>View recipe</span>
 				<i class="las la-arrow-right"></i>
-			</button>
+			</Button>
 		</template>
 	</div>
 </template>
@@ -158,7 +158,7 @@ import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import CustomModal from '@/shared/CustomModal.vue';
-import LoadingModal from '@/shared/LoadingModal.vue';
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import CustomNumberInput from '@/shared/CustomNumberInput.vue';
 import Rating from '@/shared/Rating.vue';
 
@@ -185,7 +185,7 @@ export default defineComponent({
 
 	components: {
 		CustomModal,
-		LoadingModal,
+		LoadingSpinner,
 		CustomNumberInput,
 		Rating,
 	},
@@ -386,7 +386,7 @@ export default defineComponent({
 	background-color: var(--background-color);
 }
 .brief.no-image {
-	margin-top: 2rem;
+	margin-top: 5rem;
 }
 .title,
 .author,
@@ -453,6 +453,11 @@ export default defineComponent({
 	height: 50px;
 	width: 50px;
 }
+.back:focus,
+.back:hover {
+	background-color: var(--background-contrast-color);
+}
+
 .embedded .back {
 	background-color: var(--background-color);
 }
@@ -518,6 +523,7 @@ export default defineComponent({
 	padding: 0.5rem 1rem;
 	width: 100%;
 	color: var(--grey-800);
+	border-radius: 50px;
 }
 .tabs > button.selected {
 	background-color: var(--accent-color);

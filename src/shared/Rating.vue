@@ -1,7 +1,7 @@
 <template>
 	<div class="rating-container">
 		<div class="rating">
-			<button
+			<Button
 				v-for="rating in ratings"
 				:key="rating"
 				@click="rate(rating)"
@@ -9,7 +9,7 @@
 			>
 				<i v-if="recipeRating >= rating" class="las la-star"></i>
 				<i v-else class="lar la-star"></i>
-			</button>
+			</Button>
 		</div>
 		<div v-if="clicked && showComment" class="comment">
 			<textarea

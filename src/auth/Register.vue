@@ -9,9 +9,9 @@
 				We have sent you an email to confirm your account. Please check your
 				inbox.
 			</div>
-			<button class="closeModal" @click="isShowingVerifyMail = false">
+			<Button class="closeModal" @click="isShowingVerifyMail = false">
 				Got it!
-			</button>
+			</Button>
 		</CustomModal>
 		<CustomInput
 			label="Username"
@@ -45,12 +45,9 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<button class="action" @click="register" :disabled="isLoading">
-			<span v-if="isLoading">
-				<i class="las la-circle-notch"></i>
-			</span>
-			<span v-else>Register</span>
-		</button>
+		<Button class="action" @click="register" :loading="isLoading" primary>
+			Register
+		</Button>
 	</div>
 </template>
 

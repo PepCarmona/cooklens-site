@@ -7,16 +7,16 @@
 				:embedded="embedded"
 			/>
 		</div>
-		<div v-if="isLoading">Loading...</div>
+		<LoadingSpinner v-if="isLoading" />
 		<template v-else>
-			<button
+			<Button
 				v-if="showCreateRecipe"
 				class="create-recipe"
 				@click="$emit('create-recipe')"
 			>
 				<span>Create new recipe</span>
 				<i class="las la-arrow-right"></i>
-			</button>
+			</Button>
 			<RecipeList
 				:recipes="recipes"
 				@goToPage="goToPage"
@@ -35,6 +35,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/SearchRecipe.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
 import { SearchType, SearchQuery } from 'cooklens-types';
@@ -51,6 +52,7 @@ export default defineComponent({
 	components: {
 		SearchRecipe,
 		RecipeList,
+		LoadingSpinner,
 	},
 
 	emits: ['back', 'select-recipe', 'see-more-info', 'create-recipe'],

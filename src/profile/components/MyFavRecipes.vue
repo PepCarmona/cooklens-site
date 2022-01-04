@@ -3,7 +3,7 @@
 		<PageHeader @go-back="back">
 			<template v-slot:title>My Favorite Recipes</template>
 		</PageHeader>
-		<LoadingModal v-if="isLoading" />
+		<LoadingSpinner v-if="isLoading" />
 		<RecipeList v-else :recipes="favRecipes" slim />
 	</div>
 </template>
@@ -12,7 +12,7 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
-import LoadingModal from '@/shared/LoadingModal.vue';
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
@@ -22,7 +22,7 @@ export default defineComponent({
 	name: 'MyFavRecipes',
 
 	components: {
-		LoadingModal,
+		LoadingSpinner,
 		RecipeList,
 		PageHeader,
 	},

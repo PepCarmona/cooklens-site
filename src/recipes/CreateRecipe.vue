@@ -4,7 +4,7 @@
 			<div class="integratedSites">
 				<span class="title">Integration system</span>
 
-				<button
+				<Button
 					class="showIntegratedSites"
 					@click="showIntegratedSites = !showIntegratedSites"
 				>
@@ -13,7 +13,7 @@
 						class="las la-angle-right"
 						:class="{ rotate: !showIntegratedSites }"
 					></i>
-				</button>
+				</Button>
 
 				<ul :class="{ hidden: showIntegratedSites }">
 					<li v-for="site in integratedSites" :key="site.url">
@@ -31,62 +31,62 @@
 					Recipes can still be imported from not integrated sites.
 				</span>
 
-				<button class="request">
+				<Button class="request">
 					Request our team to integrate a new site
-				</button>
+				</Button>
 
-				<button class="closeModal" @click="showInfoModal = false">Ok</button>
+				<Button class="closeModal" @click="showInfoModal = false">Ok</Button>
 			</div>
 		</CustomModal>
 		<PageHeader @go-back="handleGoBack" :class="{ embedded }">
 			<template v-slot:title>Add Recipe</template>
 			<template v-slot:actions>
-				<span
+				<Button
 					v-if="showRecipeForm && newRecipe.isIntegrated"
 					class="save-recipe"
 					@click="saveRecipe"
 				>
 					Save
-				</span>
-				<span
+				</Button>
+				<Button
 					v-else-if="!showRecipeForm"
 					class="info"
 					@click="showInfoModal = true"
 				>
-					<i class="las la-question-circle"></i>
-				</span>
-				<span
+					<i class="las la-info-circle"></i>
+				</Button>
+				<Button
 					v-if="isEditting"
 					class="delete-recipe"
 					@click="deleteRecipe"
 					title="Delete"
 				>
 					Delete
-				</span>
+				</Button>
 			</template>
 			<template v-slot:second-row>
 				<div
 					v-if="showRecipeForm && (newRecipe.isIntegrated || !newRecipe.url)"
 					class="tabs"
 				>
-					<button
+					<Button
 						@click="showTab = 'introduction'"
 						:class="{ selected: showTab === 'introduction' }"
 					>
 						Intro
-					</button>
-					<button
+					</Button>
+					<Button
 						@click="showTab = 'ingredients'"
 						:class="{ selected: showTab === 'ingredients' }"
 					>
 						Ingredients
-					</button>
-					<button
+					</Button>
+					<Button
 						@click="showTab = 'steps'"
 						:class="{ selected: showTab === 'steps' }"
 					>
 						Steps
-					</button>
+					</Button>
 				</div>
 			</template>
 		</PageHeader>
@@ -107,10 +107,10 @@
 						:autoComplete="'off'"
 						required
 					/>
-					<button class="save-link" @click="saveRecipe">
+					<Button class="save-link" @click="saveRecipe" primary>
 						<i class="las la-link"></i>
 						<span>Save as link</span>
-					</button>
+					</Button>
 				</template>
 				<template v-else>
 					<template v-if="showTab === 'introduction'">
@@ -166,15 +166,13 @@
 									:key="image"
 									:style="`background-image: url(${image});`"
 								>
-									<button>
+									<Button>
 										<i class="las la-pen"></i>
-									</button>
+									</Button>
 								</div>
 							</template>
 							<div v-else class="add-images">
-								<button>
-									<span>Add images</span>
-								</button>
+								<Button> Add images </Button>
 							</div>
 						</div>
 
@@ -212,15 +210,15 @@
 										autoResize
 										:autoComplete="'off'"
 									/>
-									<button class="close tag" @click="deleteTag(index)">
+									<Button class="close tag" @click="deleteTag(index)">
 										<i class="las la-times"></i>
-									</button>
+									</Button>
 								</div>
 							</div>
 							<div class="ml-05">
-								<button class="add" @click="addTag">
+								<Button class="add" @click="addTag">
 									<i class="las la-plus-circle"></i>
-								</button>
+								</Button>
 							</div>
 						</div>
 					</template>
@@ -267,9 +265,9 @@
 										ref="lastInput"
 									/>
 									<div class="w-10 delete-ingredient">
-										<button class="close" @click="deleteIngredient(index)">
+										<Button class="close" @click="deleteIngredient(index)">
 											<i class="las la-times"></i>
-										</button>
+										</Button>
 									</div>
 								</div>
 							</div>
@@ -291,9 +289,9 @@
 								</div>
 							</div>
 
-							<button class="add" @click="addIngredient">
+							<Button class="add" @click="addIngredient">
 								<i class="las la-plus"></i>
-							</button>
+							</Button>
 						</div>
 					</template>
 
@@ -317,15 +315,15 @@
 										:ref="(el) => textAreaRefs.push(el)"
 									/>
 									<div class="w-10 delete-step">
-										<button class="close" @click="deleteStep(index)">
+										<Button class="close" @click="deleteStep(index)">
 											<i class="las la-times"></i>
-										</button>
+										</Button>
 									</div>
 								</div>
 							</div>
-							<button class="add" @click="addStep">
+							<Button class="add" @click="addStep">
 								<i class="las la-plus"></i>
-							</button>
+							</Button>
 						</div>
 					</template>
 
@@ -749,6 +747,7 @@ button.close {
 	justify-content: left;
 	height: 100%;
 	margin-left: 0.5rem;
+	padding: 0;
 }
 button.close:hover,
 button.close:focus {
@@ -1035,17 +1034,19 @@ button.cancel {
 }
 
 .save-link {
-	background-color: var(--accent-color);
 	padding: 1rem 2rem;
-	border-radius: 0.5rem;
 	margin: 2rem auto;
-}
-.save-link > * {
-	color: var(--inverted-text-color);
 }
 .save-link > i {
 	margin-right: 1rem;
 	font-size: 20px;
+}
+
+.actions > button {
+	padding: 0;
+}
+.actions > button:hover {
+	background-color: transparent;
 }
 
 @media only screen and (max-width: 768px) {

@@ -35,7 +35,7 @@
 			</div>
 			<div v-else class="select-meal">
 				<div class="select-meal-title">Add meal</div>
-				<button
+				<Button
 					v-for="meal in meals"
 					:key="meal"
 					:disabled="dayPlan.meals.some((dayMeal) => dayMeal.meal === meal)"
@@ -55,10 +55,8 @@
 					></i>
 					<span>{{ capitalizeFirstLetter(meal) }}</span>
 					<i class="advance-icon las la-angle-right"></i>
-				</button>
-				<div class="cancel">
-					<button @click="closeMealSelector()">Cancel</button>
-				</div>
+				</Button>
+				<Button class="closeModal" @click="closeMealSelector()">Cancel</Button>
 			</div>
 		</CustomModal>
 		<CustomModal
@@ -77,13 +75,13 @@
 		</PageHeader>
 		<div class="mealplan-header">
 			<div class="title">
-				<span class="icon">
+				<Button class="icon">
 					<i class="las la-map-pin" @click="showSelectedDay"></i>
-				</span>
+				</Button>
 				<span class="month-text">{{ currentMonth }}</span>
-				<span class="icon">
+				<Button class="icon">
 					<i class="las la-calendar" @click="showCalendar"></i>
-				</span>
+				</Button>
 			</div>
 			<Swiper
 				:modules="[Virtual]"
@@ -99,7 +97,7 @@
 					:virtualIndex="index"
 				>
 					<div class="week">
-						<button
+						<Button
 							v-for="day in week"
 							:key="day"
 							class="day"
@@ -115,7 +113,7 @@
 							<span class="day-number">
 								{{ day.dayNumber }}
 							</span>
-						</button>
+						</Button>
 					</div>
 				</SwiperSlide>
 			</Swiper>
@@ -125,13 +123,13 @@
 				<span class="content-day">
 					{{ selectedDay.dayNameLong }} {{ selectedDay.dayNumber }}
 				</span>
-				<span
+				<Button
 					v-if="!selectedDay.isBeforeToday && !areAllMealsAdded"
 					class="add"
 					@click="openMealSelector()"
 				>
 					<i class="las la-plus"></i>
-				</span>
+				</Button>
 			</div>
 			<div class="content-body">
 				<div
@@ -149,7 +147,9 @@
 						</div>
 					</div>
 					<div v-if="!selectedDay.isBeforeToday" class="content-meal-actions">
-						<i @click.stop="removeMeal(meal)" class="las la-minus"></i>
+						<Button @click="removeMeal(meal)">
+							<i class="las la-minus"></i>
+						</Button>
 					</div>
 				</div>
 			</div>
@@ -339,6 +339,7 @@ export default defineComponent({
 .title > .icon {
 	min-width: 25px;
 	margin: 0 1rem;
+	padding: 0;
 }
 .month-text {
 	font-size: 20px;
@@ -402,7 +403,7 @@ export default defineComponent({
 	font-size: 24px;
 	margin-bottom: 1rem;
 }
-.select-meal > button {
+.select-meal > button:not(.closeModal) {
 	width: 100%;
 	padding: 1rem;
 	justify-content: flex-start;
@@ -425,17 +426,7 @@ export default defineComponent({
 	position: absolute;
 	right: 1rem;
 }
-.cancel {
-	width: 100%;
-	margin-top: 1.5rem;
-	padding-top: 0.5rem;
-	border-top: 1px solid var(--border-color);
-}
-.cancel > button {
-	margin: auto;
-	font-size: 20px;
-	color: var(--accent-color);
-}
+
 .select-recipe {
 	width: 100%;
 	height: calc(100vh - 5rem);

@@ -54,12 +54,9 @@
 			</div>
 		</div>
 		<div v-if="showActions" class="actions">
-			<!-- <button @click.stop="$emit('see-more-info', recipe)">
-                <i class="las la-arrow-alt-circle-right"></i>
-            </button> -->
-			<button @click.stop="$emit('select-recipe', recipe)">
+			<Button @click="$emit('select-recipe', recipe)">
 				<i class="las la-plus"></i>
-			</button>
+			</Button>
 		</div>
 	</div>
 </template>
@@ -150,6 +147,7 @@ export default defineComponent({
 	border-radius: 1rem;
 	height: fit-content;
 	overflow: hidden;
+	cursor: pointer;
 }
 .card.slim {
 	display: flex;

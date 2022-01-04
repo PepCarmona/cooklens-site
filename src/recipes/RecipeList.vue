@@ -1,6 +1,6 @@
 <template>
 	<div class="card-container" :class="{ column: slim, thin, 'pb-3': !slim }">
-		<div v-if="isLoading" class="loadingCard">Loading...</div>
+		<LoadingSpinner v-if="isLoading" class="loadingCard" />
 		<template v-else>
 			<RecipeCard
 				v-for="recipe in recipes"
@@ -28,6 +28,7 @@ import { defineComponent, PropType } from 'vue';
 
 import RecipeCard from '@/recipes/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import usePaginationState from '@/shared/Pagination/PaginationState';
 import useRecipeState from '@/recipes/state/RecipeState';
@@ -50,6 +51,7 @@ export default defineComponent({
 	components: {
 		RecipeCard,
 		Pagination,
+		LoadingSpinner,
 	},
 
 	emits: ['goToPage', 'select-recipe', 'see-more-info'],

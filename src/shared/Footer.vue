@@ -1,13 +1,13 @@
 <template>
 	<footer>
-		<button
+		<Button
 			@click="addRecipe"
 			v-if="showAddRecipe || showEditRecipe"
 			class="add-recipe"
 		>
 			<i v-if="showAddRecipe" class="las la-plus"></i>
 			<i v-if="showEditRecipe" class="las la-pen"></i>
-		</button>
+		</Button>
 		<div v-if="showFooter" id="mobile-sticky-footer">
 			<div>
 				<router-link to="/">
@@ -119,6 +119,10 @@ i.current {
 	justify-content: center;
 	align-items: center;
 	z-index: 100;
+}
+.add-recipe:focus,
+.add-recipe:hover {
+	background-color: var(--accent-color-hover);
 }
 .add-recipe > i {
 	margin-bottom: 0.5rem;

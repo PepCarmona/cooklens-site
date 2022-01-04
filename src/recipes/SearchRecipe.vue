@@ -1,8 +1,8 @@
 <template>
 	<div class="d-flex w-100 searchRow" :class="{ focus: isFocus }">
-		<button v-if="embedded" class="back" @click="$emit('back')">
+		<Button v-if="embedded" class="back" @click="$emit('back')">
 			<i class="las la-angle-left"></i>
-		</button>
+		</Button>
 		<input
 			@input="changeSearchText"
 			@focus="isFocus = true"
@@ -15,27 +15,27 @@
 			:value="searchQuery.text"
 			autocomplete="off"
 		/>
-		<button @click="doSearch()" class="searchButton">
+		<Button @click="doSearch()" class="searchButton">
 			<i class="las la-search"></i>
-		</button>
+		</Button>
 	</div>
 
 	<div class="switchSearch">
-		<button
+		<Button
 			v-if="searchQuery.type !== 'title'"
 			@click="changeSearchType('title')"
 		>
 			Search by title
-		</button>
-		<button
+		</Button>
+		<Button
 			v-if="searchQuery.type !== 'ingredient'"
 			@click="changeSearchType('ingredient')"
 		>
 			Search by ingredient
-		</button>
-		<button v-if="searchQuery.type !== 'tag'" @click="changeSearchType('tag')">
+		</Button>
+		<Button v-if="searchQuery.type !== 'tag'" @click="changeSearchType('tag')">
 			Search by tag
-		</button>
+		</Button>
 	</div>
 </template>
 

@@ -25,30 +25,30 @@
 			</div>
 			<div class="links">
 				<router-link :to="{ name: 'ownRecipes' }">
-					<button>
+					<Button>
 						<i class="las la-book"></i>
 						<span>My Recipes</span>
-					</button>
+					</Button>
 				</router-link>
 				<router-link :to="{ name: 'favRecipes' }">
-					<button>
+					<Button>
 						<i class="lar la-heart"></i>
 						<span>Favorites</span>
-					</button>
+					</Button>
 				</router-link>
 				<router-link :to="{ name: 'myMealPlan' }">
-					<button>
+					<Button>
 						<i class="las la-calendar-week"></i>
 						<span>Meal Plan</span>
-					</button>
+					</Button>
 				</router-link>
 			</div>
 			<div class="more-info">
 				<!-- <span class="title">More…</span> -->
-				<div @click="logOut">
+				<Button @click="logOut">
 					<span>Logout</span>
 					<i class="las la-sign-out-alt"></i>
-				</div>
+				</Button>
 			</div>
 		</div>
 	</div>
@@ -119,13 +119,10 @@ export default defineComponent({
 }
 .links {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	padding: 1rem 0;
 	border-top: 1px solid var(--border-color);
 	border-bottom: 1px solid var(--border-color);
-}
-.links a {
-	width: 100%;
 }
 .links button {
 	flex-wrap: wrap;
@@ -153,8 +150,8 @@ export default defineComponent({
 	font-size: 20px;
 	font-family: var(--title-font);
 }
-.more-info > div {
-	padding: 1rem;
+.more-info > button {
+	width: 100%;
 	display: flex;
 	justify-content: space-between;
 }

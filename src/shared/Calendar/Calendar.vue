@@ -18,7 +18,7 @@
 			<div class="calendar-month-body">
 				<div v-for="week in month.weeks" :key="week" class="calendar-week">
 					<div v-for="day in week" :key="day" class="calendar-day">
-						<button
+						<Button
 							v-if="day"
 							:class="{
 								selected: day.date === selectedDay.date,
@@ -28,7 +28,7 @@
 							@click="$emit('selected-day', day)"
 						>
 							{{ day.dayNumber }}
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>

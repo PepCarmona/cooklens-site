@@ -11,9 +11,9 @@
 			</transition>
 			<transition name="slide">
 				<div v-if="showIf" class="modal" :class="classList">
-					<button v-if="mode === 'full'" class="close" @click="$emit('close')">
+					<Button v-if="mode === 'full'" class="close" @click="$emit('close')">
 						<i class="las la-times"></i>
-					</button>
+					</Button>
 					<slot></slot>
 				</div>
 			</transition>

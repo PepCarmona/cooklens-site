@@ -5,13 +5,13 @@
 		</PageHeader>
 		<div class="createRecipe">
 			<router-link :to="{ name: 'CreateRecipe' }">
-				<button>
+				<Button>
 					<span>Create Recipe</span>
 					<i class="las la-plus"></i>
-				</button>
+				</Button>
 			</router-link>
 		</div>
-		<LoadingModal v-if="isLoading" />
+		<LoadingSpinner v-if="isLoading" />
 		<RecipeList :recipes="myRecipes" slim />
 	</div>
 </template>
@@ -20,7 +20,7 @@
 import { defineComponent, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
-import LoadingModal from '@/shared/LoadingModal.vue';
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
@@ -30,7 +30,7 @@ export default defineComponent({
 	name: 'MyRecipes',
 
 	components: {
-		LoadingModal,
+		LoadingSpinner,
 		RecipeList,
 		PageHeader,
 	},

@@ -49,15 +49,7 @@
 	margin-top: 0;
 }
 
-.auth-container .action {
-	background-color: var(--accent-color);
-	border-radius: 0.5rem;
-	padding: 0.75rem;
-}
-.auth-container button.action * {
-	color: var(--inverted-text-color);
-}
-.auth-container button.action > span {
+.auth-container button.action {
 	font-size: 18px;
 }
 
@@ -80,6 +72,7 @@
 .alternative .toggle-login {
 	font-size: 14px;
 	color: var(--accent-color);
+	cursor: pointer;
 }
 .alternative > span:hover {
 	text-decoration: underline;

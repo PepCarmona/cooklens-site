@@ -1,5 +1,5 @@
 <template>
-	<div v-if="isLoading"><i class="las la-circle-notch"></i></div>
+	<LoadingSpinner v-if="isLoading" />
 	<div v-else-if="authenticatedUser">
 		<router-view></router-view>
 	</div>
@@ -8,10 +8,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
+import LoadingSpinner from '@/shared/LoadingSpinner.vue';
+
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
 	name: 'ProfileWrapper',
+
+	components: {
+		LoadingSpinner,
+	},
 
 	setup() {
 		const { authenticatedUser, isLoading } = useAuthenticationState();

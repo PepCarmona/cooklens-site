@@ -22,12 +22,9 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<button class="action" @click="logIn" :disabled="isLoading">
-			<span v-if="isLoading">
-				<i class="las la-circle-notch"></i>
-			</span>
-			<span v-else>Login</span>
-		</button>
+		<Button class="action" @click="logIn" :loading="isLoading" primary>
+			Login
+		</Button>
 	</div>
 </template>
 

@@ -3,6 +3,8 @@
 	--background-contrast-color: #ffffff;
 
 	--accent-color: #12b886;
+	--accent-color-light: #71d4b6;
+	--accent-color-hover: #41c69e;
 	--accent-color-transparent: #12b88645;
 	--accent-color-complementary: #294852;
 
@@ -431,29 +433,20 @@
 	margin: 0;
 }
 
-button {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: transparent;
-	border: none;
-	outline: none;
-	padding: 0;
-	cursor: pointer;
-}
-button:focus,
-button:hover {
-	background-color: var(--secondary-color);
-}
 button.closeModal {
 	font-size: 20px;
 	font-weight: 500;
 	width: 100%;
 	margin-top: 1.5rem;
-	padding-top: 0.5rem;
+	padding: 0.5rem 0 0 0 !important;
 	text-align: center;
 	color: var(--accent-color);
-	border-top: 1px solid var(--border-color);
+	border-top: 1px solid var(--border-color) !important;
+}
+button.closeModal:focus,
+button.closeModal:hover {
+	background-color: transparent !important;
+	color: var(--accent-color-light);
 }
 
 ul {

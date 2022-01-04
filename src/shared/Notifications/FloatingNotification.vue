@@ -6,13 +6,13 @@
 			:class="notificationType"
 		>
 			<span class="text">{{ notificationMessage }}</span>
-			<button
+			<Button
 				v-if="!autoCloseNotification"
 				class="close"
 				@click="closeNotification"
 			>
 				<i class="las la-times"></i>
-			</button>
+			</Button>
 		</div>
 	</transition>
 </template>
