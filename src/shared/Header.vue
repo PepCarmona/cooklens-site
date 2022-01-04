@@ -3,7 +3,7 @@
 		v-if="showHeader"
 		:showIf="showMenu"
 		@close="showMenu = false"
-		:mode="'top'"
+		:mode="mode"
 	>
 		<div class="slide-menu">
 			<span class="menu-close" @click="showMenu = false">
@@ -49,7 +49,7 @@ import { useRoute } from 'vue-router';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 
-import CustomModal from '@/shared/CustomModal.vue';
+import CustomModal, { modalLateralMode } from '@/shared/CustomModal.vue';
 
 export default defineComponent({
 	name: 'Header',
@@ -62,13 +62,27 @@ export default defineComponent({
 		const route = useRoute();
 
 		const showMenu = ref(false);
-		const showHeader = computed(() => route.name !== 'Authentication');
+		const showHeader = computed(() => !route.meta.noHeader);
 		const { authenticatedUser } = useAuthenticationState();
+
+		const mode = ref(getModalMode());
+
+		window.addEventListener('resize', () => {
+			mode.value = getModalMode();
+		});
+
+		function getModalMode(): modalLateralMode {
+			if (screen.width > 768) {
+				return 'left';
+			}
+			return 'top';
+		}
 
 		return {
 			showMenu,
 			showHeader,
 			authenticatedUser,
+			mode,
 		};
 	},
 });
@@ -102,7 +116,7 @@ header {
 }
 
 .menu {
-	width: 4rem;
+	margin-left: 1rem;
 	flex-shrink: 0;
 	z-index: 9;
 }
@@ -181,7 +195,7 @@ header {
 	.menu {
 		display: block;
 		text-align: right;
-		padding-right: 1rem;
+		margin-right: 1rem;
 	}
 
 	.menu-close {
@@ -190,7 +204,7 @@ header {
 	}
 	.menu-title {
 		margin-top: -1.1rem;
-		margin-left: 2.5rem;
+		margin-left: 2rem;
 		margin-bottom: 2rem;
 	}
 	.slide-menu {
@@ -198,12 +212,11 @@ header {
 	}
 	.slide-menu .items {
 		margin-left: 2rem;
+		flex-direction: column;
 	}
 	.slide-menu .items > * {
-		width: fit-content;
-		border-bottom: none;
-		border-right: 1px solid var(--accent-color-transparent);
-		padding: 0.5rem 1rem;
+		padding: 1rem;
+		font-size: 18px;
 	}
 }
 </style>

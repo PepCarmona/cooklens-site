@@ -89,19 +89,6 @@ export default defineComponent({
 	width: 100%;
 	background-color: var(--dark-shadow-color);
 }
-.modal-overlay.right {
-	justify-content: flex-end;
-}
-.modal-overlay.right > .modal {
-	height: 100vh;
-	max-height: 100vh;
-	width: 100%;
-	border: none;
-	border-radius: 0;
-	flex-direction: column;
-	justify-content: flex-start;
-	flex-wrap: nowrap;
-}
 
 .modal {
 	display: flex;
@@ -111,7 +98,6 @@ export default defineComponent({
 	position: relative;
 	margin: auto;
 	height: fit-content;
-	max-height: calc(100% - 2rem);
 	overflow-y: auto;
 	overflow-x: hidden;
 	width: calc(100% - 2rem);
@@ -119,6 +105,9 @@ export default defineComponent({
 	border-radius: 1rem;
 	background-color: var(--background-contrast-color);
 	z-index: 1000;
+}
+.modal.center {
+	max-height: calc(100% - 2rem);
 }
 .modal.transparent {
 	border: none;
@@ -133,9 +122,17 @@ export default defineComponent({
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 }
+.modal.left {
+	height: 100vh;
+	width: fit-content;
+	max-width: 40%;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	margin-left: 0;
+	align-items: flex-start;
+}
 .modal.full {
 	margin: 0;
-	max-height: 100vh;
 	width: 100vw;
 	border-radius: 0;
 	padding: 1rem;
@@ -174,6 +171,10 @@ export default defineComponent({
 .top.slide-leave-to,
 .top.slide-enter-from {
 	transform: translateY(-100vh);
+}
+.left.slide-leave-to,
+.left.slide-enter-from {
+	transform: translateX(-100vw);
 }
 
 .close {

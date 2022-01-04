@@ -53,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
 				/* webpackChunkName: "authentication" */ '../auth/Authentication.vue'
 			),
 		props: (route) => ({ nextUrl: route.query.nextUrl }),
-		meta: { noFooter: true },
+		meta: { noFooter: true, noHeader: true },
 		beforeEnter: (to, from, next) => {
 			const code = to.query.code?.toString();
 
