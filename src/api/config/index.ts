@@ -1,6 +1,6 @@
 const backend = {
 	local: 'http://localhost:4000/api',
-	production: 'https://cooklens.herokuapp.com/api',
+	production: `${location.origin}/api`,
 };
 
 const apiUrl =
