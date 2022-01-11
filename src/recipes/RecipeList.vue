@@ -96,7 +96,8 @@ export default defineComponent({
 .card-container {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: space-around;
+	row-gap: 60px;
+	column-gap: 60px;
 	flex-grow: 1;
 	padding: 1rem;
 	max-width: 1000px;
@@ -109,19 +110,10 @@ export default defineComponent({
 	flex-wrap: nowrap;
 	padding: 0;
 }
-.card-container > .card:first-child {
-	margin-top: 0;
-}
 
 .loadingCard {
 	width: 400px;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
-}
-
-@media only screen and (min-width: 906px) {
-	.card-container:not(.thin) > .card:nth-child(2) {
-		margin-top: 0;
-	}
 }
 </style>

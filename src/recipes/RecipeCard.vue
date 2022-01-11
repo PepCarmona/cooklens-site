@@ -140,8 +140,6 @@ export default defineComponent({
 <style scoped>
 .card {
 	max-width: 400px;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
 	background-color: var(--background-contrast-color);
 	border: 1px solid var(--border-color);
 	border-radius: 1rem;
@@ -180,6 +178,7 @@ export default defineComponent({
 }
 .content {
 	flex-wrap: wrap;
+	min-height: 160px;
 }
 .slim .content {
 	min-height: auto;

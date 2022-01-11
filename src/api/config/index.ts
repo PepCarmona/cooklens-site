@@ -1,38 +1,38 @@
 const backend = {
-	local: 'http://localhost:4000',
-	production: 'https://cooklens.herokuapp.com',
+	local: 'http://localhost:4000/api',
+	production: 'https://cooklens.herokuapp.com/api',
 };
 
-const proxy =
+const apiUrl =
 	window.location.host.indexOf('localhost') > -1
 		? backend.local
 		: backend.production;
 
 export const URI = {
 	recipes: {
-		get: `${proxy}/recipes/get`,
-		getById: `${proxy}/recipes/getById`,
-		getRandom: `${proxy}/recipes/getRandom`,
-		getByUser: `${proxy}/recipes/getByUser`,
-		add: `${proxy}/recipes/add`,
-		update: `${proxy}/recipes/update`,
-		delete: `${proxy}/recipes/delete`,
-		import: `${proxy}/recipes/import`,
-		integratedSites: `${proxy}/recipes/integrated-sites`,
+		get: `${apiUrl}/recipes/get`,
+		getById: `${apiUrl}/recipes/getById`,
+		getRandom: `${apiUrl}/recipes/getRandom`,
+		getByUser: `${apiUrl}/recipes/getByUser`,
+		add: `${apiUrl}/recipes/add`,
+		update: `${apiUrl}/recipes/update`,
+		delete: `${apiUrl}/recipes/delete`,
+		import: `${apiUrl}/recipes/import`,
+		integratedSites: `${apiUrl}/recipes/integrated-sites`,
 	},
 	auth: {
-		register: `${proxy}/auth/signup`,
-		verify: `${proxy}/auth/verifyUser`,
-		login: `${proxy}/auth/signin`,
-		loginFromToken: `${proxy}/auth/signinFromToken`,
+		register: `${apiUrl}/auth/signup`,
+		verify: `${apiUrl}/auth/verifyUser`,
+		login: `${apiUrl}/auth/signin`,
+		loginFromToken: `${apiUrl}/auth/signinFromToken`,
 	},
 	user: {
-		addFavRecipe: `${proxy}/user/addFavRecipe`,
-		removeFavRecipe: `${proxy}/user/removeFavRecipe`,
-		getFavRecipes: `${proxy}/user/getFavRecipes`,
+		addFavRecipe: `${apiUrl}/user/addFavRecipe`,
+		removeFavRecipe: `${apiUrl}/user/removeFavRecipe`,
+		getFavRecipes: `${apiUrl}/user/getFavRecipes`,
 	},
 	mealPlan: {
-		get: `${proxy}/mealPlan/getMealPlan`,
-		update: `${proxy}/mealPlan/updateMealPlan`,
+		get: `${apiUrl}/mealPlan/getMealPlan`,
+		update: `${apiUrl}/mealPlan/updateMealPlan`,
 	},
 };
