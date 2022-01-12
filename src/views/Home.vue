@@ -1,5 +1,5 @@
 <template>
-	<h1>COOKLENS - Home</h1>
+	<h1>COOKLENS - Home (automated)</h1>
 </template>
 
 <script lang="ts">
