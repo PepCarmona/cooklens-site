@@ -158,15 +158,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, nextTick, Ref, ref, watch } from 'vue';
+import {
+	computed,
+	defineAsyncComponent,
+	defineComponent,
+	nextTick,
+	Ref,
+	ref,
+	watch,
+} from 'vue';
 import { useRouter } from 'vue-router';
 
 import PageHeader from '@/shared/PageHeader.vue';
 import CustomModal from '@/shared/CustomModal.vue';
-import Calendar from '@/shared/Calendar/Calendar.vue';
-import RecipesListAndSearch from '@/recipes/RecipesListAndSearch.vue';
-import RecipeDetails from '@/recipes/RecipeDetails.vue';
-import CreateRecipe from '@/recipes/CreateRecipe.vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue/swiper-vue';
 import { Virtual } from 'swiper';
@@ -200,12 +204,20 @@ export default defineComponent({
 	components: {
 		PageHeader,
 		CustomModal,
-		Calendar,
 		Swiper,
 		SwiperSlide,
-		RecipesListAndSearch,
-		RecipeDetails,
-		CreateRecipe,
+		Calendar: defineAsyncComponent(
+			() => import('@/shared/Calendar/Calendar.vue')
+		),
+		RecipesListAndSearch: defineAsyncComponent(
+			() => import('@/recipes/RecipesListAndSearch.vue')
+		),
+		RecipeDetails: defineAsyncComponent(
+			() => import('@/recipes/RecipeDetails.vue')
+		),
+		CreateRecipe: defineAsyncComponent(
+			() => import('@/recipes/CreateRecipe.vue')
+		),
 	},
 
 	setup() {
