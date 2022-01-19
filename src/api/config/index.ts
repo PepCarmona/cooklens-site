@@ -1,10 +1,14 @@
+import { isFeatureEnabled } from '@/helpers/featureToggle';
+
 const backend = {
 	local: 'http://localhost:4000/api',
-	production: `${location.origin}/api`,
+	production: `https://cooklens.pepcarmona.com/api`,
 };
 
 const apiUrl =
-	window.location.host.indexOf('localhost') > -1
+	(location.host.indexOf('localhost') !== -1 ||
+		isFeatureEnabled('local-server')) &&
+	!isFeatureEnabled('prod-server')
 		? backend.local
 		: backend.production;
 

@@ -6,6 +6,10 @@ import VueAxios from 'vue-axios';
 
 import Button from '@/shared/Button.vue';
 
+import { setupFeatureToggle } from './helpers/featureToggle';
+
+setupFeatureToggle();
+
 const app = createApp(App);
 app.use(router);
 app.use(VueAxios, axios);

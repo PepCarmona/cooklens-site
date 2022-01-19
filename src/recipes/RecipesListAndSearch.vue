@@ -102,6 +102,7 @@ export default defineComponent({
 			router.push({
 				name: 'RecipesMainView',
 				query: {
+					...route.query,
 					searchBy:
 						searchQuery && searchQuery.text !== ''
 							? searchQuery.type
