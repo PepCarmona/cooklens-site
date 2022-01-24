@@ -15,7 +15,7 @@
 		<div v-if="recipes.length === 0">No recipes match this search</div>
 		<Pagination
 			v-if="!(currentPage === 1 && !nextPageExists) && !isLoading"
-			class="mt-1"
+			class="mt-2"
 			:nextPageExists="nextPageExists"
 			@previousPage="goToPreviousPage"
 			@nextPage="goToNextPage"
@@ -94,6 +94,7 @@ export default defineComponent({
 }
 
 .card-container {
+	display: flex;
 	flex-grow: 1;
 	padding: 1rem;
 	width: 100%;

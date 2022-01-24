@@ -17,7 +17,14 @@
 		</CustomModal>
 		<CustomModal :showIf="isAddingMeal" @close="closeMealSelector()">
 			<div v-if="isAddingRecipeToMeal" class="select-recipe">
+				<CreateRecipe
+					v-if="isAddingNewRecipeToMeal"
+					@go-back="isAddingNewRecipeToMeal = false"
+					@newRecipeSaved="addRecipeToMeal(selectedMeal, $event)"
+					embedded
+				/>
 				<RecipesListAndSearch
+					v-else
 					@back="closeRecipeSelector()"
 					@see-more-info="showMoreInfo($event)"
 					@select-recipe="addRecipeToMeal(selectedMeal, $event)"
@@ -25,12 +32,6 @@
 					embedded
 					showActions
 					showCreateRecipe
-				/>
-				<CreateRecipe
-					v-if="isAddingNewRecipeToMeal"
-					@go-back="isAddingNewRecipeToMeal = false"
-					@newRecipeSaved="addRecipeToMeal(selectedMeal, $event)"
-					embedded
 				/>
 			</div>
 			<div v-else class="select-meal">
@@ -442,6 +443,7 @@ export default defineComponent({
 .select-recipe {
 	width: 100%;
 	height: calc(100vh - 5rem);
+	overflow: auto;
 }
 .content-body {
 	margin-top: 1rem;

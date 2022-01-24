@@ -167,10 +167,6 @@ div:not(.embedded) > .search {
 	margin-bottom: 1.5rem;
 }
 
-.embedded > .card-container {
-	padding-bottom: 1rem;
-}
-
 .create-recipe {
 	position: relative;
 	background-color: var(--grey-800);

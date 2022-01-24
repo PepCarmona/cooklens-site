@@ -143,6 +143,7 @@ export default function useMealPlanState() {
 		dayPlan: readonly(dayPlan),
 		isAddingMeal: readonly(isAddingMeal),
 		isAddingRecipeToMeal: readonly(isAddingRecipeToMeal),
+		isAddingNewRecipeToMeal,
 		areAllMealsAdded: readonly(areAllMealsAdded),
 
 		getCalendarBoundaries,
