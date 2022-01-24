@@ -139,6 +139,7 @@ export default defineComponent({
 
 <style scoped>
 .card {
+	width: 100%;
 	max-width: 400px;
 	background-color: var(--background-contrast-color);
 	border: 1px solid var(--border-color);

@@ -1,7 +1,7 @@
 <template>
 	<div class="card-container" :class="{ column: slim, thin, 'pb-3': !slim }">
 		<LoadingSpinner v-if="isLoading" class="loadingCard" />
-		<template v-else>
+		<div class="grid" v-else>
 			<RecipeCard
 				v-for="recipe in recipes"
 				:key="recipe._id"
@@ -11,7 +11,7 @@
 				@see-more-info="$emit('see-more-info', $event)"
 				@select-recipe="$emit('select-recipe', $event)"
 			/>
-		</template>
+		</div>
 		<div v-if="recipes.length === 0">No recipes match this search</div>
 		<Pagination
 			v-if="!(currentPage === 1 && !nextPageExists) && !isLoading"
@@ -94,15 +94,11 @@ export default defineComponent({
 }
 
 .card-container {
-	display: flex;
-	flex-wrap: wrap;
-	row-gap: 60px;
-	column-gap: 60px;
 	flex-grow: 1;
 	padding: 1rem;
-	max-width: 1000px;
-	margin-left: auto;
-	margin-right: auto;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 .card-container.column {
 	flex-direction: column;
@@ -111,9 +107,28 @@ export default defineComponent({
 	padding: 0;
 }
 
+.grid {
+	display: grid;
+	grid-gap: 60px;
+	justify-content: center;
+	justify-items: center;
+}
+
 .loadingCard {
 	width: 400px;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
+}
+
+@media only screen and (min-width: 900px) {
+	.grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media only screen and (min-width: 1400px) {
+	.grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }
 </style>
