@@ -1,5 +1,5 @@
 <template>
-	<div class="card" :class="{ slim }" @click="openRecipeDetails">
+	<div class="card" :class="{ embedded }" @click="openRecipeDetails">
 		<!-- <div
             v-if="!recipe.images || !recipe.images.length > 0"
             class="image"
@@ -79,7 +79,7 @@ export default defineComponent({
 			type: Object as PropType<Recipe>,
 			required: true,
 		},
-		slim: Boolean,
+		embedded: Boolean,
 		showActions: Boolean,
 	},
 
@@ -148,7 +148,7 @@ export default defineComponent({
 	overflow: hidden;
 	cursor: pointer;
 }
-.card.slim {
+.card.embedded {
 	display: flex;
 	min-height: calc(2rem + 60px);
 	border: none;
@@ -164,7 +164,7 @@ export default defineComponent({
 .image-container {
 	height: 280px;
 }
-.slim .image-container {
+.embedded .image-container {
 	width: 80px;
 	height: 80px;
 	flex-shrink: 0;
@@ -173,7 +173,7 @@ export default defineComponent({
 .image {
 	height: 100%;
 }
-.slim .image {
+.embedded .image {
 	margin: 0;
 	border-radius: 0.5rem;
 }
@@ -181,7 +181,7 @@ export default defineComponent({
 	flex-wrap: wrap;
 	min-height: 160px;
 }
-.slim .content {
+.embedded .content {
 	min-height: auto;
 }
 .head {
@@ -195,7 +195,7 @@ export default defineComponent({
 	font-family: var(--title-font);
 	font-size: 24px;
 }
-.slim .title {
+.embedded .title {
 	font-size: 16px;
 }
 
@@ -206,7 +206,7 @@ export default defineComponent({
 	justify-content: flex-end;
 	align-self: flex-end;
 }
-.slim .details {
+.embedded .details {
 	margin-top: 0.5rem;
 }
 
@@ -217,7 +217,7 @@ export default defineComponent({
 	cursor: pointer;
 	margin-left: 2rem;
 }
-.slim .fav {
+.embedded .fav {
 	display: none;
 }
 .fav > i {
@@ -234,13 +234,13 @@ export default defineComponent({
 	margin-left: 0.5rem;
 	color: var(--grey-800);
 }
-.slim .details span {
+.embedded .details span {
 	font-size: 14px;
 }
 .details i {
 	color: var(--grey-600);
 }
-.slim .details i {
+.embedded .details i {
 	font-size: 16px;
 }
 .time,
@@ -250,12 +250,12 @@ export default defineComponent({
 	min-width: 130px;
 	justify-content: flex-end;
 }
-.slim .rating,
-.slim .time {
+.embedded .rating,
+.embedded .time {
 	align-items: center;
 }
-.slim .time,
-.slim .link-icon {
+.embedded .time,
+.embedded .link-icon {
 	min-width: 110px;
 	margin-left: 1rem;
 	padding-right: 1rem;

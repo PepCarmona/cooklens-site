@@ -1,12 +1,12 @@
 <template>
-	<div class="card-container" :class="{ column: slim, thin, 'pb-3': !slim }">
+	<div class="card-container" :class="{ embedded, thin, 'pb-3': !embedded }">
 		<LoadingSpinner v-if="isLoading" class="loadingCard" />
 		<div class="grid" v-else>
 			<RecipeCard
 				v-for="recipe in recipes"
 				:key="recipe._id"
 				:recipe="recipe"
-				:slim="slim"
+				:embedded="embedded"
 				:showActions="showActions"
 				@see-more-info="$emit('see-more-info', $event)"
 				@select-recipe="$emit('select-recipe', $event)"
@@ -44,7 +44,7 @@ export default defineComponent({
 			required: true,
 		},
 		thin: Boolean,
-		slim: Boolean,
+		embedded: Boolean,
 		showActions: Boolean,
 	},
 
@@ -94,14 +94,14 @@ export default defineComponent({
 }
 
 .card-container {
-	display: flex;
-	flex-grow: 1;
 	padding: 1rem;
 	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
 }
-.card-container.column {
+.card-container.embedded {
+	display: flex;
+	flex-grow: 1;
 	flex-direction: column;
 	width: fit-content;
 	flex-wrap: nowrap;

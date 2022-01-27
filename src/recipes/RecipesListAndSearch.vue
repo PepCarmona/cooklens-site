@@ -20,7 +20,7 @@
 			<RecipeList
 				:recipes="recipes"
 				@goToPage="goToPage"
-				:slim="embedded"
+				:embedded="embedded"
 				:showActions="showActions"
 				@see-more-info="$emit('see-more-info', $event)"
 				@select-recipe="$emit('select-recipe', $event)"
