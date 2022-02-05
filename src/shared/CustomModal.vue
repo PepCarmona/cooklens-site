@@ -134,6 +134,8 @@ export default defineComponent({
 .modal.full {
 	margin: 0;
 	width: 100vw;
+	max-width: 100vw;
+	height: 100vh;
 	border-radius: 0;
 	padding: 1rem;
 }
@@ -203,6 +205,9 @@ export default defineComponent({
 	}
 	.modal.top {
 		max-width: 100vw;
+	}
+	.close {
+		right: 2rem;
 	}
 }
 </style>

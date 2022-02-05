@@ -90,7 +90,7 @@
 				</div>
 			</template>
 		</PageHeader>
-		<div class="container" :class="{ thin, embedded }">
+		<div class="container" :class="{ thin: embedded, embedded }">
 			<template v-if="showRecipeForm">
 				<template v-if="newRecipe.url && !newRecipe.isIntegrated">
 					<div class="not-integrated-notice">
@@ -716,7 +716,7 @@ export default defineComponent({
 <style scoped>
 .container.embedded {
 	margin-bottom: 1rem;
-	height: calc(100vh - 109px);
+	width: 100%;
 }
 
 .header.embedded {

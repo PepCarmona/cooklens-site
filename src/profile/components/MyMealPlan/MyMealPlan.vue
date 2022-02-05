@@ -411,6 +411,7 @@ export default defineComponent({
 
 .select-meal {
 	width: 100%;
+	min-width: 300px;
 }
 .select-meal-title {
 	font-size: 24px;

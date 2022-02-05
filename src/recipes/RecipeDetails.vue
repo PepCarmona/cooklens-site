@@ -371,6 +371,7 @@ export default defineComponent({
 }
 .container.embedded {
 	height: calc(100vh - 2rem);
+	width: 90vw;
 }
 
 .brief {

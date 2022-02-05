@@ -40,6 +40,19 @@
 	color: var(--accent-color-complementary);
 }
 
+::-webkit-scrollbar {
+	width: 5px;
+	background-color: var(--grey-100);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--grey-800);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--accent-color-complementary);
+}
+
 .row {
 	display: flex;
 	flex-wrap: wrap;
