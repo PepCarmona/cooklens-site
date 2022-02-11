@@ -55,12 +55,18 @@
 	transition: all 150ms linear;
 }
 .day:hover .day-name {
-	color: var(--accent-color-transparent);
+	color: var(--accent-color-light);
 }
 .day:hover .day-number {
-	background-color: var(--accent-color-transparent);
+	background-color: var(--accent-color-light);
 	border-radius: 25px;
 	color: var(--inverted-text-color);
+}
+.day.past:hover .day-name {
+	color: var(--accent-color-transparent);
+}
+.day.past:hover .day-number {
+	background-color: var(--accent-color-transparent);
 }
 .day.selected .day-name {
 	color: var(--accent-color);
