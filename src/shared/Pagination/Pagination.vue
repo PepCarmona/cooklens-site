@@ -67,6 +67,9 @@ export default defineComponent({
 </script>
 
 <style scoped>
+button:hover {
+	background-color: transparent;
+}
 i {
 	font-size: 16px;
 }

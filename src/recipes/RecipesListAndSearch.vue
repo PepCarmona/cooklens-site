@@ -176,6 +176,9 @@ div:not(.embedded) > .search {
 	border-radius: 0.5rem;
 	justify-content: space-between;
 }
+.create-recipe:hover {
+	background-color: var(--grey-700);
+}
 .create-recipe > * {
 	color: var(--inverted-text-color);
 }

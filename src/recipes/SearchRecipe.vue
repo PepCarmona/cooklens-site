@@ -128,8 +128,10 @@ export default defineComponent({
 	border: 1px solid var(--border-color);
 	/* background: linear-gradient(45deg, #f9fffd 20%, #c8f5e6 100%); */
 }
-.back {
-	margin-left: 0.5rem;
+.back:hover {
+	background-color: transparent;
+}
+.back * {
 	color: var(--accent-color);
 }
 input {
@@ -140,9 +142,12 @@ input {
 }
 .searchButton {
 	position: absolute;
-	right: 1rem;
+	right: 0;
 	top: 50%;
 	transform: translateY(-50%);
+}
+.searchButton:hover {
+	background-color: transparent;
 }
 .searchButton > i {
 	color: var(--accent-color);

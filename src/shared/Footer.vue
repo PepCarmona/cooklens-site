@@ -3,7 +3,7 @@
 		<Button
 			@click="addRecipe"
 			v-if="showAddRecipe || showEditRecipe"
-			class="add-recipe"
+			class="add-recipe primary"
 		>
 			<i v-if="showAddRecipe" class="las la-plus"></i>
 			<i v-if="showEditRecipe" class="las la-pen"></i>
@@ -109,7 +109,6 @@ i.current {
 	bottom: calc(1rem - 1px);
 	left: 50%;
 	transform: translateX(-50%);
-	background-color: var(--accent-color);
 	box-shadow: 0px -1px 0px var(--shadow-color);
 	border-radius: 60px;
 	height: 60px;
@@ -120,14 +119,9 @@ i.current {
 	align-items: center;
 	z-index: 100;
 }
-.add-recipe:focus,
-.add-recipe:hover {
-	background-color: var(--accent-color-hover);
-}
 .add-recipe > i {
 	margin-bottom: 0.5rem;
 	padding-top: 0.5rem;
-	color: var(--inverted-text-color);
 }
 
 #mobile-sticky-footer {

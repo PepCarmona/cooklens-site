@@ -479,8 +479,14 @@ export default defineComponent({
 	width: 50px;
 	margin-bottom: 1rem;
 }
+.icons > button:hover {
+	background-color: var(--grey-200);
+}
 .embedded .icons > button {
 	background-color: var(--background-color);
+}
+.embedded .icons > button:hover {
+	background-color: var(--grey-200);
 }
 .icons.no-image > button:not(:last-child) {
 	margin-right: 1rem;
@@ -490,6 +496,9 @@ export default defineComponent({
 }
 .editButton {
 	background-color: var(--accent-color) !important;
+}
+.editButton:hover {
+	background-color: var(--accent-color-hover) !important;
 }
 .editButton > i {
 	color: var(--inverted-text-color);
@@ -525,6 +534,10 @@ export default defineComponent({
 	width: 100%;
 	color: var(--grey-800);
 	border-radius: 50px;
+}
+.tabs > button:hover {
+	background-color: var(--accent-color-transparent);
+	color: var(--inverted-text-color);
 }
 .tabs > button.selected {
 	background-color: var(--accent-color);
@@ -607,6 +620,9 @@ export default defineComponent({
 	border-radius: 0.5rem;
 	width: 70%;
 }
+.view-recipe:hover {
+	background-color: var(--accent-color-hover);
+}
 .view-recipe > * {
 	color: var(--inverted-text-color);
 }
@@ -618,7 +634,7 @@ export default defineComponent({
 	right: 1rem;
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 969px) {
 	.container:not(.thin) {
 		width: 70%;
 	}

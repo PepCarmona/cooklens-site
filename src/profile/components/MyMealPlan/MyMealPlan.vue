@@ -39,6 +39,7 @@
 				<Button
 					v-for="meal in meals"
 					:key="meal"
+					class="select-meal-button"
 					:disabled="dayPlan.meals.some((dayMeal) => dayMeal.meal === meal)"
 					@click="
 						selectedMeal = meal;
@@ -148,7 +149,7 @@
 						</div>
 					</div>
 					<div v-if="!selectedDay.isBeforeToday" class="content-meal-actions">
-						<Button @click="removeMeal(meal)">
+						<Button class="remove" @click="removeMeal(meal)">
 							<i class="las la-minus"></i>
 						</Button>
 					</div>
@@ -332,139 +333,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.my-mealplan-container {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-}
-.mealplan-header {
-	background-color: var(--background-color);
-}
-.mealplan-header > div {
-	width: 100%;
-}
-.title {
-	margin-bottom: 1rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-end;
-}
-.title > .icon {
-	min-width: 25px;
-	margin: 0 1rem;
-	padding: 0;
-}
-.month-text {
-	font-size: 20px;
-	font-weight: 200;
-	font-family: var(--title-font);
-}
-.week {
-	display: flex;
-	padding-bottom: 0.5rem;
-}
-.day {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-}
-.day > * {
-	width: 100%;
-	font-size: 14px;
-}
-.day-name {
-	margin-bottom: 0.25rem;
-}
-.day-number {
-	display: block;
-	height: 25px;
-	width: 25px;
-	margin-left: auto;
-	margin-right: auto;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.day.selected .day-number {
-	background-color: var(--accent-color);
-	border-radius: 25px;
-	color: var(--inverted-text-color);
-}
-.day.past > * {
-	color: var(--grey-600);
-}
-.content {
-	flex-grow: 1;
-}
-.content-header {
-	margin-top: 1rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: baseline;
-	padding: 0 1rem;
-}
-.content-day {
-	font-size: 24px;
-	font-weight: 600;
-	word-spacing: 5px;
-}
-
-.select-meal {
-	width: 100%;
-	min-width: 300px;
-}
-.select-meal-title {
-	font-size: 24px;
-	margin-bottom: 1rem;
-}
-.select-meal > button:not(.closeModal) {
-	width: 100%;
-	padding: 1rem;
-	justify-content: flex-start;
-	background-color: var(--background-color);
-	border-radius: 0.5rem;
-	position: relative;
-}
-.select-meal > button:not(:last-child) {
-	margin-bottom: 1rem;
-}
-.select-meal > button > span {
-	margin-left: 3rem;
-	font-size: 18px;
-}
-.select-meal .meal-icon {
-	position: absolute;
-	left: 1rem;
-}
-.select-meal .advance-icon {
-	position: absolute;
-	right: 1rem;
-}
-
-.select-recipe {
-	width: 100%;
-	height: calc(100vh - 5rem);
-	overflow: auto;
-}
-.content-body {
-	margin-top: 1rem;
-}
-.content-meal {
-	padding: 1rem;
-	border-bottom: 1px solid var(--shadow-color);
-	text-align: left;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-.content-meal-title {
-	color: var(--accent-color);
-	margin-bottom: 0.4rem;
-}
-.select-meal > button > .meal-icon {
-	color: var(--accent-color);
-}
-button:disabled {
-	opacity: 0.4;
-}
+@import url('./MealPlan.css');
 </style>

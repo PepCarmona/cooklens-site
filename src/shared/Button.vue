@@ -47,7 +47,7 @@ button {
 	padding: 1rem;
 	border-radius: 0.5rem;
 	cursor: pointer;
-	transition: all 0.2s ease-in-out;
+	transition: all 200ms linear;
 }
 button.primary:disabled {
 	background-color: var(--accent-color-light) !important;
@@ -67,9 +67,9 @@ button.secondary-light {
 button.primary,
 button.secondary,
 button.secondary-light,
-button.primary > *,
-button.secondary > *,
-button.secondary-light > * {
+button.primary *,
+button.secondary *,
+button.secondary-light * {
 	color: var(--inverted-text-color);
 }
 

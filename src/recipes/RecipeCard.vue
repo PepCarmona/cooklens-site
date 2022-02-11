@@ -156,6 +156,11 @@ export default defineComponent({
 	margin: 0;
 	border-bottom: 1px solid var(--shadow-color);
 	max-width: none;
+	transition: all 200ms linear;
+}
+.card.embedded:hover {
+	background-color: var(--grey-100);
+	border-radius: 10px;
 }
 .card.pointer {
 	cursor: pointer;
@@ -291,6 +296,9 @@ export default defineComponent({
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+.actions > button:hover {
+	background-color: var(--grey-200);
 }
 .actions i {
 	font-size: 28px;

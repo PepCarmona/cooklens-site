@@ -170,12 +170,13 @@ header {
 	padding: 1rem;
 	padding-left: 0;
 	text-align: left;
+	transition: all 200ms linear;
 }
-.slide-menu .items > * {
+.slide-menu .items > *:not(.router-link-active):hover {
+	color: var(--grey-600);
+}
+.slide-menu .items > *:not(:last-child) {
 	border-bottom: 1px solid var(--accent-color-transparent);
-}
-.slide-menu .items > *:last-child {
-	border: 0;
 }
 
 @media only screen and (min-width: 767px) {

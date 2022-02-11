@@ -172,7 +172,7 @@
 								</div>
 							</template>
 							<div v-else class="add-images">
-								<Button> Add images </Button>
+								<Button class="primary"> Add images </Button>
 							</div>
 						</div>
 
@@ -216,7 +216,7 @@
 								</div>
 							</div>
 							<div class="ml-05">
-								<Button class="add" @click="addTag">
+								<Button class="add primary" @click="addTag">
 									<i class="las la-plus-circle"></i>
 								</Button>
 							</div>
@@ -289,7 +289,7 @@
 								</div>
 							</div>
 
-							<Button class="add" @click="addIngredient">
+							<Button class="add primary" @click="addIngredient">
 								<i class="las la-plus"></i>
 							</Button>
 						</div>
@@ -321,7 +321,7 @@
 									</div>
 								</div>
 							</div>
-							<Button class="add" @click="addStep">
+							<Button class="add primary" @click="addStep">
 								<i class="las la-plus"></i>
 							</Button>
 						</div>
@@ -787,7 +787,6 @@ button.cancel {
 	margin-right: 0;
 	margin-top: 1rem;
 	bottom: calc(1rem + 55px);
-	background-color: var(--accent-color);
 	height: 50px;
 	width: 50px;
 	border-radius: 50px;
@@ -897,7 +896,12 @@ button.cancel {
 	padding: 0.5rem 1rem;
 	margin: 0.5rem;
 	width: 100%;
+	border-radius: 50px;
 	color: var(--grey-800);
+}
+.tabs > button:hover {
+	background-color: var(--accent-color-transparent);
+	color: var(--inverted-text-color);
 }
 .tabs > button:first-child {
 	margin-right: 0;
@@ -907,7 +911,6 @@ button.cancel {
 }
 .tabs > button.selected {
 	background-color: var(--accent-color);
-	border-radius: 50px;
 	color: var(--inverted-text-color);
 }
 
@@ -930,10 +933,6 @@ button.cancel {
 	border-radius: 0.5rem;
 	padding: 1rem;
 	margin-left: auto;
-}
-.add-images > button {
-	background-color: var(--accent-color);
-	color: var(--inverted-text-color);
 }
 .edit-images > button {
 	background-color: var(--background-contrast-color);
