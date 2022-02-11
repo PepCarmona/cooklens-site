@@ -70,7 +70,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 button:focus,
 button:hover {
 	background-color: transparent;
@@ -82,6 +82,7 @@ textarea {
 	width: 100%;
 	min-height: 100px;
 }
+
 .rating-container {
 	height: fit-content;
 	width: fit-content;
@@ -89,10 +90,11 @@ textarea {
 .rating {
 	display: flex;
 	justify-content: center;
+	& i {
+		font-size: 32px;
+	}
 }
-.rating i {
-	font-size: 32px;
-}
+
 .lar.la-star {
 	color: var(--accent-color-transparent);
 }

@@ -136,6 +136,6 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-@import '~@/auth/style/authentication.css';
+<style lang="scss" scoped>
+@import '~@/auth/style/authentication.scss';
 </style>

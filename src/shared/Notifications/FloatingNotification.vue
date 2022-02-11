@@ -30,7 +30,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .floating-notification {
 	flex-direction: row !important;
 	position: absolute;
@@ -40,54 +40,53 @@ export default defineComponent({
 	border-radius: 0.5rem;
 	padding: 1rem;
 	z-index: 999;
-}
-.floating-notification.error {
-	background-color: var(--light-error-color);
-	box-shadow: 0 0 5px 0px var(--shadow-color);
-}
-.floating-notification.error * {
-	color: var(--error-color);
-}
+	&.error {
+		background-color: var(--light-error-color);
+		box-shadow: 0 0 5px 0px var(--shadow-color);
+		& * {
+			color: var(--error-color);
+		}
+	}
 
-.floating-notification.warning {
-	background-color: var(--light-warning-color);
-	box-shadow: 0 0 3px 0 var(--warning-color);
-}
-.floating-notification.warning * {
-	color: var(--warning-color);
-}
+	&.warning {
+		background-color: var(--light-warning-color);
+		box-shadow: 0 0 3px 0 var(--warning-color);
+		& * {
+			color: var(--warning-color);
+		}
+	}
 
-.floating-notification.success {
-	background-color: var(--light-success-color);
-	box-shadow: 0 0 3px 0 var(--success-color);
-}
-.floating-notification.success * {
-	color: var(--success-color);
-}
+	&.success {
+		background-color: var(--light-success-color);
+		box-shadow: 0 0 3px 0 var(--success-color);
+		& * {
+			color: var(--success-color);
+		}
+	}
 
-.floating-notification.dark {
-	background-color: var(--accent-color-complementary);
-	box-shadow: 0 0 3px 0 var(--background-contrast-color);
-}
-.floating-notification.dark * {
-	color: var(--background-contrast-color);
-}
+	&.dark {
+		background-color: var(--accent-color-complementary);
+		box-shadow: 0 0 3px 0 var(--background-contrast-color);
+		& * {
+			color: var(--background-contrast-color);
+		}
+	}
 
-.floating-notification.light {
-	background-color: var(--background-contrast-color);
-	box-shadow: 0 0 3px 0 var(--accent-color-complementary);
-}
-.floating-notification.light * {
-	color: var(--accent-color-complementary);
+	&.light {
+		background-color: var(--background-contrast-color);
+		box-shadow: 0 0 3px 0 var(--accent-color-complementary);
+		& * {
+			color: var(--accent-color-complementary);
+		}
+	}
 }
 
 .close {
 	margin-left: auto;
+	& > i {
+		font-size: 20px;
+	}
 }
-.close > i {
-	font-size: 20px;
-}
-
 .fade-enter-active {
 	transition: all 0.4s;
 }

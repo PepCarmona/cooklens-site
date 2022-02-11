@@ -49,7 +49,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .my-fav-recipes-container {
 	background-color: var(--background-color);
 }

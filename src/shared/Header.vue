@@ -88,7 +88,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 header {
 	position: relative;
 	display: flex;
@@ -107,24 +107,21 @@ header {
 	width: 100%;
 	padding-bottom: 4px;
 	margin-left: -4rem;
-}
-#title > a {
-	text-decoration: none;
-	font-size: 24px;
-	font-family: var(--title-font);
-	font-weight: 200;
+	& > a {
+		text-decoration: none;
+		font-size: 24px;
+		font-family: var(--title-font);
+		font-weight: 200;
+	}
 }
 
 .menu {
 	margin-left: 1rem;
 	flex-shrink: 0;
 	z-index: 9;
-}
-.slide-menu a.router-link-exact-active {
-	color: var(--accent-color);
-}
-.menu > span {
-	cursor: pointer;
+	& > span {
+		cursor: pointer;
+	}
 }
 .menu-title {
 	display: block;
@@ -159,24 +156,27 @@ header {
 	height: fit-content;
 	padding-bottom: 3rem;
 	width: 100%;
-}
-.slide-menu .items {
-	display: flex;
-	flex-wrap: wrap;
-	width: 100%;
-}
-.slide-menu .items > * {
-	width: 100%;
-	padding: 1rem;
-	padding-left: 0;
-	text-align: left;
-	transition: all 200ms linear;
-}
-.slide-menu .items > *:not(.router-link-exact-active):hover {
-	color: var(--grey-600);
-}
-.slide-menu .items > *:not(:last-child) {
-	border-bottom: 1px solid var(--accent-color-transparent);
+	& a.router-link-exact-active {
+		color: var(--accent-color);
+	}
+	& .items {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		& > * {
+			width: 100%;
+			padding: 1rem;
+			padding-left: 0;
+			text-align: left;
+			transition: all 200ms linear;
+			&:not(.router-link-exact-active):hover {
+				color: var(--grey-600);
+			}
+			&:not(:last-child) {
+				border-bottom: 1px solid var(--accent-color-transparent);
+			}
+		}
+	}
 }
 
 @media only screen and (min-width: 767px) {
@@ -188,9 +188,9 @@ header {
 		position: relative;
 		padding-bottom: 6px;
 		margin-left: 0;
-	}
-	#title > a {
-		font-size: 28px;
+		& > a {
+			font-size: 28px;
+		}
 	}
 
 	.menu {
@@ -210,14 +210,14 @@ header {
 	}
 	.slide-menu {
 		padding-bottom: 1rem;
-	}
-	.slide-menu .items {
-		margin-left: 2rem;
-		flex-direction: column;
-	}
-	.slide-menu .items > * {
-		padding: 1rem;
-		font-size: 18px;
+		& .items {
+			margin-left: 2rem;
+			flex-direction: column;
+			& > * {
+				padding: 1rem;
+				font-size: 18px;
+			}
+		}
 	}
 }
 </style>

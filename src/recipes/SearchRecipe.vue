@@ -120,7 +120,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .searchRow {
 	position: relative;
 	background-color: var(--background-contrast-color);
@@ -128,30 +128,34 @@ export default defineComponent({
 	border: 1px solid var(--border-color);
 	/* background: linear-gradient(45deg, #f9fffd 20%, #c8f5e6 100%); */
 }
-.back:hover {
-	background-color: transparent;
+.back {
+	&:hover {
+		background-color: transparent;
+	}
+	& * {
+		color: var(--accent-color);
+	}
 }
-.back * {
-	color: var(--accent-color);
-}
+
 input {
 	background-color: transparent;
 	padding: 1rem;
 	border: none;
 	outline: none;
 }
+
 .searchButton {
 	position: absolute;
 	right: 0;
 	top: 50%;
 	transform: translateY(-50%);
-}
-.searchButton:hover {
-	background-color: transparent;
-}
-.searchButton > i {
-	color: var(--accent-color);
-	font-size: 24px;
+	&:hover {
+		background-color: transparent;
+	}
+	& > i {
+		color: var(--accent-color);
+		font-size: 24px;
+	}
 }
 
 .switchSearch {
@@ -159,15 +163,15 @@ input {
 	width: fit-content;
 	justify-content: space-between;
 	margin-top: 0.5rem;
-}
-.switchSearch > button {
-	text-decoration: underline;
-	font-size: 14px;
-	color: var(--grey-800);
-}
-.switchSearch > button:first-child {
-	margin-right: 2rem;
-	margin-left: 1rem;
+	& > button {
+		text-decoration: underline;
+		font-size: 14px;
+		color: var(--grey-800);
+		&:first-child {
+			margin-right: 2rem;
+			margin-left: 1rem;
+		}
+	}
 }
 
 @media only screen and (min-width: 768px) {

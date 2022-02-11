@@ -57,7 +57,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .my-recipes-container {
 	background-color: var(--background-color);
 }
@@ -66,15 +66,15 @@ export default defineComponent({
 	width: 100%;
 	align-items: center;
 	justify-content: center;
-}
-.createRecipe > a {
-	margin: 0 0.5rem;
-}
-.createRecipe button {
-	padding: 0.5rem 1rem;
-	border: 1px solid var(--main-color);
-}
-.createRecipe button > *:last-child {
-	margin-left: 0.5rem;
+	& > a {
+		margin: 0 0.5rem;
+	}
+	& button {
+		padding: 0.5rem 1rem;
+		border: 1px solid var(--main-color);
+		& > *:last-child {
+			margin-left: 0.5rem;
+		}
+	}
 }
 </style>

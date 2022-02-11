@@ -12,7 +12,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 i {
 	height: 24px;
 	width: 24px;

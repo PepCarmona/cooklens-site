@@ -362,16 +362,40 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.container > * {
-	width: 100%;
-}
-.container * {
-	text-align: left;
-}
-.container.embedded {
-	height: calc(100vh - 2rem);
-	width: 90vw;
+<style lang="scss" scoped>
+.container {
+	& > * {
+		width: 100%;
+	}
+	& * {
+		text-align: left;
+	}
+	&.embedded {
+		height: calc(100vh - 2rem);
+		width: 90vw;
+		& .brief {
+			background-color: var(--background-color);
+		}
+		& .back {
+			position: sticky;
+			background-color: var(--background-color);
+			&.no-image {
+				margin-top: 1rem;
+			}
+		}
+		& .icons > button {
+			background-color: var(--background-color);
+			&:hover {
+				background-color: var(--grey-200);
+			}
+		}
+		& .rating {
+			min-height: 6rem;
+		}
+		& .main-info {
+			background-color: var(--background-color);
+		}
+	}
 }
 
 .brief {
@@ -382,13 +406,11 @@ export default defineComponent({
 	margin: 0 1rem;
 	margin-top: -50px;
 	z-index: 9;
+	&.no-image {
+		margin-top: 5rem;
+	}
 }
-.embedded .brief {
-	background-color: var(--background-color);
-}
-.brief.no-image {
-	margin-top: 5rem;
-}
+
 .title,
 .author,
 .imported-url {
@@ -404,6 +426,7 @@ export default defineComponent({
 	font-size: 24px;
 	margin: 0;
 }
+
 .basic-info {
 	display: flex;
 	justify-content: space-between;
@@ -411,19 +434,20 @@ export default defineComponent({
 	padding: 1rem;
 	padding-bottom: 0.5rem;
 	margin-top: 2rem;
+	& > div {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	& i {
+		color: var(--accent-color);
+	}
+	& span {
+		width: 100%;
+		text-align: center;
+	}
 }
-.basic-info > div {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-}
-.basic-info i {
-	color: var(--accent-color);
-}
-.basic-info span {
-	width: 100%;
-	text-align: center;
-}
+
 .vertical-separator {
 	border-left: 1px solid var(--shadow-color);
 }
@@ -431,17 +455,13 @@ export default defineComponent({
 .gallery-and-icons {
 	position: relative;
 }
-.embedded .back {
-	position: sticky;
-}
-.embedded .back.no-image {
-	margin-top: 1rem;
-}
+
 .image {
 	width: 100%;
 	height: 400px;
 	margin-top: -50px;
 }
+
 .back {
 	position: absolute;
 	left: 1rem;
@@ -453,55 +473,49 @@ export default defineComponent({
 	border-radius: 50px;
 	height: 50px;
 	width: 50px;
-}
-.back:focus,
-.back:hover {
-	background-color: var(--background-contrast-color);
+	&:focus {
+		background-color: var(--background-contrast-color);
+	}
+	&:hover {
+		background-color: var(--background-contrast-color);
+	}
 }
 
-.embedded .back {
-	background-color: var(--background-color);
-}
 .icons {
 	position: absolute;
 	display: flex;
 	flex-direction: column;
 	right: 1rem;
 	top: 1rem;
+	&.no-image {
+		flex-direction: row;
+		& > button:not(:last-child) {
+			margin-right: 1rem;
+		}
+	}
+	& > button {
+		background-color: var(--background-contrast-color);
+		border-radius: 50px;
+		height: 50px;
+		width: 50px;
+		margin-bottom: 1rem;
+		&:hover {
+			background-color: var(--grey-200);
+		}
+	}
+	& i {
+		color: var(--accent-color);
+	}
 }
-.icons.no-image {
-	flex-direction: row;
-}
-.icons > button {
-	background-color: var(--background-contrast-color);
-	border-radius: 50px;
-	height: 50px;
-	width: 50px;
-	margin-bottom: 1rem;
-}
-.icons > button:hover {
-	background-color: var(--grey-200);
-}
-.embedded .icons > button {
-	background-color: var(--background-color);
-}
-.embedded .icons > button:hover {
-	background-color: var(--grey-200);
-}
-.icons.no-image > button:not(:last-child) {
-	margin-right: 1rem;
-}
-.icons i {
-	color: var(--accent-color);
-}
+
 .editButton {
 	background-color: var(--accent-color) !important;
-}
-.editButton:hover {
-	background-color: var(--accent-color-hover) !important;
-}
-.editButton > i {
-	color: var(--inverted-text-color);
+	&:hover {
+		background-color: var(--accent-color-hover) !important;
+	}
+	& > i {
+		color: var(--inverted-text-color);
+	}
 }
 
 .rating-container {
@@ -510,53 +524,50 @@ export default defineComponent({
 .rating {
 	min-height: 4rem;
 }
-.embedded .rating {
-	min-height: 6rem;
-}
 
 .main-info {
 	background-color: var(--background-contrast-color);
 	padding: 1rem;
 	padding-bottom: 2rem;
 	flex-grow: 1;
-}
-.embedded .main-info {
-	background-color: var(--background-color);
+	& > .content {
+		padding: 1rem 0;
+	}
 }
 
 .tabs {
 	padding: 0.5rem;
 	display: flex;
 	justify-content: space-between;
-}
-.tabs > button {
-	padding: 0.5rem 1rem;
-	width: 100%;
-	color: var(--grey-800);
-	border-radius: 50px;
-}
-.tabs > button:hover {
-	background-color: var(--accent-color-transparent);
-	color: var(--inverted-text-color);
-}
-.tabs > button.selected {
-	background-color: var(--accent-color);
-	border-radius: 50px;
-	color: var(--inverted-text-color);
-}
-
-.main-info > .content {
-	padding: 1rem 0;
+	& > button {
+		padding: 0.5rem 1rem;
+		width: 100%;
+		color: var(--grey-800);
+		border-radius: 50px;
+		&:hover {
+			background-color: var(--accent-color-transparent);
+			color: var(--inverted-text-color);
+		}
+		&.selected {
+			background-color: var(--accent-color);
+			border-radius: 50px;
+			color: var(--inverted-text-color);
+		}
+	}
 }
 
 .modifyServingsInput {
 	width: 100px;
 }
+
 .ingredients-list > li {
 	display: flex;
 	align-items: center;
 	padding: 0.5rem 0;
 	margin-bottom: 5px;
+	&:last-child {
+		margin-bottom: 0;
+	}
 }
 .bullet {
 	height: 12px;
@@ -571,32 +582,33 @@ export default defineComponent({
 	display: flex;
 	padding: 0.5rem 0;
 	margin-bottom: 5px;
+	&:first-child > .stepHead::after {
+		height: calc(50% + 0.3rem);
+		top: calc(50% + 6px);
+	}
+	&:last-child {
+		margin-bottom: 0;
+		& > .stepHead::after {
+			height: calc(50% + 0.3rem);
+			bottom: calc(50% + 6px);
+		}
+	}
 }
-.steps-list > li:last-child,
-.ingredients-list > li:last-child {
-	margin-bottom: 0;
-}
+
 .stepHead {
 	position: relative;
 	display: flex;
 	align-items: center;
+	&::after {
+		content: '';
+		position: absolute;
+		display: block;
+		height: calc(100% + 1rem + 5px);
+		border-left: 2px solid var(--accent-color-transparent);
+		left: 10px;
+	}
 }
-.stepHead::after {
-	content: '';
-	position: absolute;
-	display: block;
-	height: calc(100% + 1rem + 5px);
-	border-left: 2px solid var(--accent-color-transparent);
-	left: 10px;
-}
-.steps-list > li:first-child > .stepHead::after {
-	height: calc(50% + 0.3rem);
-	top: calc(50% + 6px);
-}
-.steps-list > li:last-child > .stepHead::after {
-	height: calc(50% + 0.3rem);
-	bottom: calc(50% + 6px);
-}
+
 .stepContent {
 	width: fit-content;
 }
@@ -619,39 +631,39 @@ export default defineComponent({
 	margin: 0 auto;
 	border-radius: 0.5rem;
 	width: 70%;
-}
-.view-recipe:hover {
-	background-color: var(--accent-color-hover);
-}
-.view-recipe > * {
-	color: var(--inverted-text-color);
-}
-.view-recipe > span {
-	font-size: 18px;
-}
-.view-recipe > i {
-	position: absolute;
-	right: 1rem;
+	&:hover {
+		background-color: var(--accent-color-hover);
+	}
+	& > * {
+		color: var(--inverted-text-color);
+	}
+	& > span {
+		font-size: 18px;
+	}
+	& > i {
+		position: absolute;
+		right: 1rem;
+	}
 }
 
 @media only screen and (min-width: 969px) {
 	.container:not(.thin) {
 		width: 70%;
-	}
-	.container:not(.thin) > * {
-		width: 70%;
+		& > * {
+			width: 70%;
+		}
 	}
 	.brief {
 		width: 600px;
 		margin-left: auto;
 		margin-right: auto;
 		min-height: 200px;
-	}
-	.brief.no-image {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		margin-top: 1rem;
+		&.no-image {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			margin-top: 1rem;
+		}
 	}
 
 	.icons.no-image {

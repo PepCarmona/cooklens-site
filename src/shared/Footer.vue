@@ -97,7 +97,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 footer {
 	z-index: 10;
 }
@@ -118,11 +118,11 @@ i.current {
 	justify-content: center;
 	align-items: center;
 	z-index: 100;
-}
-.add-recipe > i {
-	margin-bottom: 0.5rem;
-	padding-top: 0.5rem;
-	color: var(--inverted-text-color);
+	& > i {
+		margin-bottom: 0.5rem;
+		padding-top: 0.5rem;
+		color: var(--inverted-text-color);
+	}
 }
 
 #mobile-sticky-footer {
@@ -136,17 +136,17 @@ i.current {
 	background-color: var(--background-contrast-color);
 	box-shadow: 0px -1px 0px var(--shadow-color);
 	z-index: 99;
-}
-#mobile-sticky-footer > div {
-	display: flex;
-	flex-wrap: wrap;
-	height: 100%;
-	width: 25%;
-	align-items: center;
-	justify-content: center;
-}
-#mobile-sticky-footer > div > * {
-	width: 100%;
+	& > div {
+		display: flex;
+		flex-wrap: wrap;
+		height: 100%;
+		width: 25%;
+		align-items: center;
+		justify-content: center;
+		& > * {
+			width: 100%;
+		}
+	}
 }
 
 @media only screen and (min-width: 769px) {

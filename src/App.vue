@@ -69,16 +69,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-@import './assets/global.css';
-body,
-html {
-	margin: 0;
-	padding: 0;
-}
-body * {
-	box-sizing: border-box;
-}
+<style lang="scss">
+@import './assets/global.scss';
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
@@ -90,25 +82,26 @@ body * {
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 55px;
+	&.invertedBG {
+		background-color: var(--background-color);
+	}
+	&.no-footer {
+		padding-bottom: 0;
+	}
+	& > main {
+		position: relative;
+		display: flex;
+		flex-grow: 1;
+		& > div {
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+			height: auto;
+			width: 100%;
+		}
+	}
 }
-#app.invertedBG {
-	background-color: var(--background-color);
-}
-#app.no-footer {
-	padding-bottom: 0;
-}
-#app > main {
-	position: relative;
-	display: flex;
-	flex-grow: 1;
-}
-#app > main > div {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	height: auto;
-	width: 100%;
-}
+
 @media only screen and (min-width: 769px) {
 	#app {
 		padding-bottom: 0;

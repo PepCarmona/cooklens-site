@@ -79,7 +79,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .seeAll {
 	background-color: var(--accent-color-complementary);
 	color: var(--inverted-text-color);
@@ -98,14 +98,14 @@ export default defineComponent({
 	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
-}
-.card-container.embedded {
-	display: flex;
-	flex-grow: 1;
-	flex-direction: column;
-	width: fit-content;
-	flex-wrap: nowrap;
-	padding: 0;
+	&.embedded {
+		display: flex;
+		flex-grow: 1;
+		flex-direction: column;
+		width: fit-content;
+		flex-wrap: nowrap;
+		padding: 0;
+	}
 }
 
 .grid {

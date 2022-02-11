@@ -218,14 +218,22 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .input-wrapper {
 	position: relative;
 	overflow: hidden;
 	height: fit-content;
 }
-.input-container.slim {
-	height: 25px;
+
+.input-container {
+	&.inner {
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+	}
+	&.slim {
+		height: 25px;
+	}
 }
 input {
 	position: relative;
@@ -242,18 +250,19 @@ input {
 	border-bottom: 1px solid var(--shadow-color);
 
 	-moz-appearance: textfield;
+	&.slim {
+		padding-top: 0;
+	}
+	&.hide-value {
+		color: transparent;
+	}
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
 }
-input.slim {
-	padding-top: 0;
-}
-input.hide-value {
-	color: transparent;
-}
+
 input:focus + label,
 input.valid + label {
 	font-size: 12px;
@@ -289,13 +298,13 @@ label {
 .showArrows {
 	display: flex;
 	align-items: flex-end;
-}
-.showArrows i {
-	color: var(--accent-color);
-	font-size: 20px;
-}
-.showArrows input {
-	text-align: center;
+	& i {
+		color: var(--accent-color);
+		font-size: 20px;
+	}
+	& input {
+		text-align: center;
+	}
 }
 
 .arrow {
@@ -303,15 +312,9 @@ label {
 	flex-shrink: 0;
 	width: 25%;
 	padding-bottom: 3px;
-}
-.arrow.disabled {
-	opacity: 0.3;
-	pointer-events: none;
-}
-
-.input-container.inner {
-	width: 100%;
-	align-items: center;
-	justify-content: center;
+	&.disabled {
+		opacity: 0.3;
+		pointer-events: none;
+	}
 }
 </style>

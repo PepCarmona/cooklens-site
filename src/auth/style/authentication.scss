@@ -27,12 +27,12 @@
 	margin-top: -1rem;
 	border-top-left-radius: 1rem;
 	border-top-right-radius: 1rem;
-}
-.form > .title {
-	display: block;
-	font-family: var(--title-font);
-	font-size: 40px;
-	margin-top: 2.5rem;
+	& > .title {
+		display: block;
+		font-family: var(--title-font);
+		font-size: 40px;
+		margin-top: 2.5rem;
+	}
 }
 .auth-container {
 	width: 100%;
@@ -40,43 +40,45 @@
 	flex-wrap: wrap;
 	margin-top: 2rem;
 	padding: 1rem;
-}
-.auth-container > * {
-	width: 100%;
-	margin-top: 2rem;
-}
-.auth-container > *:first-child {
-	margin-top: 0;
-}
+	& > * {
+		width: 100%;
+		margin-top: 2rem;
+		&:first-child {
+			margin-top: 0;
+		}
+	}
 
-.auth-container button.action {
-	font-size: 18px;
-}
+	& button.action {
+		font-size: 18px;
+	}
 
-.auth-container .errors {
-	margin-top: 1rem;
-	text-align: left;
-	font-size: 0.8rem;
-	padding: 0.2rem 0;
-	color: var(--error-color);
+	& .errors {
+		margin-top: 1rem;
+		text-align: left;
+		font-size: 0.8rem;
+		padding: 0.2rem 0;
+		color: var(--error-color);
+	}
 }
 
 .alternative {
 	padding-right: 1rem;
 	text-align: right;
 	margin-bottom: 1rem;
+	& > span {
+		font-size: 13px;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	& .toggle-login {
+		font-size: 14px;
+		color: var(--accent-color);
+		cursor: pointer;
+	}
 }
-.alternative > span {
-	font-size: 13px;
-}
-.alternative .toggle-login {
-	font-size: 14px;
-	color: var(--accent-color);
-	cursor: pointer;
-}
-.alternative > span:hover {
-	text-decoration: underline;
-}
+
 .verify-mail {
 	font-size: 18px;
 }

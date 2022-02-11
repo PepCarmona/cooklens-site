@@ -70,7 +70,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .modal-container {
 	display: flex;
 	position: fixed;
@@ -105,42 +105,42 @@ export default defineComponent({
 	border-radius: 1rem;
 	background-color: var(--background-contrast-color);
 	z-index: 1000;
-}
-.modal.center {
-	max-height: calc(100% - 2rem);
-}
-.modal.transparent {
-	border: none;
-	background-color: transparent;
-}
-.modal.thin {
-	padding: 1rem;
-}
-.modal.top {
-	width: 100%;
-	margin-top: 0;
-	border-top-left-radius: 0;
-	border-top-right-radius: 0;
-}
-.modal.left {
-	height: 100vh;
-	width: fit-content;
-	max-width: 40%;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-	margin-left: 0;
-	align-items: flex-start;
-}
-.modal.full {
-	margin: 0;
-	width: 100vw;
-	max-width: 100vw;
-	height: 100vh;
-	border-radius: 0;
-	padding: 1rem;
-}
-.modal.noPadding {
-	padding: 0;
+	&.center {
+		max-height: calc(100% - 2rem);
+	}
+	&.transparent {
+		border: none;
+		background-color: transparent;
+	}
+	&.thin {
+		padding: 1rem;
+	}
+	&.top {
+		width: 100%;
+		margin-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+	&.left {
+		height: 100vh;
+		width: fit-content;
+		max-width: 40%;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		margin-left: 0;
+		align-items: flex-start;
+	}
+	&.full {
+		margin: 0;
+		width: 100vw;
+		max-width: 100vw;
+		height: 100vh;
+		border-radius: 0;
+		padding: 1rem;
+	}
+	&.noPadding {
+		padding: 0;
+	}
 }
 
 .master-enter-active,
@@ -202,9 +202,9 @@ export default defineComponent({
 	.modal {
 		width: fit-content;
 		max-width: 90vw;
-	}
-	.modal.top {
-		max-width: 100vw;
+		&.top {
+			max-width: 100vw;
+		}
 	}
 	.close {
 		right: 2rem;

@@ -152,19 +152,20 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .embedded {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	& > .search {
+		margin-bottom: 1.5rem;
+	}
 }
+
 div:not(.embedded) > .search {
 	padding: 1rem;
 	padding-top: calc(2rem + 50px);
 	margin-top: -50px;
-}
-.embedded > .search {
-	margin-bottom: 1.5rem;
 }
 
 .create-recipe {
@@ -175,12 +176,12 @@ div:not(.embedded) > .search {
 	display: flex;
 	border-radius: 0.5rem;
 	justify-content: space-between;
-}
-.create-recipe:hover {
-	background-color: var(--grey-700);
-}
-.create-recipe > * {
-	color: var(--inverted-text-color);
+	&:hover {
+		background-color: var(--grey-700);
+	}
+	& > * {
+		color: var(--inverted-text-color);
+	}
 }
 
 @media only screen and (min-width: 769px) {

@@ -137,7 +137,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .card {
 	width: 100%;
 	max-width: 400px;
@@ -148,48 +148,91 @@ export default defineComponent({
 	overflow: hidden;
 	cursor: pointer;
 	display: flex;
-}
-.card.embedded {
-	display: flex;
-	min-height: calc(2rem + 60px);
-	border: none;
-	border-radius: 0;
-	margin: 0;
-	border-bottom: 1px solid var(--shadow-color);
-	max-width: none;
-	transition: all 200ms linear;
-}
-.card.embedded:hover {
-	background-color: var(--grey-100);
-	border-radius: 10px;
-}
-.card.pointer {
-	cursor: pointer;
+	flex-direction: column;
+	&.embedded {
+		display: flex;
+		min-height: calc(2rem + 60px);
+		border: none;
+		border-radius: 0;
+		margin: 0;
+		border-bottom: 1px solid var(--shadow-color);
+		max-width: none;
+		flex-direction: row;
+		transition: all 200ms linear;
+		&:hover {
+			background-color: var(--grey-100);
+			border-radius: 10px;
+		}
+
+		& .image-container {
+			width: 80px;
+			height: 80px;
+			flex-shrink: 0;
+			align-self: center;
+		}
+
+		& .image {
+			margin: 0;
+			border-radius: 0.5rem;
+		}
+
+		& .content {
+			min-height: auto;
+		}
+
+		& .title {
+			font-size: 16px;
+		}
+
+		& .details {
+			margin-top: 0.5rem;
+			& span {
+				font-size: 14px;
+			}
+			& i {
+				font-size: 16px;
+			}
+		}
+
+		& .fav {
+			display: none;
+		}
+
+		& .time {
+			align-items: center;
+			min-width: 110px;
+			margin-left: 1rem;
+			padding-right: 1rem;
+		}
+
+		& .rating {
+			align-items: center;
+		}
+
+		& .link-icon {
+			min-width: 110px;
+			margin-left: 1rem;
+			padding-right: 1rem;
+		}
+	}
+
+	&.pointer {
+		cursor: pointer;
+	}
 }
 
 .image-container {
-	width: 100%;
-}
-.embedded .image-container {
-	width: 80px;
-	height: 80px;
-	flex-shrink: 0;
-	align-self: center;
+	height: 280px;
 }
 .image {
 	height: 100%;
 }
-.embedded .image {
-	margin: 0;
-	border-radius: 0.5rem;
-}
+
 .content {
 	flex-wrap: wrap;
 	min-height: 160px;
 }
-.embedded .content {
-	min-height: auto;
-}
+
 .head {
 	display: flex;
 	width: 100%;
@@ -201,9 +244,6 @@ export default defineComponent({
 	font-family: var(--title-font);
 	font-size: 24px;
 }
-.embedded .title {
-	font-size: 16px;
-}
 
 .details {
 	display: flex;
@@ -211,9 +251,14 @@ export default defineComponent({
 	margin-top: 1rem;
 	justify-content: flex-end;
 	align-self: flex-end;
-}
-.embedded .details {
-	margin-top: 0.5rem;
+	& span {
+		font-size: 18px;
+		margin-left: 0.5rem;
+		color: var(--grey-800);
+	}
+	& i {
+		color: var(--grey-600);
+	}
 }
 
 .fav {
@@ -222,49 +267,23 @@ export default defineComponent({
 	justify-content: flex-end;
 	cursor: pointer;
 	margin-left: 2rem;
-}
-.embedded .fav {
-	display: none;
-}
-.fav > i {
-	font-size: 32px;
-	color: var(--accent-color);
+	& > i {
+		font-size: 32px;
+		color: var(--accent-color);
+	}
 }
 
 .rating {
 	display: flex;
 	cursor: pointer;
 }
-.details span {
-	font-size: 18px;
-	margin-left: 0.5rem;
-	color: var(--grey-800);
-}
-.embedded .details span {
-	font-size: 14px;
-}
-.details i {
-	color: var(--grey-600);
-}
-.embedded .details i {
-	font-size: 16px;
-}
+
 .time,
 .link-icon {
 	display: flex;
 	margin-left: 2rem;
 	min-width: 130px;
 	justify-content: flex-end;
-}
-.embedded .rating,
-.embedded .time {
-	align-items: center;
-}
-.embedded .time,
-.embedded .link-icon {
-	min-width: 110px;
-	margin-left: 1rem;
-	padding-right: 1rem;
 }
 
 .pill {
@@ -282,26 +301,37 @@ export default defineComponent({
 .mealPlanButtons {
 	display: flex;
 	margin-top: 1rem;
+	& > * {
+		width: 50%;
+		padding: 0.5rem;
+		background-color: var(--secondary-light-color);
+		&:hover {
+			background-color: var(--secondary-color);
+		}
+	}
 }
-.mealPlanButtons > * {
-	width: 50%;
-	padding: 0.5rem;
-	background-color: var(--secondary-light-color);
-}
-.mealPlanButtons > *:hover {
-	background-color: var(--secondary-color);
-}
+
 .actions {
 	padding: 1rem 0;
 	height: 91px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	& > button:hover {
+		background-color: var(--grey-200);
+	}
+	& i {
+		font-size: 28px;
+	}
 }
-.actions > button:hover {
-	background-color: var(--grey-200);
-}
-.actions i {
-	font-size: 28px;
+
+@media only screen and (min-width: 769px) {
+	.card {
+		flex-direction: row;
+	}
+	.image-container {
+		height: auto;
+		width: 100%;
+	}
 }
 </style>

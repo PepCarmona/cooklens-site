@@ -36,7 +36,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 button {
 	display: flex;
 	align-items: center;
@@ -48,14 +48,26 @@ button {
 	border-radius: 0.5rem;
 	cursor: pointer;
 	transition: all 200ms linear;
-}
-button.primary:disabled {
-	background-color: var(--accent-color-light) !important;
-	cursor: progress;
+	&:focus {
+		background-color: var(--grey-100);
+	}
+	&:hover {
+		background-color: var(--grey-100);
+	}
 }
 
 button.primary {
 	background-color: var(--accent-color);
+	&:disabled {
+		background-color: var(--accent-color-light) !important;
+		cursor: progress;
+	}
+	&:focus {
+		background-color: var(--accent-color-hover);
+	}
+	&:hover {
+		background-color: var(--accent-color-hover);
+	}
 }
 button.secondary {
 	background-color: var(--accent-color-complementary);
@@ -71,15 +83,5 @@ button.primary *,
 button.secondary *,
 button.secondary-light * {
 	color: var(--inverted-text-color);
-}
-
-button:focus,
-button:hover {
-	background-color: var(--grey-100);
-}
-
-button.primary:focus,
-button.primary:hover {
-	background-color: var(--accent-color-hover);
 }
 </style>

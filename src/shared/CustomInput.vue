@@ -200,7 +200,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .input-wrapper {
 	position: relative;
 	overflow: hidden;
@@ -220,17 +220,23 @@ textarea {
 	padding: 24px 2px 6px 2px;
 	background-color: transparent;
 	border-bottom: 1px solid var(--shadow-color);
+	&.slim {
+		padding-top: 0;
+	}
 }
 textarea {
 	padding-bottom: 4px;
 	line-height: 1.4;
 	overflow: hidden;
 	resize: none;
+	& + label {
+		bottom: calc(0.5rem + 6px);
+		& + .focusedBorder {
+			bottom: 5px;
+		}
+	}
 }
-input.slim,
-textarea.slim {
-	padding-top: 0;
-}
+
 input:focus + label,
 input.valid + label,
 textarea:focus + label,
@@ -257,9 +263,7 @@ label {
 	transition: all 0.2s ease;
 	z-index: 0;
 }
-textarea + label {
-	bottom: calc(0.5rem + 6px);
-}
+
 .focusedBorder {
 	position: absolute;
 	width: 0;
@@ -267,9 +271,6 @@ textarea + label {
 	left: 50%;
 	border-bottom: 2px solid var(--accent-color);
 	transition: all 0.2s ease;
-}
-textarea + label + .focusedBorder {
-	bottom: 5px;
 }
 
 .hidePlaceholder::placeholder {

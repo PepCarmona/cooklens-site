@@ -42,6 +42,15 @@
 	color: var(--accent-color-complementary);
 }
 
+body,
+html {
+	margin: 0;
+	padding: 0;
+}
+body * {
+	box-sizing: border-box;
+}
+
 ::-webkit-scrollbar {
 	width: 5px;
 	background-color: var(--grey-100);
@@ -442,10 +451,10 @@
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-}
-.container.thin {
-	width: 100%;
-	margin: 0;
+	&.thin {
+		width: 100%;
+		margin: 0;
+	}
 }
 
 button.closeModal {
@@ -457,11 +466,14 @@ button.closeModal {
 	text-align: center;
 	color: var(--accent-color);
 	border-top: 1px solid var(--border-color) !important;
-}
-button.closeModal:focus,
-button.closeModal:hover {
-	background-color: transparent !important;
-	color: var(--accent-color-light);
+	&:focus {
+		background-color: transparent !important;
+		color: var(--accent-color-light);
+	}
+	&:hover {
+		background-color: transparent !important;
+		color: var(--accent-color-light);
+	}
 }
 
 ul {

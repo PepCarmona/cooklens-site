@@ -332,6 +332,6 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-@import url('./MealPlan.css');
+<style lang="scss" scoped>
+@import './MealPlan.scss';
 </style>

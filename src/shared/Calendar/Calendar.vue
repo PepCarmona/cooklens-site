@@ -73,23 +73,23 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .calendar {
 	width: 100%;
 }
 .calendar-month {
 	width: 100%;
-}
-.calendar-month:not(:first-child) {
-	margin-top: 2rem;
+	&:not(:first-child) {
+		margin-top: 2rem;
+	}
 }
 .calendar-month-title {
 	background-color: var(--accent-color-complementary);
 	padding: 0.25rem;
 	border-radius: 0.5rem;
-}
-.calendar-month-title > * {
-	color: white;
+	& > * {
+		color: white;
+	}
 }
 .month-name {
 	font-size: 18px;
@@ -105,9 +105,9 @@ export default defineComponent({
 	justify-content: space-between;
 	padding: 0.5rem;
 	color: var(--grey-600);
-}
-.calendar-weekdays > * {
-	width: calc(100% / 7);
+	& > * {
+		width: calc(100% / 7);
+	}
 }
 .calendar-week {
 	display: flex;
@@ -115,24 +115,24 @@ export default defineComponent({
 }
 .calendar-day {
 	width: calc(100% / 7);
-}
-.calendar-day > * {
-	display: block;
-	height: 25px;
-	width: 25px;
-	margin-left: auto;
-	margin-right: auto;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 14px;
-}
-.calendar-day > *.selected {
-	background-color: var(--accent-color);
-	border-radius: 25px;
-	color: var(--inverted-text-color);
-}
-.calendar-day > *.past:not(.selected) {
-	color: var(--grey-600);
+	& > * {
+		display: block;
+		height: 25px;
+		width: 25px;
+		margin-left: auto;
+		margin-right: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 14px;
+		&.selected {
+			background-color: var(--accent-color);
+			border-radius: 25px;
+			color: var(--inverted-text-color);
+			&.past:not(.selected) {
+				color: var(--grey-600);
+			}
+		}
+	}
 }
 </style>

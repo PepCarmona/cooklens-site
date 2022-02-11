@@ -87,7 +87,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .user-info-container {
 	margin: 0 1rem;
 }
@@ -123,38 +123,39 @@ export default defineComponent({
 	padding: 1rem 0;
 	border-top: 1px solid var(--border-color);
 	border-bottom: 1px solid var(--border-color);
-}
-.links button {
-	flex-wrap: wrap;
-	margin: auto;
-}
-.links i {
-	display: block;
-	width: 100%;
-	margin-bottom: 1rem;
-	font-size: 28px;
-}
-.links span {
-	display: block;
-	font-size: 14px;
-	color: var(--grey-800);
+	& button {
+		flex-wrap: wrap;
+		margin: auto;
+	}
+	& i {
+		display: block;
+		width: 100%;
+		margin-bottom: 1rem;
+		font-size: 28px;
+	}
+	& span {
+		display: block;
+		font-size: 14px;
+		color: var(--grey-800);
+	}
 }
 
 .more-info {
 	text-align: left;
 	margin-top: 4rem;
+	& .title {
+		display: block;
+		margin: 20px 0;
+		font-size: 20px;
+		font-family: var(--title-font);
+	}
+	& > button {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+	}
 }
-.more-info .title {
-	display: block;
-	margin: 20px 0;
-	font-size: 20px;
-	font-family: var(--title-font);
-}
-.more-info > button {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-}
+
 .la-arrow-right {
 	font-size: 16px;
 }

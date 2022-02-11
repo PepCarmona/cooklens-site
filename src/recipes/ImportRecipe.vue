@@ -79,7 +79,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 input {
 	background-color: var(--grey-100);
 	color: var(--grey-800);
@@ -90,13 +90,14 @@ input {
 	outline: none;
 	width: 100%;
 	transition: all 0.2s ease;
+	&:focus {
+		border: 2px solid var(--accent-color-transparent);
+		&::placeholder {
+			opacity: 0;
+		}
+	}
 }
-input:focus {
-	border: 2px solid var(--accent-color-transparent);
-}
-input:focus::placeholder {
-	opacity: 0;
-}
+
 button {
 	margin-top: 1.5rem;
 	margin-bottom: 2rem;

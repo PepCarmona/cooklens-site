@@ -38,7 +38,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .header {
 	position: relative;
 	display: flex;
@@ -50,31 +50,36 @@ export default defineComponent({
 	padding-bottom: 0;
 	border-bottom: 1px solid var(--shadow-color);
 	background-color: var(--background-contrast-color);
+	& > div {
+		width: 100%;
+		display: flex;
+		align-items: flex-end;
+		&:first-child {
+			padding-bottom: 1rem;
+		}
+	}
 }
-.header > div {
-	width: 100%;
-	display: flex;
-	align-items: flex-end;
-}
-.header > div:first-child {
-	padding-bottom: 1rem;
-}
+
 .back {
 	min-width: 28px;
+	& > i {
+		font-size: 20px;
+	}
+	& > * {
+		cursor: pointer;
+	}
 }
-.back > i {
-	font-size: 20px;
-}
-.back,
-.actions > * {
-	cursor: pointer;
-}
+
 .actions {
 	display: flex;
 	width: fit-content;
 	right: 1rem;
 	min-width: 28px;
+	& > * {
+		cursor: pointer;
+	}
 }
+
 .title {
 	font-family: var(--title-font);
 	font-size: 20px;

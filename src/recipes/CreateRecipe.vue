@@ -659,7 +659,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container.embedded {
 	margin-bottom: 1rem;
 	width: 100%;
@@ -684,29 +684,36 @@ export default defineComponent({
 	font-size: 0.8rem;
 }
 
-button.import.active {
+.import.active {
 	background-color: var(--secondary-color);
 }
-button.close {
+
+.close {
 	display: flex;
 	align-items: flex-start;
 	justify-content: left;
 	height: 100%;
 	margin-left: 0.5rem;
 	padding: 0;
+	&:focus {
+		background-color: transparent;
+		& > i {
+			color: var(--error-color);
+		}
+	}
+	&:hover {
+		background-color: transparent;
+		& > i {
+			color: var(--error-color);
+		}
+	}
+
+	&.tag > i {
+		color: white;
+	}
 }
-button.close:hover,
-button.close:focus {
-	background-color: transparent;
-}
-button.close.tag > i {
-	color: white;
-}
-button.close:hover > i,
-button.close:focus > i {
-	color: var(--error-color);
-}
-button.cancel {
+
+.cancel {
 	background-color: var(--secondary-color);
 	color: var(--main-dark-color);
 	border: 1px solid var(--main-dark-color);
@@ -721,11 +728,6 @@ button.cancel {
 	margin-top: 1rem;
 }
 
-/* .ingredients,
-.steps {
-    padding-bottom: 50px;
-} */
-
 .ingredients .add,
 .steps .add {
 	position: sticky;
@@ -736,73 +738,55 @@ button.cancel {
 	height: 50px;
 	width: 50px;
 	border-radius: 50px;
+	& > i {
+		color: white;
+	}
 }
-.ingredients .add > i,
-.steps .add > i {
-	color: white;
-}
-
 .ingredient,
 .step {
 	flex-wrap: nowrap;
 	border-radius: 1rem;
 	padding: 0.5rem;
 	transition: all 0.4s;
+	&.highlighting {
+		background-color: var(--accent-color-transparent);
+		transition: all 0s;
+	}
 }
 .ingredient {
 	align-items: flex-end;
 }
-.ingredient.highlighting,
-.step.highlighting {
-	background-color: var(--accent-color-transparent);
-	transition: all 0s;
-}
 .ingredient-query {
 	flex-grow: 1;
 }
+
 .delete-ingredient,
 .delete-step {
 	width: fit-content !important;
 }
-
 .delete-ingredient {
 	padding-bottom: 5px;
 }
+
 .toggleAdvancedForm {
 	margin-left: auto;
 	margin-right: 10%;
 	cursor: pointer;
+	& > span {
+		color: var(--grey-600);
+		text-decoration: underline;
+		font-size: 13px;
+	}
 }
-.toggleAdvancedForm > span {
-	color: var(--grey-600);
-	text-decoration: underline;
-	font-size: 13px;
-}
+
 .handle {
 	padding-right: 1rem;
 	padding-bottom: 5px;
+	& > .grab {
+		font-size: 16px;
+		cursor: grab;
+	}
 }
-.handle > .grab {
-	font-size: 16px;
-	cursor: grab;
-}
-
-/* .step > .handle::after {
-    content: '';
-    position: absolute;
-    display: block;
-    height: calc(100% + 1rem + 5px);
-    border-left: 2px solid var(--accent-color-transparent);
-    left: 10px;
-}
-.step:first-child > .handle::after {
-    height: calc(50% + 0.3rem);
-    top: calc(50% + 6px);
-}
-.step:last-child > .handle::after {
-    height: calc(50% + 0.3rem);
-    bottom: calc(50% + 6px);
-} */
 
 .step > textarea {
 	width: 100%;
@@ -832,32 +816,33 @@ button.cancel {
 	color: var(--error-color);
 	margin-left: 0.5rem;
 }
+
 .tabs {
 	width: 100%;
 	padding: 0 0.5rem;
 	display: flex;
 	justify-content: space-between;
-}
-.tabs > button {
-	padding: 0.5rem 1rem;
-	margin: 0.5rem;
-	width: 100%;
-	border-radius: 50px;
-	color: var(--grey-800);
-}
-.tabs > button:hover {
-	background-color: var(--accent-color-transparent);
-	color: var(--inverted-text-color);
-}
-.tabs > button:first-child {
-	margin-right: 0;
-}
-.tabs > button:last-child {
-	margin-left: 0;
-}
-.tabs > button.selected {
-	background-color: var(--accent-color);
-	color: var(--inverted-text-color);
+	& > button {
+		padding: 0.5rem 1rem;
+		margin: 0.5rem;
+		width: 100%;
+		border-radius: 50px;
+		color: var(--grey-800);
+		&:hover {
+			background-color: var(--accent-color-transparent);
+			color: var(--inverted-text-color);
+		}
+		&:first-child {
+			margin-right: 0;
+		}
+		&:last-child {
+			margin-left: 0;
+		}
+		&.selected {
+			background-color: var(--accent-color);
+			color: var(--inverted-text-color);
+		}
+	}
 }
 
 .add-images,
@@ -869,39 +854,34 @@ button.cancel {
 	padding: 1rem;
 	margin-top: 1rem;
 	text-align: left;
+	& > button {
+		box-shadow: 0 0 10px 15px var(--shadow-color);
+		border-radius: 0.5rem;
+		padding: 1rem;
+		margin-left: auto;
+	}
 }
 .edit-images {
 	height: 220px;
-}
-.add-images > button,
-.edit-images > button {
-	box-shadow: 0 0 10px 15px var(--shadow-color);
-	border-radius: 0.5rem;
-	padding: 1rem;
-	margin-left: auto;
-}
-.edit-images > button {
-	background-color: var(--background-contrast-color);
-	color: var(--accent-color);
-}
-
-.info > i {
-	color: var(--accent-color);
+	& > button {
+		background-color: var(--background-contrast-color);
+		color: var(--accent-color);
+	}
 }
 
 .import-wrapper {
 	text-align: left;
 	width: 100%;
-}
-.import-wrapper > .title {
-	font-family: var(--title-font);
-	font-size: 20px;
-	margin-top: 1.5rem;
-}
-.import-wrapper > .subtitle {
-	font-size: 14px;
-	color: var(--grey-800);
-	margin-top: 0.25rem;
+	& > .title {
+		font-family: var(--title-font);
+		font-size: 20px;
+		margin-top: 1.5rem;
+	}
+	& > .subtitle {
+		font-size: 14px;
+		color: var(--grey-800);
+		margin-top: 0.25rem;
+	}
 }
 
 .openRecipeForm {
@@ -912,86 +892,21 @@ button.cancel {
 	color: var(--accent-color);
 	cursor: pointer;
 }
-.integratedSites {
-	text-align: left;
-}
-.integratedSites > .title {
-	display: block;
-	font-size: 20px;
-	font-weight: 500;
-	margin-bottom: 1rem;
-}
-.integratedSites > span {
-	font-size: 13px;
-}
-.integratedSites > ul {
-	max-height: 500px;
-	overflow: hidden;
-	transition: all 0.4s;
-	margin-bottom: 0.5rem;
-}
-.integratedSites > ul.hidden {
-	max-height: 0;
-}
-.integratedSites li * {
-	font-size: 14px;
-	text-decoration: underline;
-	padding-left: 0.5rem;
-}
-.integratedSites li {
-	position: relative;
-}
-.integratedSites li::before {
-	content: '-';
-	position: absolute;
-	left: 0;
-}
-.integratedSites > .manualImportAdvert {
-	color: var(--grey-800);
-}
-.integratedSites > .request {
-	margin-top: 1rem;
-	font-size: 13px;
-	color: var(--accent-color);
-	text-decoration: underline;
-}
-.showIntegratedSites {
-	align-items: flex-end;
-}
-.showIntegratedSites > i {
-	font-size: 14px;
-	margin-bottom: 0.25rem;
-	margin-left: 0.25rem;
-	transition: all 0.2s ease;
-}
-.showIntegratedSites > i.rotate {
-	transform: rotate(90deg);
-}
-
-.not-integrated-notice {
-	background-color: var(--light-warning-color);
-	color: var(--warning-color);
-	border-radius: 0.5rem;
-	padding: 0.5rem 1rem;
-	text-align: justify;
-	margin: 1rem 0;
-	box-shadow: 0 1px 0 1px #c59e0254;
-}
 
 .save-link {
 	padding: 1rem 2rem;
 	margin: 2rem auto;
-}
-.save-link > i {
-	margin-right: 1rem;
-	font-size: 20px;
+	& > i {
+		margin-right: 1rem;
+		font-size: 20px;
+	}
 }
 
 .actions > button {
 	padding: 0;
-}
-.actions > button:hover {
-	background-color: transparent;
+	&:hover {
+		background-color: transparent;
+	}
 }
 
 @media only screen and (max-width: 768px) {
@@ -1001,27 +916,35 @@ button.cancel {
 }
 
 @media only screen and (min-width: 769px) {
-	.container:not(.thin) .numberInputs {
-		width: 40% !important;
-		padding-right: 1rem;
-		height: fit-content;
+	h3 {
+		font-size: 1.5rem;
 	}
+
+	.container:not(.thin) {
+		& .numberInputs {
+			width: 40% !important;
+			padding-right: 1rem;
+			height: fit-content;
+		}
+		& .ingredients {
+			width: calc(60% - 1rem) !important;
+			height: fit-content;
+			background-color: var(--secondary-color);
+			margin-left: 1rem;
+		}
+	}
+
 	.numberInputs .row {
 		height: fit-content;
 	}
+
 	.recipeTime {
 		margin-top: 0 !important;
-	}
-	.recipeTime > .row:first-child {
-		margin-top: 0 !important;
+		& > .row:first-child {
+			margin-top: 0 !important;
+		}
 	}
 
-	.container:not(.thin) .ingredients {
-		width: calc(60% - 1rem) !important;
-		height: fit-content;
-		background-color: var(--secondary-color);
-		margin-left: 1rem;
-	}
 	.ingredients .row {
 		height: fit-content;
 	}
@@ -1036,17 +959,13 @@ button.cancel {
 		padding: 0.5rem;
 	}
 
-	h3 {
-		font-size: 1.5rem;
-	}
-
 	.tabs {
 		padding-left: 10%;
 		padding-right: 10%;
-	}
-	.tabs > button {
-		margin-left: 4rem;
-		margin-right: 4rem;
+		& > button {
+			margin-left: 4rem;
+			margin-right: 4rem;
+		}
 	}
 
 	.import-wrapper {

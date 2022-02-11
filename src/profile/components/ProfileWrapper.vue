@@ -29,17 +29,17 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .links {
 	margin-top: 1rem;
 	justify-content: center;
-}
-.links > button {
-	padding: 0.5rem 1rem;
-	margin: 0 0.5rem;
-	border: 1px solid var(--main-color);
-}
-.links > button > *:last-child {
-	margin-left: 0.5rem;
+	& > button {
+		padding: 0.5rem 1rem;
+		margin: 0 0.5rem;
+		border: 1px solid var(--main-color);
+		& > *:last-child {
+			margin-left: 0.5rem;
+		}
+	}
 }
 </style>
