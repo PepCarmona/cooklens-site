@@ -22,12 +22,6 @@ const routes: Array<RouteRecordRaw> = [
 		meta: { invertedBG: true, showAddRecipe: true },
 	},
 	{
-		path: '/about',
-		name: 'About',
-		component: () =>
-			import(/* webpackChunkName: "about" */ '../views/About.vue'),
-	},
-	{
 		path: '/recipe/:title',
 		name: 'RecipeDetails',
 		component: () =>

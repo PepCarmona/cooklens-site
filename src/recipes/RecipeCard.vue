@@ -147,6 +147,7 @@ export default defineComponent({
 	height: fit-content;
 	overflow: hidden;
 	cursor: pointer;
+	display: flex;
 }
 .card.embedded {
 	display: flex;
@@ -167,7 +168,7 @@ export default defineComponent({
 }
 
 .image-container {
-	height: 280px;
+	width: 100%;
 }
 .embedded .image-container {
 	width: 80px;

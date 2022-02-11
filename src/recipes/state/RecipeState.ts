@@ -7,7 +7,6 @@ import useAuthenticationState from '@/auth/state/AuthenticationState';
 
 import {
 	UserInfo,
-	IntegratedSite,
 	Recipe,
 	RecipeClass,
 	SearchQuery,
@@ -26,8 +25,6 @@ const canModifyServings = ref(false);
 const modifiedServings = ref<number | null>(null);
 const recipes = ref<Recipe[]>([]);
 const searchQuery = reactive<SearchQuery>({ type: 'title', text: '' });
-
-const integratedSites = ref<IntegratedSite[]>([]);
 
 function isFavoriteRecipe(recipe: Recipe): boolean {
 	if (!authenticatedUser.value || !authenticatedUser.value.favRecipes) {
@@ -74,7 +71,7 @@ function setSearch(type: SearchType, text: string) {
 	searchQuery.text = text;
 }
 
-function searchRecipes(page = 1, limit = 5) {
+function searchRecipes(page = 1, limit = 10) {
 	isLoading.value = true;
 
 	return recipeService
@@ -144,15 +141,6 @@ function deleteRecipe(recipe: Recipe) {
 		.finally(() => (isLoading.value = false));
 }
 
-function getIntegratedSites() {
-	isLoading.value = true;
-
-	return recipeService
-		.getIntegratedSites()
-		.then((sites) => (integratedSites.value = sites))
-		.finally(() => (isLoading.value = false));
-}
-
 function getMainImageUrl(recipe: Recipe | undefined): string {
 	return recipe && recipe.images && recipe.images?.length > 0
 		? recipe.images[0]
@@ -169,8 +157,6 @@ export default function useRecipeState() {
 		recipes: computed(() => recipes.value),
 		searchQuery: computed(() => searchQuery),
 
-		integratedSites: computed(() => integratedSites.value),
-
 		isFavoriteRecipe,
 		addRecipe,
 		editRecipe,
@@ -181,7 +167,6 @@ export default function useRecipeState() {
 		getRecipe,
 		getRandomRecipe,
 		deleteRecipe,
-		getIntegratedSites,
 		getMainImageUrl,
 	};
 }

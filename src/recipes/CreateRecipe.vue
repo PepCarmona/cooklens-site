@@ -1,43 +1,5 @@
 <template>
 	<div>
-		<CustomModal :showIf="showInfoModal" @close="showInfoModal = false">
-			<div class="integratedSites">
-				<span class="title">Integration system</span>
-
-				<Button
-					class="showIntegratedSites"
-					@click="showIntegratedSites = !showIntegratedSites"
-				>
-					<span>Check our integrated sites</span>
-					<i
-						class="las la-angle-right"
-						:class="{ rotate: !showIntegratedSites }"
-					></i>
-				</Button>
-
-				<ul :class="{ hidden: showIntegratedSites }">
-					<li v-for="site in integratedSites" :key="site.url">
-						<a
-							:href="`https://${site.url}`"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{{ site.name }}
-						</a>
-					</li>
-				</ul>
-
-				<span class="manualImportAdvert">
-					Recipes can still be imported from not integrated sites.
-				</span>
-
-				<Button class="request">
-					Request our team to integrate a new site
-				</Button>
-
-				<Button class="closeModal" @click="showInfoModal = false">Ok</Button>
-			</div>
-		</CustomModal>
 		<PageHeader @go-back="handleGoBack" :class="{ embedded }">
 			<template v-slot:title>Add Recipe</template>
 			<template v-slot:actions>
@@ -47,13 +9,6 @@
 					@click="saveRecipe"
 				>
 					Save
-				</Button>
-				<Button
-					v-else-if="!showRecipeForm"
-					class="info"
-					@click="showInfoModal = true"
-				>
-					<i class="las la-info-circle"></i>
 				</Button>
 				<Button
 					v-if="isEditting"
@@ -369,7 +324,6 @@ import { useRoute, useRouter } from 'vue-router';
 import CustomNumberInput from '@/shared/CustomNumberInput.vue';
 import CustomInput from '@/shared/CustomInput.vue';
 import ImportRecipe from '@/recipes/ImportRecipe.vue';
-import CustomModal from '@/shared/CustomModal.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 
 import useRecipeState from '@/recipes/state/RecipeState';
@@ -398,7 +352,6 @@ export default defineComponent({
 		CustomNumberInput,
 		ImportRecipe,
 		CustomInput,
-		CustomModal,
 		PageHeader,
 	},
 
@@ -411,8 +364,6 @@ export default defineComponent({
 		const {
 			recipe,
 			getRecipe,
-			getIntegratedSites,
-			integratedSites,
 			addRecipe,
 			editRecipe,
 			deleteRecipe: deleteRecipeState,
@@ -434,7 +385,6 @@ export default defineComponent({
 		const showRecipeForm = ref(false);
 		const showAdvancedIngredientsForm = ref(false);
 		const showTab = ref<Tab>('introduction');
-		const showInfoModal = ref(false);
 		const showIntegratedSites = ref(false);
 
 		const textAreaRefs = ref<InstanceType<typeof CustomInput>[]>([]);
@@ -455,10 +405,8 @@ export default defineComponent({
 			showRecipeForm,
 			showAdvancedIngredientsForm,
 			showTab,
-			showInfoModal,
 			lastInputWrapper,
 			lastInput,
-			integratedSites,
 			showIntegratedSites,
 		};
 
@@ -469,8 +417,6 @@ export default defineComponent({
 				}
 				Object.assign(newRecipe, recipe.value);
 				showRecipeForm.value = true;
-			} else {
-				getIntegratedSites();
 			}
 		});
 

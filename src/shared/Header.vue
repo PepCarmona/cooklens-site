@@ -16,14 +16,14 @@
 				<router-link @click="showMenu = false" to="/recipes"
 					>Recipes</router-link
 				>
-				<router-link @click="showMenu = false" to="/about">About</router-link>
-				<router-link
-					@click="showMenu = false"
-					v-if="!!authenticatedUser"
-					to="/profile"
-				>
-					My Profile
-				</router-link>
+				<template v-if="!!authenticatedUser">
+					<router-link @click="showMenu = false" to="/profile">
+						My Profile
+					</router-link>
+					<router-link @click="showMenu = false" to="/profile/myMealPlan">
+						My Meal Plan
+					</router-link>
+				</template>
 				<router-link v-else @click="showMenu = false" to="/auth"
 					>Login</router-link
 				>
@@ -172,7 +172,7 @@ header {
 	text-align: left;
 	transition: all 200ms linear;
 }
-.slide-menu .items > *:not(.router-link-active):hover {
+.slide-menu .items > *:not(.router-link-exact-active):hover {
 	color: var(--grey-600);
 }
 .slide-menu .items > *:not(:last-child) {

@@ -122,6 +122,7 @@ i.current {
 .add-recipe > i {
 	margin-bottom: 0.5rem;
 	padding-top: 0.5rem;
+	color: var(--inverted-text-color);
 }
 
 #mobile-sticky-footer {

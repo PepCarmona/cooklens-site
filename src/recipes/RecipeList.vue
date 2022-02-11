@@ -113,6 +113,7 @@ export default defineComponent({
 	grid-gap: 60px;
 	justify-content: center;
 	justify-items: center;
+	align-items: center;
 }
 
 .loadingCard {
