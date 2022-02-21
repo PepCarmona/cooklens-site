@@ -1,6 +1,6 @@
 import { computed, reactive, readonly, ref } from 'vue';
 
-import { RecipesEndpoint } from '@/api/endpoints/recipe';
+import { RecipesEndpoint } from '@/recipes/RecipesEndpoint';
 
 import usePaginationState from '@/shared/Pagination/PaginationState';
 import useAuthenticationState from '@/auth/state/AuthenticationState';

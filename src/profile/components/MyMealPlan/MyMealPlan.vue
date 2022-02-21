@@ -212,13 +212,13 @@ export default defineComponent({
 			() => import('@/shared/Calendar/Calendar.vue')
 		),
 		RecipesListAndSearch: defineAsyncComponent(
-			() => import('@/recipes/RecipesListAndSearch.vue')
+			() => import('@/recipes/components/RecipesListAndSearch.vue')
 		),
 		RecipeDetails: defineAsyncComponent(
-			() => import('@/recipes/RecipeDetails.vue')
+			() => import('@/recipes/components/RecipeDetails.vue')
 		),
 		CreateRecipe: defineAsyncComponent(
-			() => import('@/recipes/CreateRecipe.vue')
+			() => import('@/recipes/components/CreateRecipe.vue')
 		),
 	},
 

@@ -164,7 +164,7 @@ import Rating from '@/shared/Rating.vue';
 
 import { Ingredient, Recipe } from 'cooklens-types';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 import useUserState from '@/profile/state/UserState';
 
 import { isMobile } from '@/helpers/media';

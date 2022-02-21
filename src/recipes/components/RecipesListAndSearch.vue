@@ -33,11 +33,11 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import SearchRecipe from '@/recipes/SearchRecipe.vue';
-import RecipeList from '@/recipes/RecipeList.vue';
+import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
+import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 import { SearchType, SearchQuery } from 'cooklens-types';
 
 export default defineComponent({

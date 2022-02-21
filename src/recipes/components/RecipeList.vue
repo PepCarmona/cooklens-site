@@ -26,12 +26,12 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 
-import RecipeCard from '@/recipes/RecipeCard.vue';
+import RecipeCard from '@/recipes/components/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import usePaginationState from '@/shared/Pagination/PaginationState';
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 

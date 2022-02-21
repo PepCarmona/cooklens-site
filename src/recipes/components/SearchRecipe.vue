@@ -44,7 +44,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 
 import { SearchType } from 'cooklens-types';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';

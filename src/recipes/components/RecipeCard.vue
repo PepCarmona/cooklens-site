@@ -67,7 +67,7 @@ import { useRouter } from 'vue-router';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 import useUserState from '@/profile/state/UserState';
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 

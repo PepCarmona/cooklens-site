@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 

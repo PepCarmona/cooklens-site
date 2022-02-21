@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 
 import { UserEndpoint } from '@/api/endpoints/user';
-import { RecipesEndpoint } from '@/api/endpoints/recipe';
+import { RecipesEndpoint } from '@/recipes/RecipesEndpoint';
 
 import useAuthenticationState from '@/auth/state/AuthenticationState';
 import usePaginationState from '@/shared/Pagination/PaginationState';

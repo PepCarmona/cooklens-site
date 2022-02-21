@@ -1,4 +1,4 @@
-import { Endpoint } from '.';
+import { Endpoint } from '../api/endpoints';
 import { URI } from '@/api/config';
 import {
 	IntegratedSite,

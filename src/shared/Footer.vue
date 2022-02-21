@@ -50,7 +50,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import useRecipeState from '@/recipes/RecipeState';
 
 export default defineComponent({
 	name: 'Footer',
