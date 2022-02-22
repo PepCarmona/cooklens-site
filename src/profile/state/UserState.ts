@@ -20,13 +20,13 @@ const favRecipes = ref<Recipe[]>([]);
 const myRecipes = ref<Recipe[]>([]);
 
 function toggleFavRecipe(recipe: Recipe) {
-	if (user.value?.favRecipes?.includes(recipe._id!)) {
-		const index = user.value.favRecipes.indexOf(recipe._id!);
-		user.value.favRecipes.splice(index, 1);
+	if (user?.favRecipes?.includes(recipe._id!)) {
+		const index = user.favRecipes.indexOf(recipe._id!);
+		// user.favRecipes.splice(index, 1);
 		return userService.removeFavRecipe(recipe);
 	}
 
-	user.value?.favRecipes?.push(recipe._id!);
+	// user?.favRecipes?.push(recipe._id!);
 	return userService.addFavRecipe(recipe);
 }
 
@@ -49,7 +49,7 @@ function getMyRecipes(page = 1, limit = 10) {
 	isLoading.value = true;
 
 	return recipeService
-		.getRecipesByUser(user.value!._id!, page, limit)
+		.getRecipesByUser(user!._id!, page, limit)
 		.then((paginatedRecipes) => {
 			goToPage(page);
 

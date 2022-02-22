@@ -4,7 +4,7 @@ import {
 	IntegratedSite,
 	PaginatedRecipes,
 	Recipe,
-	SearchType,
+	SearchQuery,
 } from 'cooklens-types';
 
 interface RecipesEndpointInterface {
@@ -12,10 +12,9 @@ interface RecipesEndpointInterface {
 	editRecipe(recipe: Recipe): Promise<Recipe>;
 	importRecipe(importURL: string): Promise<Recipe>;
 	searchRecipes(
+		searchQuery: SearchQuery,
 		page: number,
-		limit: number,
-		searchType?: SearchType,
-		searchText?: string
+		limit: number
 	): Promise<PaginatedRecipes>;
 	getRecipe(id: string): Promise<Recipe>;
 	getRandomRecipe(): Promise<Recipe>;
@@ -46,18 +45,15 @@ export class RecipesEndpoint
 	}
 
 	public searchRecipes(
+		searchQuery: SearchQuery,
 		page: number,
-		limit: number,
-		searchType?: SearchType,
-		searchText?: string
+		limit: number
 	): Promise<PaginatedRecipes> {
 		const url = new URL(URI.recipes.get);
 		url.searchParams.append('page', page.toString());
 		url.searchParams.append('limit', limit.toString());
-		if (searchType && searchText) {
-			url.searchParams.append('searchType', searchType);
-			url.searchParams.append('searchText', searchText);
-		}
+		url.searchParams.append('searchType', searchQuery.type);
+		url.searchParams.append('searchText', searchQuery.text);
 
 		return this.get(url.toString());
 	}
