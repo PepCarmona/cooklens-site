@@ -1,4 +1,4 @@
-import { computed, readonly, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { MealPlantEndpoint } from '@/api/endpoints/mealPlan';
 
@@ -138,13 +138,13 @@ export default function createMealPlanState() {
 	}
 
 	return {
-		selectedDay: readonly(selectedDay),
-		mealPlan: readonly(mealPlan),
-		dayPlan: readonly(dayPlan),
-		isAddingMeal: readonly(isAddingMeal),
-		isAddingRecipeToMeal: readonly(isAddingRecipeToMeal),
+		selectedDay,
+		mealPlan,
+		dayPlan,
+		isAddingMeal,
+		isAddingRecipeToMeal,
 		isAddingNewRecipeToMeal,
-		areAllMealsAdded: readonly(areAllMealsAdded),
+		areAllMealsAdded,
 
 		getCalendarBoundaries,
 		getMealPlan,

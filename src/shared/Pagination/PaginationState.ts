@@ -1,4 +1,4 @@
-import { readonly, ref } from 'vue';
+import { ref } from 'vue';
 
 export default function createPaginationState() {
 	const currentPage = ref(1);
@@ -21,8 +21,8 @@ export default function createPaginationState() {
 	}
 
 	return {
-		currentPage: readonly(currentPage),
-		nextPageExists: readonly(nextPageExists),
+		currentPage,
+		nextPageExists,
 
 		goToPreviousPage,
 		goToNextPage,

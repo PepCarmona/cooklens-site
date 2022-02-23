@@ -1,4 +1,4 @@
-import { readonly, ref, computed } from 'vue';
+import { ref } from 'vue';
 
 import { AuthEndpoint } from '@/api/endpoints/auth';
 
@@ -81,9 +81,9 @@ export default function createAuthenticationState() {
 	}
 
 	return {
-		isLoading: readonly(isLoading),
-		authenticatedUser: computed(() => authenticatedUser.value),
-		token: readonly(token),
+		isLoading,
+		authenticatedUser,
+		token,
 
 		register,
 		logIn,

@@ -1,4 +1,4 @@
-import { computed, reactive, readonly, ref } from 'vue';
+import { ref } from 'vue';
 
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
@@ -25,7 +25,7 @@ export default function createRecipeState() {
 	const canModifyServings = ref(false);
 	const modifiedServings = ref<number | null>(null);
 	const recipes = ref<Recipe[]>([]);
-	const searchQuery = reactive<SearchQuery>({ type: 'title', text: '' });
+	const searchQuery = ref<SearchQuery>({ type: 'title', text: '' });
 
 	function isFavoriteRecipe(recipe: Recipe): boolean {
 		if (!authenticatedUser.value || !authenticatedUser.value.favRecipes) {
@@ -68,15 +68,20 @@ export default function createRecipeState() {
 	}
 
 	function setSearch(type: SearchType, text: string) {
-		searchQuery.type = type;
-		searchQuery.text = text;
+		searchQuery.value.type = type;
+		searchQuery.value.text = text;
 	}
 
 	function searchRecipes(page = 1, limit = 10) {
 		isLoading.value = true;
 
 		return recipeService
-			.searchRecipes(page, limit, searchQuery.type, searchQuery.text)
+			.searchRecipes(
+				page,
+				limit,
+				searchQuery.value.type,
+				searchQuery.value.text
+			)
 			.then((paginatedRecipes) => {
 				goToPage(page);
 
@@ -150,13 +155,13 @@ export default function createRecipeState() {
 	}
 
 	return {
-		isLoading: readonly(isLoading),
-		isOwnRecipe: readonly(isOwnRecipe),
-		recipe: computed(() => recipe.value),
-		canModifyServings: readonly(canModifyServings),
-		modifiedServings: readonly(modifiedServings),
-		recipes: computed(() => recipes.value),
-		searchQuery: computed(() => searchQuery),
+		isLoading,
+		isOwnRecipe,
+		recipe,
+		canModifyServings,
+		modifiedServings,
+		recipes,
+		searchQuery,
 
 		isFavoriteRecipe,
 		addRecipe,
@@ -171,3 +176,5 @@ export default function createRecipeState() {
 		getMainImageUrl,
 	};
 }
+
+export type RecipeState = ReturnType<typeof createRecipeState>;

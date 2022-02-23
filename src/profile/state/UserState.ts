@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 import { UserEndpoint } from '@/api/endpoints/user';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
@@ -62,9 +62,9 @@ export default function createUserState() {
 	}
 
 	return {
-		isLoading: computed(() => isLoading.value),
-		favRecipes: computed(() => favRecipes.value),
-		myRecipes: computed(() => myRecipes.value),
+		isLoading,
+		favRecipes,
+		myRecipes,
 
 		toggleFavRecipe,
 		getFavRecipes,
