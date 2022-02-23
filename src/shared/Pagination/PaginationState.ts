@@ -30,3 +30,5 @@ export default function createPaginationState() {
 		checkIfNextPageExists,
 	};
 }
+
+export type PaginationState = ReturnType<typeof createPaginationState>;

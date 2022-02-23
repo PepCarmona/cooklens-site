@@ -71,3 +71,5 @@ export default function createUserState() {
 		getMyRecipes,
 	};
 }
+
+export type UserState = ReturnType<typeof createUserState>;

@@ -37,3 +37,5 @@ export default function createNotificationState() {
 		closeNotification,
 	};
 }
+
+export type NotificationState = ReturnType<typeof createNotificationState>;

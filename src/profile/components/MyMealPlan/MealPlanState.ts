@@ -161,3 +161,5 @@ export default function createMealPlanState() {
 		closeRecipeSelector: () => (isAddingRecipeToMeal.value = false),
 	};
 }
+
+export type MealPlanState = ReturnType<typeof createMealPlanState>;

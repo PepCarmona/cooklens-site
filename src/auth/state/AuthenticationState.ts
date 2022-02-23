@@ -93,3 +93,5 @@ export default function createAuthenticationState() {
 		verifyUser,
 	};
 }
+
+export type AuthenticationState = ReturnType<typeof createAuthenticationState>;
