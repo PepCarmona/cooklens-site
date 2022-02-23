@@ -18,13 +18,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import useNotificationState from '@/shared/Notifications/NotifiactionState';
+import { NotificationStateKey } from '@/injectionKeys';
+import { defineComponent, inject } from 'vue';
 
 export default defineComponent({
 	setup() {
+		const notificationState = inject(NotificationStateKey)!;
+
 		return {
-			...useNotificationState(),
+			...notificationState,
 		};
 	},
 });

@@ -1,28 +1,28 @@
-import { readonly, ref } from 'vue';
+import { ref } from 'vue';
 
-const currentPage = ref(1);
-const nextPageExists = ref(false);
+export default function createPaginationState() {
+	const currentPage = ref(1);
+	const nextPageExists = ref(false);
 
-function goToPreviousPage() {
-	currentPage.value -= 1;
-}
+	function goToPreviousPage() {
+		currentPage.value -= 1;
+	}
 
-function goToNextPage() {
-	currentPage.value += 1;
-}
+	function goToNextPage() {
+		currentPage.value += 1;
+	}
 
-function goToPage(page: number) {
-	currentPage.value = page;
-}
+	function goToPage(page: number) {
+		currentPage.value = page;
+	}
 
-function checkIfNextPageExists(value: boolean) {
-	nextPageExists.value = value;
-}
+	function checkIfNextPageExists(value: boolean) {
+		nextPageExists.value = value;
+	}
 
-export default function usePaginationState() {
 	return {
-		currentPage: readonly(currentPage),
-		nextPageExists: readonly(nextPageExists),
+		currentPage,
+		nextPageExists,
 
 		goToPreviousPage,
 		goToNextPage,
@@ -30,3 +30,5 @@ export default function usePaginationState() {
 		checkIfNextPageExists,
 	};
 }
+
+export type PaginationState = ReturnType<typeof createPaginationState>;

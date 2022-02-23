@@ -55,12 +55,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 import PageHeader from '@/shared/PageHeader.vue';
-
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Profile',
@@ -71,7 +70,9 @@ export default defineComponent({
 
 	setup() {
 		const router = useRouter();
-		const { authenticatedUser, logOut: authLogOut } = useAuthenticationState();
+
+		const authState = inject(AuthStateKey)!;
+		const { authenticatedUser, logOut: authLogOut } = authState;
 
 		function logOut() {
 			authLogOut().then(() => {

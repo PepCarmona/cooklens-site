@@ -62,14 +62,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, inject, PropType } from 'vue';
 import { useRouter } from 'vue-router';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
-import useUserState from '@/profile/state/UserState';
-import useRecipeState from '@/recipes/state/RecipeState';
-
 import { Recipe } from 'cooklens-types';
+import { AuthStateKey, RecipeStateKey, UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipeCard',
@@ -88,9 +85,14 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const router = useRouter();
 
-		const { authenticatedUser } = useAuthenticationState();
-		const { toggleFavRecipe } = useUserState();
-		const { isFavoriteRecipe } = useRecipeState();
+		const authState = inject(AuthStateKey)!;
+		const { authenticatedUser } = authState;
+
+		const userState = inject(UserStateKey)!;
+		const { toggleFavRecipe } = userState;
+
+		const recipeState = inject(RecipeStateKey)!;
+		const { isFavoriteRecipe } = recipeState;
 
 		const formattedTime = computed(() => {
 			if (!props.recipe.time) {

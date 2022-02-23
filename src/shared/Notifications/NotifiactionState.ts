@@ -1,4 +1,4 @@
-import { readonly, ref } from 'vue';
+import { ref } from 'vue';
 import { DEFAULT_OPEN_TIME, NotificationType } from './NotificationTypes';
 
 const notificationType = ref<NotificationType>('light');
@@ -27,13 +27,15 @@ function closeNotification() {
 	showNotification.value = false;
 }
 
-export default function useNotificationState() {
+export default function createNotificationState() {
 	return {
-		notificationType: readonly(notificationType),
-		notificationMessage: readonly(notificationMessage),
-		showNotification: readonly(showNotification),
-		autoCloseNotification: readonly(autoCloseNotification),
+		notificationType,
+		notificationMessage,
+		showNotification,
+		autoCloseNotification,
 
 		closeNotification,
 	};
 }
+
+export type NotificationState = ReturnType<typeof createNotificationState>;

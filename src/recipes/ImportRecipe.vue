@@ -13,13 +13,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-
-import useRecipeState from '@/recipes/state/RecipeState';
+import { defineComponent, inject, onMounted, ref } from 'vue';
 
 import { Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
+import { RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'ImportRecipe',
@@ -35,7 +34,9 @@ export default defineComponent({
 
 		const importErrors = ref<string | null>(null);
 
-		const { isLoading, importRecipe } = useRecipeState();
+		const recipeState = inject(RecipeStateKey)!;
+
+		const { isLoading, importRecipe } = recipeState;
 
 		onMounted(() => {
 			if (!isMobile) {

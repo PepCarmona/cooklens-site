@@ -47,10 +47,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { RecipeStateKey } from '@/injectionKeys';
+import { computed, defineComponent, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-
-import useRecipeState from '@/recipes/state/RecipeState';
 
 export default defineComponent({
 	name: 'Footer',
@@ -59,7 +58,8 @@ export default defineComponent({
 		const route = useRoute();
 		const router = useRouter();
 
-		const { isLoading, isOwnRecipe, recipe } = useRecipeState();
+		const recipeState = inject(RecipeStateKey)!;
+		const { isLoading, isOwnRecipe, recipe } = recipeState;
 
 		const routeName = computed(() => route.name);
 

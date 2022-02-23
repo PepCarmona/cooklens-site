@@ -1,9 +1,9 @@
-import { computed, reactive, readonly, ref } from 'vue';
+import { ref } from 'vue';
 
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
-import usePaginationState from '@/shared/Pagination/PaginationState';
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { PaginationState } from '@/shared/Pagination/PaginationState';
+import { AuthenticationState } from '@/auth/state/AuthenticationState';
 
 import {
 	UserInfo,
@@ -13,149 +13,158 @@ import {
 	SearchType,
 } from 'cooklens-types';
 
-const recipeService = new RecipesEndpoint();
+export default function createRecipeState(
+	authState: AuthenticationState,
+	paginationState: PaginationState
+) {
+	const recipeService = new RecipesEndpoint();
 
-const { checkIfNextPageExists, goToPage } = usePaginationState();
-const { authenticatedUser } = useAuthenticationState();
+	const { checkIfNextPageExists, goToPage } = paginationState;
+	const { authenticatedUser } = authState;
 
-const isLoading = ref(false);
-const isOwnRecipe = ref(false);
-const recipe = ref<Recipe>(new RecipeClass());
-const canModifyServings = ref(false);
-const modifiedServings = ref<number | null>(null);
-const recipes = ref<Recipe[]>([]);
-const searchQuery = reactive<SearchQuery>({ type: 'title', text: '' });
+	const isLoading = ref(false);
+	const isOwnRecipe = ref(false);
+	const recipe = ref<Recipe>(new RecipeClass());
+	const canModifyServings = ref(false);
+	const modifiedServings = ref<number | null>(null);
+	const recipes = ref<Recipe[]>([]);
+	const searchQuery = ref<SearchQuery>({ type: 'title', text: '' });
 
-function isFavoriteRecipe(recipe: Recipe): boolean {
-	if (!authenticatedUser.value || !authenticatedUser.value.favRecipes) {
-		return false;
+	function isFavoriteRecipe(recipe: Recipe): boolean {
+		if (!authenticatedUser.value || !authenticatedUser.value.favRecipes) {
+			return false;
+		}
+		return authenticatedUser.value.favRecipes.includes(recipe._id!);
 	}
-	return authenticatedUser.value.favRecipes.includes(recipe._id!);
-}
 
-function addRecipe(recipe: Recipe): Promise<Recipe> {
-	isLoading.value = true;
+	function addRecipe(recipe: Recipe): Promise<Recipe> {
+		isLoading.value = true;
 
-	recipe.author = authenticatedUser.value?._id;
+		recipe.author = authenticatedUser.value?._id;
 
-	return recipeService
-		.addRecipe(recipe)
-		.finally(() => (isLoading.value = false));
-}
+		return recipeService
+			.addRecipe(recipe)
+			.finally(() => (isLoading.value = false));
+	}
 
-function editRecipe(_recipe: Recipe): Promise<Recipe> {
-	isLoading.value = true;
+	function editRecipe(_recipe: Recipe): Promise<Recipe> {
+		isLoading.value = true;
 
-	return recipeService
-		.editRecipe(_recipe)
-		.then((editedRecipe) => (recipe.value = editedRecipe))
-		.finally(() => (isLoading.value = false));
-}
+		return recipeService
+			.editRecipe(_recipe)
+			.then((editedRecipe) => (recipe.value = editedRecipe))
+			.finally(() => (isLoading.value = false));
+	}
 
-async function editRating(value: number) {
-	recipe.value.rating = value;
+	async function editRating(value: number) {
+		recipe.value.rating = value;
 
-	await recipeService.editRecipe(recipe.value);
-}
+		await recipeService.editRecipe(recipe.value);
+	}
 
-function importRecipe(url: string) {
-	isLoading.value = true;
+	function importRecipe(url: string) {
+		isLoading.value = true;
 
-	return recipeService
-		.importRecipe(url)
-		.finally(() => (isLoading.value = false));
-}
+		return recipeService
+			.importRecipe(url)
+			.finally(() => (isLoading.value = false));
+	}
 
-function setSearch(type: SearchType, text: string) {
-	searchQuery.type = type;
-	searchQuery.text = text;
-}
+	function setSearch(type: SearchType, text: string) {
+		searchQuery.value.type = type;
+		searchQuery.value.text = text;
+	}
 
-function searchRecipes(page = 1, limit = 10) {
-	isLoading.value = true;
+	function searchRecipes(page = 1, limit = 10) {
+		isLoading.value = true;
 
-	return recipeService
-		.searchRecipes(page, limit, searchQuery.type, searchQuery.text)
-		.then((paginatedRecipes) => {
-			goToPage(page);
+		return recipeService
+			.searchRecipes(
+				page,
+				limit,
+				searchQuery.value.type,
+				searchQuery.value.text
+			)
+			.then((paginatedRecipes) => {
+				goToPage(page);
 
-			checkIfNextPageExists(paginatedRecipes.next);
+				checkIfNextPageExists(paginatedRecipes.next);
 
-			recipes.value = paginatedRecipes.result;
-		})
-		.finally(() => (isLoading.value = false));
-}
+				recipes.value = paginatedRecipes.result;
+			})
+			.finally(() => (isLoading.value = false));
+	}
 
-function getRecipe(id: string) {
-	isLoading.value = true;
+	function getRecipe(id: string) {
+		isLoading.value = true;
 
-	return recipeService
-		.getRecipe(id)
-		.then((resultRecipe) => {
-			// TODO: remove when all recipes in db are sanitized
-			if (resultRecipe.time) {
-				resultRecipe.time.preparation = resultRecipe.time.preparation ?? 0;
-			}
+		return recipeService
+			.getRecipe(id)
+			.then((resultRecipe) => {
+				// TODO: remove when all recipes in db are sanitized
+				if (resultRecipe.time) {
+					resultRecipe.time.preparation = resultRecipe.time.preparation ?? 0;
+				}
 
-			recipe.value = resultRecipe;
+				recipe.value = resultRecipe;
 
-			canModifyServings.value = recipe.value.ingredients.some(
-				(ingredient) => ingredient.quantity && ingredient.quantity > 0
-			);
+				canModifyServings.value = recipe.value.ingredients.some(
+					(ingredient) => ingredient.quantity && ingredient.quantity > 0
+				);
 
-			if (canModifyServings.value) {
-				modifiedServings.value = recipe.value.servings;
-			}
+				if (canModifyServings.value) {
+					modifiedServings.value = recipe.value.servings;
+				}
 
-			isOwnRecipe.value =
-				!!resultRecipe.author &&
-				authenticatedUser.value?._id === (resultRecipe.author as UserInfo)._id;
-		})
-		.finally(() => (isLoading.value = false));
-}
+				isOwnRecipe.value =
+					!!resultRecipe.author &&
+					authenticatedUser.value?._id ===
+						(resultRecipe.author as UserInfo)._id;
+			})
+			.finally(() => (isLoading.value = false));
+	}
 
-function getRandomRecipe() {
-	isLoading.value = true;
+	function getRandomRecipe() {
+		isLoading.value = true;
 
-	return recipeService
-		.getRandomRecipe()
-		.then((randomRecipe) => {
-			recipe.value = randomRecipe;
+		return recipeService
+			.getRandomRecipe()
+			.then((randomRecipe) => {
+				recipe.value = randomRecipe;
 
-			canModifyServings.value = recipe.value.ingredients.some(
-				(ingredient) => ingredient.quantity && ingredient.quantity > 0
-			);
+				canModifyServings.value = recipe.value.ingredients.some(
+					(ingredient) => ingredient.quantity && ingredient.quantity > 0
+				);
 
-			if (canModifyServings.value) {
-				modifiedServings.value = recipe.value.servings;
-			}
-		})
-		.finally(() => (isLoading.value = false));
-}
+				if (canModifyServings.value) {
+					modifiedServings.value = recipe.value.servings;
+				}
+			})
+			.finally(() => (isLoading.value = false));
+	}
 
-function deleteRecipe(recipe: Recipe) {
-	isLoading.value = true;
+	function deleteRecipe(recipe: Recipe) {
+		isLoading.value = true;
 
-	return recipeService
-		.deleteRecipe(recipe)
-		.finally(() => (isLoading.value = false));
-}
+		return recipeService
+			.deleteRecipe(recipe)
+			.finally(() => (isLoading.value = false));
+	}
 
-function getMainImageUrl(recipe: Recipe | undefined): string {
-	return recipe && recipe.images && recipe.images?.length > 0
-		? recipe.images[0]
-		: '';
-}
+	function getMainImageUrl(recipe: Recipe | undefined): string {
+		return recipe && recipe.images && recipe.images?.length > 0
+			? recipe.images[0]
+			: '';
+	}
 
-export default function useRecipeState() {
 	return {
-		isLoading: readonly(isLoading),
-		isOwnRecipe: readonly(isOwnRecipe),
-		recipe: computed(() => recipe.value),
-		canModifyServings: readonly(canModifyServings),
-		modifiedServings: readonly(modifiedServings),
-		recipes: computed(() => recipes.value),
-		searchQuery: computed(() => searchQuery),
+		isLoading,
+		isOwnRecipe,
+		recipe,
+		canModifyServings,
+		modifiedServings,
+		recipes,
+		searchQuery,
 
 		isFavoriteRecipe,
 		addRecipe,
@@ -170,3 +179,5 @@ export default function useRecipeState() {
 		getMainImageUrl,
 	};
 }
+
+export type RecipeState = ReturnType<typeof createRecipeState>;

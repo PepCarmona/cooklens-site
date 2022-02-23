@@ -6,11 +6,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
-
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'ProfileWrapper',
@@ -20,7 +19,9 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { authenticatedUser, isLoading } = useAuthenticationState();
+		const authState = inject(AuthStateKey)!;
+		const { authenticatedUser, isLoading } = authState;
+
 		return {
 			authenticatedUser,
 			isLoading,

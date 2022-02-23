@@ -17,14 +17,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, inject, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
-
-import useUserState from '@/profile/state/UserState';
+import { UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'MyRecipes',
@@ -36,7 +35,8 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { getMyRecipes, myRecipes, isLoading } = useUserState();
+		const userState = inject(UserStateKey)!;
+		const { getMyRecipes, myRecipes, isLoading } = userState;
 
 		const router = useRouter();
 

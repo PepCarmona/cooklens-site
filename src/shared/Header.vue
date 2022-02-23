@@ -44,12 +44,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, inject, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
-
 import CustomModal, { modalLateralMode } from '@/shared/CustomModal.vue';
+import { AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Header',
@@ -63,7 +62,9 @@ export default defineComponent({
 
 		const showMenu = ref(false);
 		const showHeader = computed(() => !route.meta.noHeader);
-		const { authenticatedUser } = useAuthenticationState();
+
+		const authState = inject(AuthStateKey)!;
+		const { authenticatedUser } = authState;
 
 		const mode = ref(getModalMode());
 

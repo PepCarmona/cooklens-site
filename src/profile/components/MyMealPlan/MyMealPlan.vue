@@ -164,6 +164,7 @@ import {
 	computed,
 	defineAsyncComponent,
 	defineComponent,
+	inject,
 	nextTick,
 	Ref,
 	ref,
@@ -197,8 +198,7 @@ import {
 	getWeeks,
 	NUMBER_OF_PAST_WEEKS,
 } from '@/profile/components/MyMealPlan/MealPlanModel';
-
-import useMealPlanState from './MealPlanState';
+import { MealPlanStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'MyMealPlan',
@@ -224,7 +224,8 @@ export default defineComponent({
 
 	setup() {
 		const router = useRouter();
-		const mealPlanState = useMealPlanState();
+
+		const mealPlanState = inject(MealPlanStateKey)!;
 		const { selectedDay, getCalendarBoundaries, getMealPlan } = mealPlanState;
 
 		getMealPlan();

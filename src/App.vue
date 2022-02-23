@@ -8,14 +8,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent, inject, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import FloatingNotification from '@/shared/Notifications/FloatingNotification.vue';
 import Header from '@/shared/Header.vue';
 import Footer from '@/shared/Footer.vue';
-
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import { AuthStateKey } from './injectionKeys';
 
 export default defineComponent({
 	components: {
@@ -27,7 +26,9 @@ export default defineComponent({
 	setup() {
 		const route = useRoute();
 		const router = useRouter();
-		const { checkSession, authenticatedUser } = useAuthenticationState();
+
+		const authState = inject(AuthStateKey)!;
+		const { checkSession, authenticatedUser } = authState;
 
 		router.beforeEach(async (to, from, next) => {
 			if (to.meta.requireAuth) {

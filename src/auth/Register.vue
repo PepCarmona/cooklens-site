@@ -52,15 +52,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, inject, ref } from 'vue';
 
 import CustomInput from '@/shared/CustomInput.vue';
 import CustomModal from '@/shared/CustomModal.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
-
 import { User, UserInfo } from 'cooklens-types';
 import { notify } from '@/shared/Notifications/NotifiactionState';
+import { AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Register',
@@ -77,11 +76,8 @@ export default defineComponent({
 	setup(props) {
 		const user = ref<UserInfo>(new User());
 
-		const {
-			isLoading,
-			register: authRegister,
-			validatePassword,
-		} = useAuthenticationState();
+		const authState = inject(AuthStateKey)!;
+		const { isLoading, register: authRegister, validatePassword } = authState;
 
 		const isShowingVerifyMail = ref(false);
 
