@@ -326,7 +326,7 @@ import CustomInput from '@/shared/CustomInput.vue';
 import ImportRecipe from '@/recipes/ImportRecipe.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 import {
 	IngredientClass,
@@ -367,7 +367,7 @@ export default defineComponent({
 			addRecipe,
 			editRecipe,
 			deleteRecipe: deleteRecipeState,
-		} = useRecipeState();
+		} = createRecipeState();
 
 		const newRecipe = reactive<Recipe>(new RecipeClass()) as Recipe;
 		const saveErrors = ref<string | null>(null);

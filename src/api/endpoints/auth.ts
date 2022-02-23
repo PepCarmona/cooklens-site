@@ -1,6 +1,6 @@
 import { Endpoint } from '.';
 import { URI } from '@/api/config';
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 import { User } from 'cooklens-types';
 
 interface AuthResponse {
@@ -25,7 +25,7 @@ export class AuthEndpoint extends Endpoint {
 	}
 
 	public checkSession(): Promise<User | null> {
-		const { token } = useAuthenticationState();
+		const { token } = createAuthenticationState();
 
 		if (token.value === '') {
 			console.warn('No token found');

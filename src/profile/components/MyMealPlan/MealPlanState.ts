@@ -18,7 +18,7 @@ import {
 } from 'cooklens-types';
 import { WeekDay } from '@/shared/Calendar/CalendarTypes';
 
-export default function useMealPlanState() {
+export default function createMealPlanState() {
 	const mealPlanService = new MealPlantEndpoint();
 
 	const selectedDay = ref<Day>(new WeekDay(new Date()));

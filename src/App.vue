@@ -15,7 +15,7 @@ import FloatingNotification from '@/shared/Notifications/FloatingNotification.vu
 import Header from '@/shared/Header.vue';
 import Footer from '@/shared/Footer.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
 	components: {
@@ -27,7 +27,7 @@ export default defineComponent({
 	setup() {
 		const route = useRoute();
 		const router = useRouter();
-		const { checkSession, authenticatedUser } = useAuthenticationState();
+		const { checkSession, authenticatedUser } = createAuthenticationState();
 
 		router.beforeEach(async (to, from, next) => {
 			if (to.meta.requireAuth) {

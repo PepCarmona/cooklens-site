@@ -15,7 +15,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 
@@ -35,7 +35,7 @@ export default defineComponent({
 
 		const importErrors = ref<string | null>(null);
 
-		const { isLoading, importRecipe } = useRecipeState();
+		const { isLoading, importRecipe } = createRecipeState();
 
 		onMounted(() => {
 			if (!isMobile) {

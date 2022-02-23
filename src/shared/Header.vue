@@ -47,7 +47,7 @@
 import { computed, defineComponent, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 
 import CustomModal, { modalLateralMode } from '@/shared/CustomModal.vue';
 
@@ -63,7 +63,7 @@ export default defineComponent({
 
 		const showMenu = ref(false);
 		const showHeader = computed(() => !route.meta.noHeader);
-		const { authenticatedUser } = useAuthenticationState();
+		const { authenticatedUser } = createAuthenticationState();
 
 		const mode = ref(getModalMode());
 

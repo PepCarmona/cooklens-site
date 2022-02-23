@@ -57,7 +57,7 @@ import { defineComponent, ref } from 'vue';
 import CustomInput from '@/shared/CustomInput.vue';
 import CustomModal from '@/shared/CustomModal.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 
 import { User, UserInfo } from 'cooklens-types';
 import { notify } from '@/shared/Notifications/NotifiactionState';
@@ -81,7 +81,7 @@ export default defineComponent({
 			isLoading,
 			register: authRegister,
 			validatePassword,
-		} = useAuthenticationState();
+		} = createAuthenticationState();
 
 		const isShowingVerifyMail = ref(false);
 

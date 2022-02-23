@@ -10,7 +10,7 @@ import { defineComponent } from 'vue';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
 	name: 'ProfileWrapper',
@@ -20,7 +20,7 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { authenticatedUser, isLoading } = useAuthenticationState();
+		const { authenticatedUser, isLoading } = createAuthenticationState();
 		return {
 			authenticatedUser,
 			isLoading,

@@ -198,7 +198,7 @@ import {
 	NUMBER_OF_PAST_WEEKS,
 } from '@/profile/components/MyMealPlan/MealPlanModel';
 
-import useMealPlanState from './MealPlanState';
+import createMealPlanState from './MealPlanState';
 
 export default defineComponent({
 	name: 'MyMealPlan',
@@ -224,7 +224,7 @@ export default defineComponent({
 
 	setup() {
 		const router = useRouter();
-		const mealPlanState = useMealPlanState();
+		const mealPlanState = createMealPlanState();
 		const { selectedDay, getCalendarBoundaries, getMealPlan } = mealPlanState;
 
 		getMealPlan();

@@ -16,7 +16,7 @@ import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
-import useUserState from '@/profile/state/UserState';
+import createUserState from '@/profile/state/UserState';
 
 export default defineComponent({
 	name: 'MyFavRecipes',
@@ -28,7 +28,7 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { getFavRecipes, favRecipes, isLoading } = useUserState();
+		const { getFavRecipes, favRecipes, isLoading } = createUserState();
 
 		const router = useRouter();
 

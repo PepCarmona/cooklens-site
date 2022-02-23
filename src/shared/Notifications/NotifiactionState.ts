@@ -27,7 +27,7 @@ function closeNotification() {
 	showNotification.value = false;
 }
 
-export default function useNotificationState() {
+export default function createNotificationState() {
 	return {
 		notificationType: readonly(notificationType),
 		notificationMessage: readonly(notificationMessage),

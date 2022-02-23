@@ -34,7 +34,7 @@ import { useRouter } from 'vue-router';
 
 import CustomInput from '@/shared/CustomInput.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 import { notify } from '@/shared/Notifications/NotifiactionState';
 
 import { User, UserInfo } from 'cooklens-types';
@@ -54,7 +54,7 @@ export default defineComponent({
 		const router = useRouter();
 		const user = ref<UserInfo>(new User());
 
-		const { isLoading, logIn: authLogin } = useAuthenticationState();
+		const { isLoading, logIn: authLogin } = createAuthenticationState();
 
 		function logIn() {
 			if (!isValidUser()) {

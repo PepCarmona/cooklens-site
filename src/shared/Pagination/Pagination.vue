@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import usePaginationState from '@/shared/Pagination/PaginationState';
+import createPaginationState from '@/shared/Pagination/PaginationState';
 
 export default defineComponent({
 	name: 'Pagination',
@@ -52,7 +52,7 @@ export default defineComponent({
 	emits: ['previousPage', 'nextPage'],
 
 	setup(_, { emit }) {
-		const { currentPage } = usePaginationState();
+		const { currentPage } = createPaginationState();
 		return {
 			currentPage,
 			previousPage() {

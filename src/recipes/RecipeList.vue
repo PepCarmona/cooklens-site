@@ -30,8 +30,8 @@ import RecipeCard from '@/recipes/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import usePaginationState from '@/shared/Pagination/PaginationState';
-import useRecipeState from '@/recipes/state/RecipeState';
+import createPaginationState from '@/shared/Pagination/PaginationState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 
@@ -57,8 +57,8 @@ export default defineComponent({
 	emits: ['goToPage', 'select-recipe', 'see-more-info'],
 
 	setup(_, { emit }) {
-		const { currentPage, nextPageExists } = usePaginationState();
-		const { isLoading } = useRecipeState();
+		const { currentPage, nextPageExists } = createPaginationState();
+		const { isLoading } = createRecipeState();
 
 		function goToPreviousPage() {
 			emit('goToPage', currentPage.value - 1);

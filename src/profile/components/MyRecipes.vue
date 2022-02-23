@@ -24,7 +24,7 @@ import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 
-import useUserState from '@/profile/state/UserState';
+import createUserState from '@/profile/state/UserState';
 
 export default defineComponent({
 	name: 'MyRecipes',
@@ -36,7 +36,7 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { getMyRecipes, myRecipes, isLoading } = useUserState();
+		const { getMyRecipes, myRecipes, isLoading } = createUserState();
 
 		const router = useRouter();
 

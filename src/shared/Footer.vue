@@ -50,7 +50,7 @@
 import { computed, defineComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 export default defineComponent({
 	name: 'Footer',
@@ -59,7 +59,7 @@ export default defineComponent({
 		const route = useRoute();
 		const router = useRouter();
 
-		const { isLoading, isOwnRecipe, recipe } = useRecipeState();
+		const { isLoading, isOwnRecipe, recipe } = createRecipeState();
 
 		const routeName = computed(() => route.name);
 

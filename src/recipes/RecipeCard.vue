@@ -65,9 +65,9 @@
 import { computed, defineComponent, PropType } from 'vue';
 import { useRouter } from 'vue-router';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
-import useUserState from '@/profile/state/UserState';
-import useRecipeState from '@/recipes/state/RecipeState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
+import createUserState from '@/profile/state/UserState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 import { Recipe } from 'cooklens-types';
 
@@ -88,9 +88,9 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const router = useRouter();
 
-		const { authenticatedUser } = useAuthenticationState();
-		const { toggleFavRecipe } = useUserState();
-		const { isFavoriteRecipe } = useRecipeState();
+		const { authenticatedUser } = createAuthenticationState();
+		const { toggleFavRecipe } = createUserState();
+		const { isFavoriteRecipe } = createRecipeState();
 
 		const formattedTime = computed(() => {
 			if (!props.recipe.time) {

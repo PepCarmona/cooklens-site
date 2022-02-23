@@ -60,7 +60,7 @@ import { useRouter } from 'vue-router';
 
 import PageHeader from '@/shared/PageHeader.vue';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
 
 export default defineComponent({
 	name: 'Profile',
@@ -71,7 +71,8 @@ export default defineComponent({
 
 	setup() {
 		const router = useRouter();
-		const { authenticatedUser, logOut: authLogOut } = useAuthenticationState();
+		const { authenticatedUser, logOut: authLogOut } =
+			createAuthenticationState();
 
 		function logOut() {
 			authLogOut().then(() => {

@@ -4,7 +4,7 @@ import { AuthEndpoint } from '@/api/endpoints/auth';
 
 import { UserInfo } from 'cooklens-types';
 
-export default function useAuthenticationState() {
+export default function createAuthenticationState() {
 	const authService = new AuthEndpoint();
 
 	const isLoading = ref(false);

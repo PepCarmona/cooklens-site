@@ -3,18 +3,18 @@ import { computed, ref } from 'vue';
 import { UserEndpoint } from '@/api/endpoints/user';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
-import useAuthenticationState from '@/auth/state/AuthenticationState';
-import usePaginationState from '@/shared/Pagination/PaginationState';
+import createAuthenticationState from '@/auth/state/AuthenticationState';
+import createPaginationState from '@/shared/Pagination/PaginationState';
 
 import { Recipe } from 'cooklens-types';
 
-export default function useUserState() {
+export default function createUserState() {
 	const userService = new UserEndpoint();
 	const recipeService = new RecipesEndpoint();
 
-	const { checkIfNextPageExists, goToPage } = usePaginationState();
+	const { checkIfNextPageExists, goToPage } = createPaginationState();
 
-	const user = useAuthenticationState().authenticatedUser;
+	const user = createAuthenticationState().authenticatedUser;
 
 	const isLoading = ref(false);
 	const favRecipes = ref<Recipe[]>([]);

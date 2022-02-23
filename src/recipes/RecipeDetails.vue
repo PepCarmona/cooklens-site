@@ -164,8 +164,8 @@ import Rating from '@/shared/Rating.vue';
 
 import { Ingredient, Recipe } from 'cooklens-types';
 
-import useRecipeState from '@/recipes/state/RecipeState';
-import useUserState from '@/profile/state/UserState';
+import createRecipeState from '@/recipes/state/RecipeState';
+import createUserState from '@/profile/state/UserState';
 
 import { isMobile } from '@/helpers/media';
 
@@ -203,8 +203,8 @@ export default defineComponent({
 			recipe,
 			editRating,
 			getRandomRecipe: getRandomRecipeState,
-		} = useRecipeState();
-		const { toggleFavRecipe } = useUserState();
+		} = createRecipeState();
+		const { toggleFavRecipe } = createUserState();
 
 		const route = useRoute();
 		const router = useRouter();

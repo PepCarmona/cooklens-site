@@ -44,7 +44,7 @@ import { defineComponent, onMounted, ref } from 'vue';
 
 import { SearchType } from 'cooklens-types';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import createRecipeState from '@/recipes/state/RecipeState';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -60,7 +60,7 @@ export default defineComponent({
 	emits: ['doSearch', 'back'],
 
 	setup(_, { emit }) {
-		const { setSearch, searchQuery } = useRecipeState();
+		const { setSearch, searchQuery } = createRecipeState();
 
 		const searchInput = ref<HTMLInputElement>();
 

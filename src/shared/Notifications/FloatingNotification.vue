@@ -19,12 +19,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import useNotificationState from '@/shared/Notifications/NotifiactionState';
+import createNotificationState from '@/shared/Notifications/NotifiactionState';
 
 export default defineComponent({
 	setup() {
 		return {
-			...useNotificationState(),
+			...createNotificationState(),
 		};
 	},
 });

@@ -37,7 +37,7 @@ import SearchRecipe from '@/recipes/SearchRecipe.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import useRecipeState from '@/recipes/state/RecipeState';
+import createRecipeState from '@/recipes/state/RecipeState';
 import { SearchType, SearchQuery } from 'cooklens-types';
 
 export default defineComponent({
@@ -59,7 +59,7 @@ export default defineComponent({
 
 	setup(props) {
 		const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
-			useRecipeState();
+			createRecipeState();
 
 		const router = useRouter();
 		const route = useRoute();

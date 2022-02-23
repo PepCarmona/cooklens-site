@@ -1,6 +1,6 @@
 import { readonly, ref } from 'vue';
 
-export default function usePaginationState() {
+export default function createPaginationState() {
 	const currentPage = ref(1);
 	const nextPageExists = ref(false);
 
