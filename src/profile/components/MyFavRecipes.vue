@@ -9,14 +9,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, inject, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
-
-import createUserState from '@/profile/state/UserState';
+import { UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'MyFavRecipes',
@@ -28,7 +27,8 @@ export default defineComponent({
 	},
 
 	setup() {
-		const { getFavRecipes, favRecipes, isLoading } = createUserState();
+		const userState = inject(UserStateKey)!;
+		const { getFavRecipes, favRecipes, isLoading } = userState;
 
 		const router = useRouter();
 

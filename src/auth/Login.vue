@@ -29,15 +29,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import CustomInput from '@/shared/CustomInput.vue';
 
-import createAuthenticationState from '@/auth/state/AuthenticationState';
 import { notify } from '@/shared/Notifications/NotifiactionState';
 
 import { User, UserInfo } from 'cooklens-types';
+import { AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Login',
@@ -54,7 +54,8 @@ export default defineComponent({
 		const router = useRouter();
 		const user = ref<UserInfo>(new User());
 
-		const { isLoading, logIn: authLogin } = createAuthenticationState();
+		const authState = inject(AuthStateKey)!;
+		const { isLoading, logIn: authLogin } = authState;
 
 		function logIn() {
 			if (!isValidUser()) {

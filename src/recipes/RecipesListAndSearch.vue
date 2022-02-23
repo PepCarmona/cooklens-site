@@ -30,15 +30,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/SearchRecipe.vue';
 import RecipeList from '@/recipes/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import createRecipeState from '@/recipes/state/RecipeState';
 import { SearchType, SearchQuery } from 'cooklens-types';
+import { RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipesListAndSearch',
@@ -58,8 +58,9 @@ export default defineComponent({
 	emits: ['back', 'select-recipe', 'see-more-info', 'create-recipe'],
 
 	setup(props) {
+		const recipeState = inject(RecipeStateKey)!;
 		const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
-			createRecipeState();
+			recipeState;
 
 		const router = useRouter();
 		const route = useRoute();

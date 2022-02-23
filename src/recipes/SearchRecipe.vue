@@ -40,15 +40,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, inject, onMounted, ref } from 'vue';
 
 import { SearchType } from 'cooklens-types';
-
-import createRecipeState from '@/recipes/state/RecipeState';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { isMobile } from '@/helpers/media';
+import { RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'SearchRecipe',
@@ -60,7 +59,8 @@ export default defineComponent({
 	emits: ['doSearch', 'back'],
 
 	setup(_, { emit }) {
-		const { setSearch, searchQuery } = createRecipeState();
+		const recipeState = inject(RecipeStateKey)!;
+		const { setSearch, searchQuery } = recipeState;
 
 		const searchInput = ref<HTMLInputElement>();
 

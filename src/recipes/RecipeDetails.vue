@@ -154,7 +154,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import CustomModal from '@/shared/CustomModal.vue';
@@ -164,10 +164,8 @@ import Rating from '@/shared/Rating.vue';
 
 import { Ingredient, Recipe } from 'cooklens-types';
 
-import createRecipeState from '@/recipes/state/RecipeState';
-import createUserState from '@/profile/state/UserState';
-
 import { isMobile } from '@/helpers/media';
+import { RecipeStateKey, UserStateKey } from '@/injectionKeys';
 
 export function getFormattedTitle(recipe: Recipe): string {
 	return recipe.title.toLowerCase().replaceAll(' ', '-');
@@ -193,6 +191,7 @@ export default defineComponent({
 	emits: ['back'],
 
 	setup(props, { emit }) {
+		const recipeState = inject(RecipeStateKey)!;
 		const {
 			isLoading,
 			canModifyServings,
@@ -203,8 +202,10 @@ export default defineComponent({
 			recipe,
 			editRating,
 			getRandomRecipe: getRandomRecipeState,
-		} = createRecipeState();
-		const { toggleFavRecipe } = createUserState();
+		} = recipeState;
+
+		const userState = inject(UserStateKey)!;
+		const { toggleFavRecipe } = userState;
 
 		const route = useRoute();
 		const router = useRouter();

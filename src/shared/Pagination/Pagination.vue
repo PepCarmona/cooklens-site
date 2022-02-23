@@ -38,9 +38,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
-import createPaginationState from '@/shared/Pagination/PaginationState';
+import { PaginationStatekey } from '@/injectionKeys';
+import { defineComponent, inject } from 'vue';
 
 export default defineComponent({
 	name: 'Pagination',
@@ -52,7 +51,9 @@ export default defineComponent({
 	emits: ['previousPage', 'nextPage'],
 
 	setup(_, { emit }) {
-		const { currentPage } = createPaginationState();
+		const paginationState = inject(PaginationStatekey)!;
+		const { currentPage } = paginationState;
+
 		return {
 			currentPage,
 			previousPage() {

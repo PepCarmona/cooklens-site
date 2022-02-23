@@ -24,16 +24,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, inject, PropType } from 'vue';
 
 import RecipeCard from '@/recipes/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import createPaginationState from '@/shared/Pagination/PaginationState';
-import createRecipeState from '@/recipes/state/RecipeState';
-
 import { Recipe } from 'cooklens-types';
+import { PaginationStatekey, RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipeList',
@@ -57,8 +55,11 @@ export default defineComponent({
 	emits: ['goToPage', 'select-recipe', 'see-more-info'],
 
 	setup(_, { emit }) {
-		const { currentPage, nextPageExists } = createPaginationState();
-		const { isLoading } = createRecipeState();
+		const paginationState = inject(PaginationStatekey)!;
+		const { currentPage, nextPageExists } = paginationState;
+
+		const recipeState = inject(RecipeStateKey)!;
+		const { isLoading } = recipeState;
 
 		function goToPreviousPage() {
 			emit('goToPage', currentPage.value - 1);

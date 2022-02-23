@@ -313,6 +313,7 @@
 import {
 	computed,
 	defineComponent,
+	inject,
 	nextTick,
 	onBeforeUpdate,
 	onMounted,
@@ -326,8 +327,6 @@ import CustomInput from '@/shared/CustomInput.vue';
 import ImportRecipe from '@/recipes/ImportRecipe.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 
-import createRecipeState from '@/recipes/state/RecipeState';
-
 import {
 	IngredientClass,
 	Recipe,
@@ -337,6 +336,7 @@ import {
 } from 'cooklens-types';
 
 import { AxiosError } from 'axios';
+import { RecipeStateKey } from '@/injectionKeys';
 
 type Tab = 'introduction' | 'ingredients' | 'steps';
 
@@ -361,13 +361,15 @@ export default defineComponent({
 		const route = useRoute();
 		const router = useRouter();
 
+		const recipeState = inject(RecipeStateKey)!;
+
 		const {
 			recipe,
 			getRecipe,
 			addRecipe,
 			editRecipe,
 			deleteRecipe: deleteRecipeState,
-		} = createRecipeState();
+		} = recipeState;
 
 		const newRecipe = reactive<Recipe>(new RecipeClass()) as Recipe;
 		const saveErrors = ref<string | null>(null);
