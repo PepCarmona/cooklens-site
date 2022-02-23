@@ -2,8 +2,8 @@ import { ref } from 'vue';
 
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
-import createPaginationState from '@/shared/Pagination/PaginationState';
-import createAuthenticationState from '@/auth/state/AuthenticationState';
+import { PaginationState } from '@/shared/Pagination/PaginationState';
+import { AuthenticationState } from '@/auth/state/AuthenticationState';
 
 import {
 	UserInfo,
@@ -13,11 +13,14 @@ import {
 	SearchType,
 } from 'cooklens-types';
 
-export default function createRecipeState() {
+export default function createRecipeState(
+	authState: AuthenticationState,
+	paginationState: PaginationState
+) {
 	const recipeService = new RecipesEndpoint();
 
-	const { checkIfNextPageExists, goToPage } = createPaginationState();
-	const { authenticatedUser } = createAuthenticationState();
+	const { checkIfNextPageExists, goToPage } = paginationState;
+	const { authenticatedUser } = authState;
 
 	const isLoading = ref(false);
 	const isOwnRecipe = ref(false);

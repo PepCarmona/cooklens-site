@@ -24,10 +24,10 @@ import {
 	UserStateKey,
 } from './injectionKeys';
 
-const recipeState = createRecipeState();
-const userState = createUserState();
-const paginationState = createPaginationState();
 export const authState = createAuthenticationState();
+const paginationState = createPaginationState();
+const recipeState = createRecipeState(authState, paginationState);
+const userState = createUserState(authState, paginationState);
 const mealPlanState = createMealPlanState();
 const notificationState = createNotificationState();
 
