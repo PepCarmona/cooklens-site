@@ -336,7 +336,7 @@ import {
 } from 'cooklens-types';
 
 import { AxiosError } from 'axios';
-import { RecipeStateKey } from '@/injectionKeys';
+import { RecipeServiceKey, RecipeStateKey } from '@/injectionKeys';
 
 type Tab = 'introduction' | 'ingredients' | 'steps';
 
@@ -362,14 +362,9 @@ export default defineComponent({
 		const router = useRouter();
 
 		const recipeState = inject(RecipeStateKey)!;
+		const { recipe } = recipeState;
 
-		const {
-			recipe,
-			getRecipe,
-			addRecipe,
-			editRecipe,
-			deleteRecipe: deleteRecipeState,
-		} = recipeState;
+		const recipeService = inject(RecipeServiceKey)!;
 
 		const newRecipe = reactive<Recipe>(new RecipeClass()) as Recipe;
 		const saveErrors = ref<string | null>(null);
@@ -415,7 +410,7 @@ export default defineComponent({
 		onMounted(async () => {
 			if (route.query.edit) {
 				if (!recipe.value._id) {
-					await getRecipe(route.query.edit.toString());
+					await recipeService.getRecipe(route.query.edit.toString());
 				}
 				Object.assign(newRecipe, recipe.value);
 				showRecipeForm.value = true;
@@ -542,7 +537,8 @@ export default defineComponent({
 				return;
 			}
 
-			addRecipe(sanitizedRecipe.value)
+			recipeService
+				.addRecipe(sanitizedRecipe.value)
 				.then((savedRecipe) => {
 					if (!props.embedded) {
 						router.push({
@@ -558,7 +554,7 @@ export default defineComponent({
 		}
 
 		function saveEditedRecipe() {
-			editRecipe(sanitizedRecipe.value).then((editedRecipe) => {
+			recipeService.editRecipe(sanitizedRecipe.value).then((editedRecipe) => {
 				const formattedTitle = editedRecipe.title
 					.toLowerCase()
 					.replaceAll(' ', '-');
@@ -585,7 +581,7 @@ export default defineComponent({
 
 		function deleteRecipe() {
 			if (route.query.edit) {
-				deleteRecipeState(recipe.value).then(() =>
+				recipeService.deleteRecipe(recipe.value).then(() =>
 					router.push({
 						name: 'RecipesMainView',
 					})

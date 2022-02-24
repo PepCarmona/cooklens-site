@@ -2,6 +2,7 @@ import { InjectionKey } from 'vue';
 import { AuthenticationState } from './auth/AuthenticationState';
 import { MealPlanState } from './profile/components/MyMealPlan/MealPlanState';
 import { UserState } from './profile/UserState';
+import { RecipeService } from './recipes/RecipeService';
 import { RecipeState } from './recipes/RecipeState';
 import { NotificationState } from './shared/Notifications/NotifiactionState';
 import { PaginationState } from './shared/Pagination/PaginationState';
@@ -16,3 +17,6 @@ export const MealPlanStateKey: InjectionKey<MealPlanState> =
 	Symbol('mealPlanState');
 export const NotificationStateKey: InjectionKey<NotificationState> =
 	Symbol('notificationState');
+
+export const RecipeServiceKey: InjectionKey<RecipeService> =
+	Symbol('recipeService');

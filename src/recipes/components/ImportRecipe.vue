@@ -18,7 +18,7 @@ import { defineComponent, inject, onMounted, ref } from 'vue';
 import { Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
-import { RecipeStateKey } from '@/injectionKeys';
+import { RecipeServiceKey, RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'ImportRecipe',
@@ -35,8 +35,9 @@ export default defineComponent({
 		const importErrors = ref<string | null>(null);
 
 		const recipeState = inject(RecipeStateKey)!;
+		const { isLoading } = recipeState;
 
-		const { isLoading, importRecipe } = recipeState;
+		const recipeService = inject(RecipeServiceKey)!;
 
 		onMounted(() => {
 			if (!isMobile) {
@@ -54,7 +55,8 @@ export default defineComponent({
 				return;
 			}
 
-			importRecipe(inputUrl)
+			recipeService
+				.importRecipe(inputUrl)
 				.then((importedRecipe: Recipe) => {
 					emit('importedRecipe', importedRecipe);
 				})

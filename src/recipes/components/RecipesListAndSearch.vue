@@ -38,7 +38,7 @@ import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { SearchType, SearchQuery } from 'cooklens-types';
-import { RecipeStateKey } from '@/injectionKeys';
+import { RecipeServiceKey, RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipesListAndSearch',
@@ -59,8 +59,9 @@ export default defineComponent({
 
 	setup(props) {
 		const recipeState = inject(RecipeStateKey)!;
-		const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
-			recipeState;
+		const { isLoading, recipes, setSearch, searchQuery } = recipeState;
+
+		const recipeService = inject(RecipeServiceKey)!;
 
 		const router = useRouter();
 		const route = useRoute();
@@ -122,7 +123,7 @@ export default defineComponent({
 
 			updateQueryString(page, searchQuery);
 
-			searchRecipes(page);
+			recipeService.searchRecipes(page);
 		}
 
 		function showAllRecipes() {

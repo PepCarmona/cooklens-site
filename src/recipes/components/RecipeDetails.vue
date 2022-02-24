@@ -165,7 +165,11 @@ import Rating from '@/shared/Rating.vue';
 import { Ingredient, Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
-import { RecipeStateKey, UserStateKey } from '@/injectionKeys';
+import {
+	RecipeServiceKey,
+	RecipeStateKey,
+	UserStateKey,
+} from '@/injectionKeys';
 
 export function getFormattedTitle(recipe: Recipe): string {
 	return recipe.title.toLowerCase().replaceAll(' ', '-');
@@ -198,11 +202,11 @@ export default defineComponent({
 			modifiedServings,
 			isFavoriteRecipe,
 			isOwnRecipe,
-			getRecipe,
 			recipe,
 			editRating,
-			getRandomRecipe: getRandomRecipeState,
 		} = recipeState;
+
+		const recipeService = inject(RecipeServiceKey)!;
 
 		const userState = inject(UserStateKey)!;
 		const { toggleFavRecipe } = userState;
@@ -285,7 +289,7 @@ export default defineComponent({
 				return;
 			}
 
-			getRecipe(id).catch((err) => {
+			recipeService.getRecipe(id).catch((err) => {
 				console.error(err);
 				// TODO: show custom error page && display error on floating modal
 				router.push({
@@ -295,7 +299,8 @@ export default defineComponent({
 		}
 
 		function getRandomRecipe() {
-			getRandomRecipeState()
+			recipeService
+				.getRandomRecipe()
 				.then(() => {
 					const formattedTitle = recipe.value.title
 						.toLowerCase()
