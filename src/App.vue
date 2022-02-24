@@ -14,7 +14,7 @@ import { useRoute, useRouter } from 'vue-router';
 import FloatingNotification from '@/shared/Notifications/FloatingNotification.vue';
 import Header from '@/shared/Header.vue';
 import Footer from '@/shared/Footer.vue';
-import { AuthStateKey } from './injectionKeys';
+import { AuthServiceKey, AuthStateKey } from './injectionKeys';
 
 export default defineComponent({
 	components: {
@@ -28,12 +28,14 @@ export default defineComponent({
 		const router = useRouter();
 
 		const authState = inject(AuthStateKey)!;
-		const { checkSession, authenticatedUser } = authState;
+		const { authenticatedUser } = authState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		router.beforeEach(async (to, from, next) => {
 			if (to.meta.requireAuth) {
 				if (authenticatedUser.value === undefined) {
-					await checkSession();
+					await authService.checkSession();
 				}
 				if (!authenticatedUser.value) {
 					next({
@@ -45,7 +47,7 @@ export default defineComponent({
 				}
 			} else {
 				if (authenticatedUser.value === undefined) {
-					checkSession();
+					authService.checkSession();
 				}
 				next();
 			}

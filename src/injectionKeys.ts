@@ -1,4 +1,5 @@
 import { InjectionKey } from 'vue';
+import { AuthService } from './auth/AuthenticationService';
 import { AuthenticationState } from './auth/AuthenticationState';
 import { MealPlanState } from './profile/components/MyMealPlan/MealPlanState';
 import { UserState } from './profile/UserState';
@@ -20,3 +21,4 @@ export const NotificationStateKey: InjectionKey<NotificationState> =
 
 export const RecipeServiceKey: InjectionKey<RecipeService> =
 	Symbol('recipeService');
+export const AuthServiceKey: InjectionKey<AuthService> = Symbol('authService');

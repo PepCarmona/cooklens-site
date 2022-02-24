@@ -16,6 +16,7 @@ import createMealPlanState from './profile/components/MyMealPlan/MealPlanState';
 import createNotificationState from './shared/Notifications/NotifiactionState';
 
 import {
+	AuthServiceKey,
 	AuthStateKey,
 	MealPlanStateKey,
 	NotificationStateKey,
@@ -25,6 +26,7 @@ import {
 	UserStateKey,
 } from './injectionKeys';
 import createRecipeService from './recipes/RecipeService';
+import createAuthenticationService from './auth/AuthenticationService';
 
 export const authState = createAuthenticationState();
 const paginationState = createPaginationState();
@@ -38,6 +40,7 @@ const recipeService = createRecipeService(
 	authState,
 	paginationState
 );
+const authService = createAuthenticationService(authState);
 
 setupFeatureToggle();
 
@@ -54,6 +57,7 @@ app.provide(MealPlanStateKey, mealPlanState);
 app.provide(NotificationStateKey, notificationState);
 
 app.provide(RecipeServiceKey, recipeService);
+app.provide(AuthServiceKey, authService);
 
 app.component('Button', Button);
 

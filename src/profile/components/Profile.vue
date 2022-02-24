@@ -59,7 +59,7 @@ import { defineComponent, inject } from 'vue';
 import { useRouter } from 'vue-router';
 
 import PageHeader from '@/shared/PageHeader.vue';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Profile',
@@ -72,10 +72,12 @@ export default defineComponent({
 		const router = useRouter();
 
 		const authState = inject(AuthStateKey)!;
-		const { authenticatedUser, logOut: authLogOut } = authState;
+		const { authenticatedUser } = authState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		function logOut() {
-			authLogOut().then(() => {
+			authService.logOut().then(() => {
 				router.push({ name: 'Home' });
 			});
 		}

@@ -59,7 +59,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 
 import { User, UserInfo } from 'cooklens-types';
 import { notify } from '@/shared/Notifications/NotifiactionState';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Register',
@@ -77,7 +77,9 @@ export default defineComponent({
 		const user = ref<UserInfo>(new User());
 
 		const authState = inject(AuthStateKey)!;
-		const { isLoading, register: authRegister, validatePassword } = authState;
+		const { isLoading } = authState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		const isShowingVerifyMail = ref(false);
 
@@ -86,7 +88,8 @@ export default defineComponent({
 				return;
 			}
 
-			authRegister(user.value, props.nextUrl)
+			authService
+				.register(user.value, props.nextUrl)
 				.then(() => (isShowingVerifyMail.value = true))
 				.catch((err) => notify(err, 'error'));
 		}
@@ -107,7 +110,9 @@ export default defineComponent({
 				return false;
 			}
 
-			const validatedPassword = validatePassword(user.value.password);
+			const validatedPassword = authService.validatePassword(
+				user.value.password
+			);
 
 			if (!validatedPassword.isValid) {
 				console.error(validatedPassword.error);

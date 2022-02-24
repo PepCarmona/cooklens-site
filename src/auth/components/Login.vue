@@ -37,7 +37,7 @@ import CustomInput from '@/shared/CustomInput.vue';
 import { notify } from '@/shared/Notifications/NotifiactionState';
 
 import { User, UserInfo } from 'cooklens-types';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, AuthStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Login',
@@ -55,14 +55,17 @@ export default defineComponent({
 		const user = ref<UserInfo>(new User());
 
 		const authState = inject(AuthStateKey)!;
-		const { isLoading, logIn: authLogin } = authState;
+		const { isLoading } = authState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		function logIn() {
 			if (!isValidUser()) {
 				return;
 			}
 
-			authLogin(user.value)
+			authService
+				.logIn(user.value)
 				.then(() => router.push(props.nextUrl ?? { name: 'Profile' }))
 				.catch((err) => notify(err, 'error'));
 		}

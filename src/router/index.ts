@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
 import { notify } from '@/shared/Notifications/NotifiactionState';
-import createAuthenticationState from '@/auth/AuthenticationState';
+import { authState } from '@/main';
+import createAuthenticationService from '@/auth/AuthenticationService';
 
-const { verifyUser } = createAuthenticationState();
+const { verifyUser } = createAuthenticationService(authState);
 
 const routes: Array<RouteRecordRaw> = [
 	{
