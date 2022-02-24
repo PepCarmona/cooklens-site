@@ -33,8 +33,8 @@
 import { defineComponent, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import SearchRecipe from '@/recipes/SearchRecipe.vue';
-import RecipeList from '@/recipes/RecipeList.vue';
+import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
+import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { SearchType, SearchQuery } from 'cooklens-types';

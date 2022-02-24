@@ -8,10 +8,10 @@ import Button from '@/shared/Button.vue';
 
 import { setupFeatureToggle } from './helpers/featureToggle';
 
-import createRecipeState from './recipes/state/RecipeState';
-import createUserState from './profile/state/UserState';
+import createRecipeState from './recipes/RecipeState';
+import createUserState from './profile/UserState';
 import createPaginationState from './shared/Pagination/PaginationState';
-import createAuthenticationState from '@/auth/state/AuthenticationState';
+import createAuthenticationState from '@/auth/AuthenticationState';
 import createMealPlanState from './profile/components/MyMealPlan/MealPlanState';
 import createNotificationState from './shared/Notifications/NotifiactionState';
 

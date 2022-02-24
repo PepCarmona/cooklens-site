@@ -324,7 +324,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import CustomNumberInput from '@/shared/CustomNumberInput.vue';
 import CustomInput from '@/shared/CustomInput.vue';
-import ImportRecipe from '@/recipes/ImportRecipe.vue';
+import ImportRecipe from '@/recipes/components/ImportRecipe.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 
 import {

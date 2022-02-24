@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { UserEndpoint } from '@/api/endpoints/user';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
-import { AuthenticationState } from '@/auth/state/AuthenticationState';
+import { AuthenticationState } from '@/auth/AuthenticationState';
 import { PaginationState } from '@/shared/Pagination/PaginationState';
 
 import { Recipe } from 'cooklens-types';

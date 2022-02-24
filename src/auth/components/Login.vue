@@ -91,5 +91,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~@/auth/style/authentication.scss';
+@import '~@/auth/components/style/authentication.scss';
 </style>

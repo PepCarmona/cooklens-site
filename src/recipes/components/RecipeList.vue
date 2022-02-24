@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
 
-import RecipeCard from '@/recipes/RecipeCard.vue';
+import RecipeCard from '@/recipes/components/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 

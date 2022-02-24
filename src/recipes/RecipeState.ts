@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
 import { PaginationState } from '@/shared/Pagination/PaginationState';
-import { AuthenticationState } from '@/auth/state/AuthenticationState';
+import { AuthenticationState } from '@/auth/AuthenticationState';
 
 import {
 	UserInfo,

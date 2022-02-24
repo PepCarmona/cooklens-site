@@ -22,7 +22,7 @@ import { useRouter } from 'vue-router';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
-import RecipeList from '@/recipes/RecipeList.vue';
+import RecipeList from '@/recipes/components/RecipeList.vue';
 import { UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
