@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export type LoadingService = 'recipes' | 'user' | 'auth' | 'mealPlan';
 
@@ -13,12 +13,19 @@ export default function createLoadingState() {
 		loadingServices.value.delete(state);
 	}
 
-	function isLoading(state: LoadingService) {
-		return loadingServices.value.has(state);
-	}
+	const isLoadingRecipes = computed(() => loadingServices.value.has('recipes'));
+	const isLoadingUser = computed(() => loadingServices.value.has('user'));
+	const isLoadingAuth = computed(() => loadingServices.value.has('auth'));
+	const isLoadingMealPlan = computed(() =>
+		loadingServices.value.has('mealPlan')
+	);
 
 	return {
-		isLoading,
+		isLoadingRecipes,
+		isLoadingUser,
+		isLoadingAuth,
+		isLoadingMealPlan,
+
 		startLoading,
 		endLoading,
 	};
