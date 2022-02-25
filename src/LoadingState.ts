@@ -2,33 +2,42 @@ import { computed, ref } from 'vue';
 
 export type LoadingService = 'recipes' | 'user' | 'auth' | 'mealPlan';
 
-export default function createLoadingState() {
-	const loadingServices = ref<Set<LoadingService>>(new Set());
+const loadingServices = ref<Set<LoadingService>>(new Set());
 
-	function startLoading(state: LoadingService) {
-		loadingServices.value.add(state);
-	}
+const isLoadingRecipes = computed({
+	get: () => loadingServices.value.has('recipes'),
+	set: (value: boolean) =>
+		value
+			? loadingServices.value.add('recipes')
+			: loadingServices.value.delete('recipes'),
+});
+const isLoadingUser = computed({
+	get: () => loadingServices.value.has('user'),
+	set: (value: boolean) =>
+		value
+			? loadingServices.value.add('user')
+			: loadingServices.value.delete('user'),
+});
+const isLoadingAuth = computed({
+	get: () => loadingServices.value.has('auth'),
+	set: (value: boolean) =>
+		value
+			? loadingServices.value.add('auth')
+			: loadingServices.value.delete('auth'),
+});
+const isLoadingMealPlan = computed({
+	get: () => loadingServices.value.has('mealPlan'),
+	set: (value: boolean) =>
+		value
+			? loadingServices.value.add('mealPlan')
+			: loadingServices.value.delete('mealPlan'),
+});
 
-	function endLoading(state: LoadingService) {
-		loadingServices.value.delete(state);
-	}
+export const loadingState = {
+	isLoadingRecipes,
+	isLoadingUser,
+	isLoadingAuth,
+	isLoadingMealPlan,
+};
 
-	const isLoadingRecipes = computed(() => loadingServices.value.has('recipes'));
-	const isLoadingUser = computed(() => loadingServices.value.has('user'));
-	const isLoadingAuth = computed(() => loadingServices.value.has('auth'));
-	const isLoadingMealPlan = computed(() =>
-		loadingServices.value.has('mealPlan')
-	);
-
-	return {
-		isLoadingRecipes,
-		isLoadingUser,
-		isLoadingAuth,
-		isLoadingMealPlan,
-
-		startLoading,
-		endLoading,
-	};
-}
-
-export type LoadingState = ReturnType<typeof createLoadingState>;
+export type LoadingState = typeof loadingState;
