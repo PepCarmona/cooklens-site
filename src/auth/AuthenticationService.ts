@@ -1,4 +1,5 @@
 import { AuthEndpoint } from '@/api/endpoints/auth';
+import { loadingState } from '@/LoadingState';
 import { UserInfo } from 'cooklens-types';
 import { AuthenticationState } from './AuthenticationState';
 
@@ -7,16 +8,17 @@ const authEndpoint = new AuthEndpoint();
 export default function createAuthenticationService(
 	authState: AuthenticationState
 ) {
+	const { isLoadingAuth } = loadingState;
 	function register(user: UserInfo, nextUrl?: string) {
-		authState.isLoading.value = true;
+		isLoadingAuth.value = true;
 
 		return authEndpoint
 			.register(user, nextUrl)
-			.finally(() => (authState.isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	function logIn(user: UserInfo) {
-		authState.isLoading.value = true;
+		isLoadingAuth.value = true;
 
 		return authEndpoint
 			.logIn(user)
@@ -24,7 +26,7 @@ export default function createAuthenticationService(
 				localStorage.setItem('userToken', authResponse.token);
 				authState.authenticatedUser.value = authResponse.user;
 			})
-			.finally(() => (authState.isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	async function logOut() {
@@ -34,12 +36,12 @@ export default function createAuthenticationService(
 	}
 
 	function checkSession() {
-		authState.isLoading.value = true;
+		isLoadingAuth.value = true;
 
 		return authEndpoint
 			.checkSession()
 			.then((loggedUser) => (authState.authenticatedUser.value = loggedUser))
-			.finally(() => (authState.isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	function validatePassword(password: string) {
@@ -65,7 +67,7 @@ export default function createAuthenticationService(
 	}
 
 	function verifyUser(code: string) {
-		authState.isLoading.value = true;
+		isLoadingAuth.value = true;
 
 		return authEndpoint
 			.verifyUser(code)
@@ -73,7 +75,7 @@ export default function createAuthenticationService(
 				localStorage.setItem('userToken', authResponse.token);
 				authState.authenticatedUser.value = authResponse.user;
 			})
-			.finally(() => (authState.isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	return {

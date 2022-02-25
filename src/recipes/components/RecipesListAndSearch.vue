@@ -7,7 +7,7 @@
 				:embedded="embedded"
 			/>
 		</div>
-		<LoadingSpinner v-if="isLoading" />
+		<LoadingSpinner v-if="isLoadingRecipes" />
 		<template v-else>
 			<Button
 				v-if="showCreateRecipe"
@@ -38,7 +38,11 @@ import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { SearchType, SearchQuery } from 'cooklens-types';
-import { RecipeServiceKey, RecipeStateKey } from '@/injectionKeys';
+import {
+	LoadingStateKey,
+	RecipeServiceKey,
+	RecipeStateKey,
+} from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipesListAndSearch',
@@ -59,7 +63,10 @@ export default defineComponent({
 
 	setup(props) {
 		const recipeState = inject(RecipeStateKey)!;
-		const { isLoading, recipes, setSearch, searchQuery } = recipeState;
+		const { recipes, setSearch, searchQuery } = recipeState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
 
 		const recipeService = inject(RecipeServiceKey)!;
 
@@ -71,7 +78,7 @@ export default defineComponent({
 		// const cachedRecipes = ref<Recipe[]>([]);
 
 		const data = {
-			isLoading,
+			isLoadingRecipes,
 			showFilteredRecipes,
 		};
 

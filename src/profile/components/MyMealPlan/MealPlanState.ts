@@ -17,16 +17,17 @@ import {
 	Recipe,
 } from 'cooklens-types';
 import { WeekDay } from '@/shared/Calendar/CalendarTypes';
+import { loadingState } from '@/LoadingState';
 
 export default function createMealPlanState() {
 	const mealPlanService = new MealPlantEndpoint();
 
+	const { isLoadingMealPlan } = loadingState;
 	const selectedDay = ref<Day>(new WeekDay(new Date()));
 
 	const mealPlan = ref<MealPlan>();
 	const dayPlan = ref<DayPlan>(newDayPlan());
 
-	const isLoading = ref(false);
 	const isAddingMeal = ref(false);
 	const isAddingRecipeToMeal = ref(false);
 	const isAddingNewRecipeToMeal = ref(false);
@@ -56,7 +57,7 @@ export default function createMealPlanState() {
 	);
 
 	function getMealPlan(): Promise<MealPlan> {
-		isLoading.value = true;
+		isLoadingMealPlan.value = true;
 
 		return mealPlanService
 			.getMealPlan()
@@ -69,7 +70,7 @@ export default function createMealPlanState() {
 
 				return serverMealPlan;
 			})
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingMealPlan.value = false));
 	}
 
 	function updateMealPlan(): void {

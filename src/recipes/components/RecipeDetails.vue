@@ -1,9 +1,9 @@
 <template>
-	<CustomModal v-if="isLoading && !id">
+	<CustomModal v-if="isLoadingRecipes && !id">
 		<LoadingSpinner />
 	</CustomModal>
 	<div class="container" :class="{ thin: !!id, embedded }" v-else>
-		<div v-if="isLoading & !!id"><LoadingSpinner /></div>
+		<div v-if="isLoadingRecipes & !!id"><LoadingSpinner /></div>
 		<template v-else>
 			<div class="gallery-and-icons">
 				<Button
@@ -166,6 +166,7 @@ import { Ingredient, Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
 import {
+	LoadingStateKey,
 	RecipeServiceKey,
 	RecipeStateKey,
 	UserStateKey,
@@ -197,7 +198,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const recipeState = inject(RecipeStateKey)!;
 		const {
-			isLoading,
 			canModifyServings,
 			modifiedServings,
 			isFavoriteRecipe,
@@ -205,6 +205,9 @@ export default defineComponent({
 			recipe,
 			editRating,
 		} = recipeState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
 
 		const recipeService = inject(RecipeServiceKey)!;
 
@@ -219,7 +222,7 @@ export default defineComponent({
 		const showTab = ref<Tab>('introduction');
 
 		const data = {
-			isLoading,
+			isLoadingRecipes,
 			recipe,
 			canModifyServings,
 			modifiedServings,

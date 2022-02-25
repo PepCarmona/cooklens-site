@@ -11,7 +11,7 @@
 				</Button>
 			</router-link>
 		</div>
-		<LoadingSpinner v-if="isLoading" />
+		<LoadingSpinner v-if="isLoadingUser" />
 		<RecipeList :recipes="myRecipes" slim />
 	</div>
 </template>
@@ -23,7 +23,7 @@ import { useRouter } from 'vue-router';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
 import RecipeList from '@/recipes/components/RecipeList.vue';
-import { UserStateKey } from '@/injectionKeys';
+import { LoadingStateKey, UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'MyRecipes',
@@ -36,7 +36,10 @@ export default defineComponent({
 
 	setup() {
 		const userState = inject(UserStateKey)!;
-		const { getMyRecipes, myRecipes, isLoading } = userState;
+		const { getMyRecipes, myRecipes } = userState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingUser } = loadingState;
 
 		const router = useRouter();
 
@@ -50,7 +53,7 @@ export default defineComponent({
 
 		return {
 			myRecipes,
-			isLoading,
+			isLoadingUser,
 			back,
 		};
 	},

@@ -18,6 +18,7 @@ import createNotificationState from './shared/Notifications/NotifiactionState';
 import {
 	AuthServiceKey,
 	AuthStateKey,
+	LoadingStateKey,
 	MealPlanStateKey,
 	NotificationStateKey,
 	PaginationStatekey,
@@ -27,6 +28,7 @@ import {
 } from './injectionKeys';
 import createRecipeService from './recipes/RecipeService';
 import createAuthenticationService from './auth/AuthenticationService';
+import { loadingState } from './LoadingState';
 
 export const authState = createAuthenticationState();
 const paginationState = createPaginationState();
@@ -55,6 +57,7 @@ app.provide(PaginationStatekey, paginationState);
 app.provide(AuthStateKey, authState);
 app.provide(MealPlanStateKey, mealPlanState);
 app.provide(NotificationStateKey, notificationState);
+app.provide(LoadingStateKey, loadingState);
 
 app.provide(RecipeServiceKey, recipeService);
 app.provide(AuthServiceKey, authService);

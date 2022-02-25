@@ -1,5 +1,6 @@
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import { AuthenticationState } from '@/auth/AuthenticationState';
+import { loadingState } from '@/LoadingState';
 import { PaginationState } from '@/shared/Pagination/PaginationState';
 import { Recipe, UserInfo } from 'cooklens-types';
 import { RecipeState } from './RecipeState';
@@ -11,35 +12,36 @@ export default function createRecipeService(
 	authState: AuthenticationState,
 	paginationState: PaginationState
 ) {
+	const { isLoadingRecipes } = loadingState;
 	function addRecipe(recipe: Recipe): Promise<Recipe> {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		recipe.author = authState.authenticatedUser.value?._id;
 
 		return recipesEndpoint
 			.addRecipe(recipe)
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function editRecipe(_recipe: Recipe): Promise<Recipe> {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.editRecipe(_recipe)
 			.then((editedRecipe) => (recipeState.recipe.value = editedRecipe))
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function importRecipe(url: string) {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.importRecipe(url)
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function searchRecipes(page = 1, limit = 10) {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.searchRecipes(
@@ -55,11 +57,11 @@ export default function createRecipeService(
 
 				recipeState.recipes.value = paginatedRecipes.result;
 			})
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function getRecipe(id: string) {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.getRecipe(id)
@@ -86,11 +88,11 @@ export default function createRecipeService(
 					authState.authenticatedUser.value?._id ===
 						(resultRecipe.author as UserInfo)._id;
 			})
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function getRandomRecipe() {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.getRandomRecipe()
@@ -107,15 +109,15 @@ export default function createRecipeService(
 						recipeState.recipe.value.servings;
 				}
 			})
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	function deleteRecipe(recipe: Recipe) {
-		recipeState.isLoading.value = true;
+		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
 			.deleteRecipe(recipe)
-			.finally(() => (recipeState.isLoading.value = false));
+			.finally(() => (isLoadingRecipes.value = false));
 	}
 
 	return {

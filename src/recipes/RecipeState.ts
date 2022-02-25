@@ -10,7 +10,6 @@ export default function createRecipeState(authState: AuthenticationState) {
 	const recipeService = new RecipesEndpoint();
 	const { authenticatedUser } = authState;
 
-	const isLoading = ref(false);
 	const isOwnRecipe = ref(false);
 	const recipe = ref<Recipe>(new RecipeClass());
 	const canModifyServings = ref(false);
@@ -43,7 +42,6 @@ export default function createRecipeState(authState: AuthenticationState) {
 	}
 
 	return {
-		isLoading,
 		isOwnRecipe,
 		recipe,
 		canModifyServings,

@@ -45,7 +45,7 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<Button class="action" @click="register" :loading="isLoading" primary>
+		<Button class="action" @click="register" :loading="isLoadingAuth" primary>
 			Register
 		</Button>
 	</div>
@@ -59,7 +59,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 
 import { User, UserInfo } from 'cooklens-types';
 import { notify } from '@/shared/Notifications/NotifiactionState';
-import { AuthServiceKey, AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, LoadingStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Register',
@@ -76,8 +76,8 @@ export default defineComponent({
 	setup(props) {
 		const user = ref<UserInfo>(new User());
 
-		const authState = inject(AuthStateKey)!;
-		const { isLoading } = authState;
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingAuth } = loadingState;
 
 		const authService = inject(AuthServiceKey)!;
 
@@ -129,7 +129,7 @@ export default defineComponent({
 
 		return {
 			user,
-			isLoading,
+			isLoadingAuth,
 			isShowingVerifyMail,
 			register,
 		};
