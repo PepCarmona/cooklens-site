@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '@/views/Home.vue';
 import { notify } from '@/shared/Notifications/NotifiactionState';
-import { authState } from '@/main';
 import createAuthenticationService from '@/auth/AuthenticationService';
+import { authState } from '@/auth/AuthenticationState';
 
 const { verifyUser } = createAuthenticationService(authState);
 

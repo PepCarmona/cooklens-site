@@ -11,7 +11,6 @@ import { setupFeatureToggle } from './helpers/featureToggle';
 import createRecipeState from './recipes/RecipeState';
 import createUserState from './profile/UserState';
 import createPaginationState from './shared/Pagination/PaginationState';
-import createAuthenticationState from '@/auth/AuthenticationState';
 import createMealPlanState from './profile/components/MyMealPlan/MealPlanState';
 import createNotificationState from './shared/Notifications/NotifiactionState';
 
@@ -29,8 +28,8 @@ import {
 import createRecipeService from './recipes/RecipeService';
 import createAuthenticationService from './auth/AuthenticationService';
 import { loadingState } from './LoadingState';
+import { authState } from './auth/AuthenticationState';
 
-export const authState = createAuthenticationState();
 const paginationState = createPaginationState();
 const recipeState = createRecipeState(authState);
 const userState = createUserState(authState, paginationState);
