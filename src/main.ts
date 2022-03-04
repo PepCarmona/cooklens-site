@@ -18,6 +18,7 @@ import {
 	AuthServiceKey,
 	AuthStateKey,
 	LoadingStateKey,
+	MealPlanServiceKey,
 	MealPlanStateKey,
 	NotificationStateKey,
 	PaginationStatekey,
@@ -29,6 +30,7 @@ import createRecipeService from './recipes/RecipeService';
 import createAuthenticationService from './auth/AuthenticationService';
 import { loadingState } from './LoadingState';
 import { authState } from './auth/AuthenticationState';
+import createMealPlanService from './profile/components/MyMealPlan/MealPlanService';
 
 const paginationState = createPaginationState();
 const recipeState = createRecipeState(authState);
@@ -42,6 +44,7 @@ const recipeService = createRecipeService(
 	paginationState
 );
 const authService = createAuthenticationService(authState);
+const mealPlanService = createMealPlanService(mealPlanState);
 
 setupFeatureToggle();
 
@@ -60,6 +63,7 @@ app.provide(LoadingStateKey, loadingState);
 
 app.provide(RecipeServiceKey, recipeService);
 app.provide(AuthServiceKey, authService);
+app.provide(MealPlanServiceKey, mealPlanService);
 
 app.component('Button', Button);
 
