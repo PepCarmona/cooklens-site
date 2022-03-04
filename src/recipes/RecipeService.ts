@@ -2,8 +2,8 @@ import { RecipesEndpoint } from '@/api/endpoints/recipe';
 import { AuthenticationState } from '@/auth/AuthenticationState';
 import { loadingState } from '@/LoadingState';
 import { PaginationState } from '@/shared/Pagination/PaginationState';
-import { Recipe, UserInfo } from 'cooklens-types';
-import { RecipeState } from './RecipeState';
+import { Recipe as IRecipe, UserInfo } from 'cooklens-types';
+import { Recipe, RecipeState } from './RecipeState';
 
 const recipesEndpoint = new RecipesEndpoint();
 
@@ -20,6 +20,7 @@ export default function createRecipeService(
 
 		return recipesEndpoint
 			.addRecipe(recipe)
+			.then(computeRecipe)
 			.finally(() => (isLoadingRecipes.value = false));
 	}
 
@@ -28,7 +29,10 @@ export default function createRecipeService(
 
 		return recipesEndpoint
 			.editRecipe(_recipe)
-			.then((editedRecipe) => (recipeState.recipe.value = editedRecipe))
+			.then(
+				(editedRecipe) =>
+					(recipeState.recipe.value = computeRecipe(editedRecipe))
+			)
 			.finally(() => (isLoadingRecipes.value = false));
 	}
 
@@ -55,7 +59,7 @@ export default function createRecipeService(
 
 				paginationState.checkIfNextPageExists(paginatedRecipes.next);
 
-				recipeState.recipes.value = paginatedRecipes.result;
+				recipeState.recipes.value = paginatedRecipes.result.map(computeRecipe);
 			})
 			.finally(() => (isLoadingRecipes.value = false));
 	}
@@ -71,22 +75,7 @@ export default function createRecipeService(
 					resultRecipe.time.preparation = resultRecipe.time.preparation ?? 0;
 				}
 
-				recipeState.recipe.value = resultRecipe;
-
-				recipeState.canModifyServings.value =
-					recipeState.recipe.value.ingredients.some(
-						(ingredient) => ingredient.quantity && ingredient.quantity > 0
-					);
-
-				if (recipeState.canModifyServings.value) {
-					recipeState.modifiedServings.value =
-						recipeState.recipe.value.servings;
-				}
-
-				recipeState.isOwnRecipe.value =
-					!!resultRecipe.author &&
-					authState.authenticatedUser.value?._id ===
-						(resultRecipe.author as UserInfo)._id;
+				recipeState.recipe.value = computeRecipe(resultRecipe);
 			})
 			.finally(() => (isLoadingRecipes.value = false));
 	}
@@ -97,17 +86,7 @@ export default function createRecipeService(
 		return recipesEndpoint
 			.getRandomRecipe()
 			.then((randomRecipe) => {
-				recipeState.recipe.value = randomRecipe;
-
-				recipeState.canModifyServings.value =
-					recipeState.recipe.value.ingredients.some(
-						(ingredient) => ingredient.quantity && ingredient.quantity > 0
-					);
-
-				if (recipeState.canModifyServings.value) {
-					recipeState.modifiedServings.value =
-						recipeState.recipe.value.servings;
-				}
+				recipeState.recipe.value = computeRecipe(randomRecipe);
 			})
 			.finally(() => (isLoadingRecipes.value = false));
 	}
@@ -118,6 +97,24 @@ export default function createRecipeService(
 		return recipesEndpoint
 			.deleteRecipe(recipe)
 			.finally(() => (isLoadingRecipes.value = false));
+	}
+
+	function computeRecipe(recipe: IRecipe): Recipe {
+		const isOwnRecipe =
+			!!recipe.author &&
+			authState.authenticatedUser.value?._id ===
+				(recipe.author as UserInfo)._id;
+
+		const canModifyServings = recipe.ingredients.some(
+			(ingredient) => ingredient.quantity && ingredient.quantity > 0
+		);
+
+		return {
+			...recipe,
+			isOwnRecipe,
+			canModifyServings,
+			modifiedServings: canModifyServings ? recipe.servings : null,
+		};
 	}
 
 	return {

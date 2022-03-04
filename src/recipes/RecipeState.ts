@@ -4,16 +4,24 @@ import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
 import { AuthenticationState } from '@/auth/AuthenticationState';
 
-import { Recipe, RecipeClass, SearchQuery, SearchType } from 'cooklens-types';
+import {
+	Recipe as IRecipe,
+	RecipeClass,
+	SearchQuery,
+	SearchType,
+} from 'cooklens-types';
+
+export interface Recipe extends IRecipe {
+	isOwnRecipe?: boolean;
+	canModifyServings?: boolean;
+	modifiedServings?: number | null;
+}
 
 export default function createRecipeState(authState: AuthenticationState) {
 	const recipeService = new RecipesEndpoint();
 	const { authenticatedUser } = authState;
 
-	const isOwnRecipe = ref(false);
 	const recipe = ref<Recipe>(new RecipeClass());
-	const canModifyServings = ref(false);
-	const modifiedServings = ref<number | null>(null);
 	const recipes = ref<Recipe[]>([]);
 	const searchQuery = ref<SearchQuery>({ type: 'title', text: '' });
 
@@ -42,10 +50,7 @@ export default function createRecipeState(authState: AuthenticationState) {
 	}
 
 	return {
-		isOwnRecipe,
 		recipe,
-		canModifyServings,
-		modifiedServings,
 		recipes,
 		searchQuery,
 

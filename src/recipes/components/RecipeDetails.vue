@@ -23,7 +23,7 @@
 				<div class="icons" :class="{ 'no-image': !recipeHasImages }">
 					<Button
 						class="editButton"
-						v-if="isOwnRecipe && !isMobile"
+						v-if="recipe.isOwnRecipe && !isMobile"
 						@click="showEditRecipe"
 					>
 						<i class="las la-pen"></i>
@@ -111,11 +111,11 @@
 					</div>
 					<div v-if="showTab === 'ingredients'" class="ingredients">
 						<CustomNumberInput
-							v-if="canModifyServings"
+							v-if="recipe.canModifyServings"
 							class="modifyServingsInput"
 							:id="'servingsInput'"
 							:min="1"
-							v-model="modifiedServings"
+							v-model="recipe.modifiedServings"
 						/>
 						<ul class="ingredients-list">
 							<li v-for="ingredient in ingredientsToShow" :key="ingredient._id">
@@ -197,14 +197,7 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const recipeState = inject(RecipeStateKey)!;
-		const {
-			canModifyServings,
-			modifiedServings,
-			isFavoriteRecipe,
-			isOwnRecipe,
-			recipe,
-			editRating,
-		} = recipeState;
+		const { isFavoriteRecipe, recipe, editRating } = recipeState;
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
@@ -224,10 +217,7 @@ export default defineComponent({
 		const data = {
 			isLoadingRecipes,
 			recipe,
-			canModifyServings,
-			modifiedServings,
 			isFavoriteRecipe,
-			isOwnRecipe,
 			toggleFavRecipe,
 			gallery,
 			showTab,
@@ -249,7 +239,7 @@ export default defineComponent({
 		});
 
 		const ingredientsToShow = computed(() => {
-			if (canModifyServings.value) {
+			if (recipe.value.canModifyServings) {
 				const clonedIngredients: Ingredient[] = JSON.parse(
 					JSON.stringify(recipe.value.ingredients)
 				);
@@ -257,7 +247,7 @@ export default defineComponent({
 					if (ingredient.quantity) {
 						ingredient.quantity =
 							(ingredient.quantity / recipe.value.servings) *
-							modifiedServings.value!;
+							recipe.value.modifiedServings!;
 					}
 
 					return ingredient;

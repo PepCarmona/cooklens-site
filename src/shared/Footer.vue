@@ -59,7 +59,7 @@ export default defineComponent({
 		const router = useRouter();
 
 		const recipeState = inject(RecipeStateKey)!;
-		const { isOwnRecipe, recipe } = recipeState;
+		const { recipe } = recipeState;
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
@@ -72,7 +72,7 @@ export default defineComponent({
 			() =>
 				!isLoadingRecipes.value &&
 				route.name === 'RecipeDetails' &&
-				isOwnRecipe.value
+				recipe.value.isOwnRecipe
 		);
 
 		const showFooter = computed(() => !route.meta.noFooter);
