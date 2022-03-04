@@ -3,7 +3,7 @@
 		<PageHeader @go-back="back">
 			<template v-slot:title>My Favorite Recipes</template>
 		</PageHeader>
-		<LoadingSpinner v-if="isLoading" />
+		<LoadingSpinner v-if="isLoadingUser" />
 		<RecipeList v-else :recipes="favRecipes" slim />
 	</div>
 </template>
@@ -14,8 +14,8 @@ import { useRouter } from 'vue-router';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import PageHeader from '@/shared/PageHeader.vue';
-import RecipeList from '@/recipes/RecipeList.vue';
-import { UserStateKey } from '@/injectionKeys';
+import RecipeList from '@/recipes/components/RecipeList.vue';
+import { LoadingStateKey, UserStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'MyFavRecipes',
@@ -28,7 +28,10 @@ export default defineComponent({
 
 	setup() {
 		const userState = inject(UserStateKey)!;
-		const { getFavRecipes, favRecipes, isLoading } = userState;
+		const { getFavRecipes, favRecipes } = userState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingUser } = loadingState;
 
 		const router = useRouter();
 
@@ -42,7 +45,7 @@ export default defineComponent({
 
 		return {
 			favRecipes,
-			isLoading,
+			isLoadingUser,
 			back,
 		};
 	},

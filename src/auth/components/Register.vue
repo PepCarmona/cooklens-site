@@ -45,7 +45,7 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<Button class="action" @click="register" :loading="isLoading" primary>
+		<Button class="action" @click="register" :loading="isLoadingAuth" primary>
 			Register
 		</Button>
 	</div>
@@ -59,7 +59,7 @@ import CustomModal from '@/shared/CustomModal.vue';
 
 import { User, UserInfo } from 'cooklens-types';
 import { notify } from '@/shared/Notifications/NotifiactionState';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, LoadingStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Register',
@@ -76,8 +76,10 @@ export default defineComponent({
 	setup(props) {
 		const user = ref<UserInfo>(new User());
 
-		const authState = inject(AuthStateKey)!;
-		const { isLoading, register: authRegister, validatePassword } = authState;
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingAuth } = loadingState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		const isShowingVerifyMail = ref(false);
 
@@ -86,7 +88,8 @@ export default defineComponent({
 				return;
 			}
 
-			authRegister(user.value, props.nextUrl)
+			authService
+				.register(user.value, props.nextUrl)
 				.then(() => (isShowingVerifyMail.value = true))
 				.catch((err) => notify(err, 'error'));
 		}
@@ -107,7 +110,9 @@ export default defineComponent({
 				return false;
 			}
 
-			const validatedPassword = validatePassword(user.value.password);
+			const validatedPassword = authService.validatePassword(
+				user.value.password
+			);
 
 			if (!validatedPassword.isValid) {
 				console.error(validatedPassword.error);
@@ -124,7 +129,7 @@ export default defineComponent({
 
 		return {
 			user,
-			isLoading,
+			isLoadingAuth,
 			isShowingVerifyMail,
 			register,
 		};
@@ -133,5 +138,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~@/auth/style/authentication.scss';
+@import '~@/auth/components/style/authentication.scss';
 </style>

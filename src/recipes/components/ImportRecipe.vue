@@ -3,7 +3,7 @@
 		<input ref="input" type="text" placeholder="Url" @keypress="autoImport" />
 		<div class="separator"></div>
 
-		<Button @click="importFromUrl" :loading="isLoading" primary>
+		<Button @click="importFromUrl" :loading="isLoadingRecipes" primary>
 			IMPORT
 		</Button>
 		<div v-if="importErrors" class="errors">
@@ -18,7 +18,7 @@ import { defineComponent, inject, onMounted, ref } from 'vue';
 import { Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
-import { RecipeStateKey } from '@/injectionKeys';
+import { LoadingStateKey, RecipeServiceKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'ImportRecipe',
@@ -34,9 +34,10 @@ export default defineComponent({
 
 		const importErrors = ref<string | null>(null);
 
-		const recipeState = inject(RecipeStateKey)!;
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
 
-		const { isLoading, importRecipe } = recipeState;
+		const recipeService = inject(RecipeServiceKey)!;
 
 		onMounted(() => {
 			if (!isMobile) {
@@ -54,7 +55,8 @@ export default defineComponent({
 				return;
 			}
 
-			importRecipe(inputUrl)
+			recipeService
+				.importRecipe(inputUrl)
 				.then((importedRecipe: Recipe) => {
 					emit('importedRecipe', importedRecipe);
 				})
@@ -72,7 +74,7 @@ export default defineComponent({
 		return {
 			input,
 			importErrors,
-			isLoading,
+			isLoadingRecipes,
 			importFromUrl,
 			autoImport,
 		};

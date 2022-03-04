@@ -7,7 +7,7 @@
 				:embedded="embedded"
 			/>
 		</div>
-		<LoadingSpinner v-if="isLoading" />
+		<LoadingSpinner v-if="isLoadingRecipes" />
 		<template v-else>
 			<Button
 				v-if="showCreateRecipe"
@@ -33,12 +33,16 @@
 import { defineComponent, inject, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import SearchRecipe from '@/recipes/SearchRecipe.vue';
-import RecipeList from '@/recipes/RecipeList.vue';
+import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
+import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { SearchType, SearchQuery } from 'cooklens-types';
-import { RecipeStateKey } from '@/injectionKeys';
+import {
+	LoadingStateKey,
+	RecipeServiceKey,
+	RecipeStateKey,
+} from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipesListAndSearch',
@@ -59,8 +63,12 @@ export default defineComponent({
 
 	setup(props) {
 		const recipeState = inject(RecipeStateKey)!;
-		const { isLoading, recipes, searchRecipes, setSearch, searchQuery } =
-			recipeState;
+		const { recipes, setSearch, searchQuery } = recipeState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
+
+		const recipeService = inject(RecipeServiceKey)!;
 
 		const router = useRouter();
 		const route = useRoute();
@@ -70,7 +78,7 @@ export default defineComponent({
 		// const cachedRecipes = ref<Recipe[]>([]);
 
 		const data = {
-			isLoading,
+			isLoadingRecipes,
 			showFilteredRecipes,
 		};
 
@@ -122,7 +130,7 @@ export default defineComponent({
 
 			updateQueryString(page, searchQuery);
 
-			searchRecipes(page);
+			recipeService.searchRecipes(page);
 		}
 
 		function showAllRecipes() {

@@ -22,7 +22,7 @@
 
 		<div v-if="false" class="errors">Errors go here</div>
 
-		<Button class="action" @click="logIn" :loading="isLoading" primary>
+		<Button class="action" @click="logIn" :loading="isLoadingAuth" primary>
 			Login
 		</Button>
 	</div>
@@ -37,7 +37,7 @@ import CustomInput from '@/shared/CustomInput.vue';
 import { notify } from '@/shared/Notifications/NotifiactionState';
 
 import { User, UserInfo } from 'cooklens-types';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthServiceKey, LoadingStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'Login',
@@ -54,15 +54,18 @@ export default defineComponent({
 		const router = useRouter();
 		const user = ref<UserInfo>(new User());
 
-		const authState = inject(AuthStateKey)!;
-		const { isLoading, logIn: authLogin } = authState;
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingAuth } = loadingState;
+
+		const authService = inject(AuthServiceKey)!;
 
 		function logIn() {
 			if (!isValidUser()) {
 				return;
 			}
 
-			authLogin(user.value)
+			authService
+				.logIn(user.value)
 				.then(() => router.push(props.nextUrl ?? { name: 'Profile' }))
 				.catch((err) => notify(err, 'error'));
 		}
@@ -83,7 +86,7 @@ export default defineComponent({
 
 		return {
 			user,
-			isLoading,
+			isLoadingAuth,
 			logIn,
 		};
 	},
@@ -91,5 +94,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~@/auth/style/authentication.scss';
+@import '~@/auth/components/style/authentication.scss';
 </style>

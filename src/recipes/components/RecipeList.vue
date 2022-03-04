@@ -1,6 +1,6 @@
 <template>
 	<div class="card-container" :class="{ embedded, thin, 'pb-3': !embedded }">
-		<LoadingSpinner v-if="isLoading" class="loadingCard" />
+		<LoadingSpinner v-if="isLoadingRecipes" class="loadingCard" />
 		<div class="grid" v-else>
 			<RecipeCard
 				v-for="recipe in recipes"
@@ -14,7 +14,7 @@
 		</div>
 		<div v-if="recipes.length === 0">No recipes match this search</div>
 		<Pagination
-			v-if="!(currentPage === 1 && !nextPageExists) && !isLoading"
+			v-if="!(currentPage === 1 && !nextPageExists) && !isLoadingRecipes"
 			class="mt-2"
 			:nextPageExists="nextPageExists"
 			@previousPage="goToPreviousPage"
@@ -26,12 +26,12 @@
 <script lang="ts">
 import { defineComponent, inject, PropType } from 'vue';
 
-import RecipeCard from '@/recipes/RecipeCard.vue';
+import RecipeCard from '@/recipes/components/RecipeCard.vue';
 import Pagination from '@/shared/Pagination/Pagination.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { Recipe } from 'cooklens-types';
-import { PaginationStatekey, RecipeStateKey } from '@/injectionKeys';
+import { LoadingStateKey, PaginationStatekey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'RecipeList',
@@ -58,8 +58,8 @@ export default defineComponent({
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage, nextPageExists } = paginationState;
 
-		const recipeState = inject(RecipeStateKey)!;
-		const { isLoading } = recipeState;
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
 
 		function goToPreviousPage() {
 			emit('goToPage', currentPage.value - 1);
@@ -72,7 +72,7 @@ export default defineComponent({
 		return {
 			currentPage,
 			nextPageExists,
-			isLoading,
+			isLoadingRecipes,
 			goToPreviousPage,
 			goToNextPage,
 		};

@@ -1,7 +1,5 @@
 import { computed, ref, watch } from 'vue';
 
-import { MealPlantEndpoint } from '@/api/endpoints/mealPlan';
-
 import { getLastItem } from '@/helpers/array';
 
 import dayjs from 'dayjs';
@@ -19,66 +17,22 @@ import {
 import { WeekDay } from '@/shared/Calendar/CalendarTypes';
 
 export default function createMealPlanState() {
-	const mealPlanService = new MealPlantEndpoint();
-
 	const selectedDay = ref<Day>(new WeekDay(new Date()));
 
 	const mealPlan = ref<MealPlan>();
 	const dayPlan = ref<DayPlan>(newDayPlan());
 
-	const isLoading = ref(false);
 	const isAddingMeal = ref(false);
 	const isAddingRecipeToMeal = ref(false);
 	const isAddingNewRecipeToMeal = ref(false);
 
 	watch(selectedDay, () => (dayPlan.value = getDayPlan()), { immediate: true });
-	watch(
-		dayPlan,
-		(newValue: DayPlan, oldValue: DayPlan) => {
-			if (
-				dayPlan.value.meals.length > 0 &&
-				!mealPlan.value?.days.find((day) => day.date === dayPlan.value.date)
-			) {
-				mealPlan.value?.days.push(dayPlan.value);
-			}
-
-			if (oldValue.date === newValue.date) {
-				updateMealPlan();
-			}
-		},
-		{ deep: true }
-	);
 
 	const areAllMealsAdded = computed(() =>
 		meals.every((meal) =>
 			dayPlan.value.meals.some((dayMeal) => dayMeal.meal === meal)
 		)
 	);
-
-	function getMealPlan(): Promise<MealPlan> {
-		isLoading.value = true;
-
-		return mealPlanService
-			.getMealPlan()
-			.then((serverMealPlan) => {
-				mealPlan.value = serverMealPlan;
-
-				if (dayPlan.value.meals.length === 0) {
-					dayPlan.value = getDayPlan();
-				}
-
-				return serverMealPlan;
-			})
-			.finally(() => (isLoading.value = false));
-	}
-
-	function updateMealPlan(): void {
-		if (!mealPlan.value) {
-			return;
-		}
-
-		mealPlanService.updateMealPlan(mealPlan.value);
-	}
 
 	function getDayPlan(): DayPlan {
 		if (!mealPlan.value) {
@@ -147,7 +101,7 @@ export default function createMealPlanState() {
 		areAllMealsAdded,
 
 		getCalendarBoundaries,
-		getMealPlan,
+		getDayPlan,
 		addRecipeToMeal,
 		removeMeal,
 		selectDay: (day: Day) => (selectedDay.value = day),

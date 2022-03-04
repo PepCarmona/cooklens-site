@@ -3,10 +3,11 @@ import { ref } from 'vue';
 import { UserEndpoint } from '@/api/endpoints/user';
 import { RecipesEndpoint } from '@/api/endpoints/recipe';
 
-import { AuthenticationState } from '@/auth/state/AuthenticationState';
+import { AuthenticationState } from '@/auth/AuthenticationState';
 import { PaginationState } from '@/shared/Pagination/PaginationState';
 
 import { Recipe } from 'cooklens-types';
+import { loadingState } from '@/LoadingState';
 
 export default function createUserState(
 	authState: AuthenticationState,
@@ -15,11 +16,12 @@ export default function createUserState(
 	const userService = new UserEndpoint();
 	const recipeService = new RecipesEndpoint();
 
+	const { isLoadingUser } = loadingState;
+
 	const { checkIfNextPageExists, goToPage } = paginationState;
 
 	const user = authState.authenticatedUser;
 
-	const isLoading = ref(false);
 	const favRecipes = ref<Recipe[]>([]);
 	const myRecipes = ref<Recipe[]>([]);
 
@@ -35,7 +37,7 @@ export default function createUserState(
 	}
 
 	function getFavRecipes(page = 1, limit = 10) {
-		isLoading.value = true;
+		isLoadingUser.value = true;
 
 		return userService
 			.getFavRecipes(page, limit)
@@ -46,11 +48,11 @@ export default function createUserState(
 
 				favRecipes.value = paginatedRecipes.result;
 			})
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingUser.value = false));
 	}
 
 	function getMyRecipes(page = 1, limit = 10) {
-		isLoading.value = true;
+		isLoadingUser.value = true;
 
 		return recipeService
 			.getRecipesByUser(user.value!._id!, page, limit)
@@ -61,11 +63,10 @@ export default function createUserState(
 
 				myRecipes.value = paginatedRecipes.result;
 			})
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingUser.value = false));
 	}
 
 	return {
-		isLoading,
 		favRecipes,
 		myRecipes,
 

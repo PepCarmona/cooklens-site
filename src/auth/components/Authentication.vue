@@ -29,8 +29,8 @@
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Login from '@/auth/Login.vue';
-import Register from '@/auth/Register.vue';
+import Login from '@/auth/components/Login.vue';
+import Register from '@/auth/components/Register.vue';
 
 let prevRoute: string | undefined;
 export default defineComponent({
@@ -68,5 +68,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~@/auth/style/authentication.scss';
+@import '~@/auth/components/style/authentication.scss';
 </style>

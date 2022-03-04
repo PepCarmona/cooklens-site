@@ -1,49 +1,47 @@
-import { ref } from 'vue';
-
 import { AuthEndpoint } from '@/api/endpoints/auth';
-
+import { loadingState } from '@/LoadingState';
 import { UserInfo } from 'cooklens-types';
+import { AuthenticationState } from './AuthenticationState';
 
-export default function createAuthenticationState() {
-	const authService = new AuthEndpoint();
+const authEndpoint = new AuthEndpoint();
 
-	const isLoading = ref(false);
-	const authenticatedUser = ref<UserInfo | null>();
-	const token = ref(localStorage.getItem('userToken') || '');
-
+export default function createAuthenticationService(
+	authState: AuthenticationState
+) {
+	const { isLoadingAuth } = loadingState;
 	function register(user: UserInfo, nextUrl?: string) {
-		isLoading.value = true;
+		isLoadingAuth.value = true;
 
-		return authService
+		return authEndpoint
 			.register(user, nextUrl)
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	function logIn(user: UserInfo) {
-		isLoading.value = true;
+		isLoadingAuth.value = true;
 
-		return authService
+		return authEndpoint
 			.logIn(user)
 			.then((authResponse) => {
 				localStorage.setItem('userToken', authResponse.token);
-				authenticatedUser.value = authResponse.user;
+				authState.authenticatedUser.value = authResponse.user;
 			})
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	async function logOut() {
-		authenticatedUser.value = null;
+		authState.authenticatedUser.value = null;
 
-		await authService.logOut();
+		await authEndpoint.logOut();
 	}
 
 	function checkSession() {
-		isLoading.value = true;
+		isLoadingAuth.value = true;
 
-		return authService
+		return authEndpoint
 			.checkSession()
-			.then((loggedUser) => (authenticatedUser.value = loggedUser))
-			.finally(() => (isLoading.value = false));
+			.then((loggedUser) => (authState.authenticatedUser.value = loggedUser))
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	function validatePassword(password: string) {
@@ -69,22 +67,18 @@ export default function createAuthenticationState() {
 	}
 
 	function verifyUser(code: string) {
-		isLoading.value = true;
+		isLoadingAuth.value = true;
 
-		return authService
+		return authEndpoint
 			.verifyUser(code)
 			.then((authResponse) => {
 				localStorage.setItem('userToken', authResponse.token);
-				authenticatedUser.value = authResponse.user;
+				authState.authenticatedUser.value = authResponse.user;
 			})
-			.finally(() => (isLoading.value = false));
+			.finally(() => (isLoadingAuth.value = false));
 	}
 
 	return {
-		isLoading,
-		authenticatedUser,
-		token,
-
 		register,
 		logIn,
 		logOut,
@@ -94,4 +88,4 @@ export default function createAuthenticationState() {
 	};
 }
 
-export type AuthenticationState = ReturnType<typeof createAuthenticationState>;
+export type AuthService = ReturnType<typeof createAuthenticationService>;

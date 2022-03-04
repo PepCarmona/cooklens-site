@@ -1,5 +1,5 @@
 <template>
-	<LoadingSpinner v-if="isLoading" />
+	<LoadingSpinner v-if="isLoadingAuth" />
 	<div v-else-if="authenticatedUser">
 		<router-view></router-view>
 	</div>
@@ -9,7 +9,7 @@
 import { defineComponent, inject } from 'vue';
 
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
-import { AuthStateKey } from '@/injectionKeys';
+import { AuthStateKey, LoadingStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'ProfileWrapper',
@@ -20,11 +20,14 @@ export default defineComponent({
 
 	setup() {
 		const authState = inject(AuthStateKey)!;
-		const { authenticatedUser, isLoading } = authState;
+		const { authenticatedUser } = authState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingAuth } = loadingState;
 
 		return {
 			authenticatedUser,
-			isLoading,
+			isLoadingAuth,
 		};
 	},
 });

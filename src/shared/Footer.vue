@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { RecipeStateKey } from '@/injectionKeys';
+import { LoadingStateKey, RecipeStateKey } from '@/injectionKeys';
 import { computed, defineComponent, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -59,7 +59,10 @@ export default defineComponent({
 		const router = useRouter();
 
 		const recipeState = inject(RecipeStateKey)!;
-		const { isLoading, isOwnRecipe, recipe } = recipeState;
+		const { recipe } = recipeState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
 
 		const routeName = computed(() => route.name);
 
@@ -67,7 +70,9 @@ export default defineComponent({
 
 		const showEditRecipe = computed(
 			() =>
-				!isLoading.value && route.name === 'RecipeDetails' && isOwnRecipe.value
+				!isLoadingRecipes.value &&
+				route.name === 'RecipeDetails' &&
+				recipe.value.isOwnRecipe
 		);
 
 		const showFooter = computed(() => !route.meta.noFooter);

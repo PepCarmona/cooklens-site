@@ -1,9 +1,9 @@
 <template>
-	<CustomModal v-if="isLoading && !id">
+	<CustomModal v-if="isLoadingRecipes && !id">
 		<LoadingSpinner />
 	</CustomModal>
 	<div class="container" :class="{ thin: !!id, embedded }" v-else>
-		<div v-if="isLoading & !!id"><LoadingSpinner /></div>
+		<div v-if="isLoadingRecipes & !!id"><LoadingSpinner /></div>
 		<template v-else>
 			<div class="gallery-and-icons">
 				<Button
@@ -23,7 +23,7 @@
 				<div class="icons" :class="{ 'no-image': !recipeHasImages }">
 					<Button
 						class="editButton"
-						v-if="isOwnRecipe && !isMobile"
+						v-if="recipe.isOwnRecipe && !isMobile"
 						@click="showEditRecipe"
 					>
 						<i class="las la-pen"></i>
@@ -111,11 +111,11 @@
 					</div>
 					<div v-if="showTab === 'ingredients'" class="ingredients">
 						<CustomNumberInput
-							v-if="canModifyServings"
+							v-if="recipe.canModifyServings"
 							class="modifyServingsInput"
 							:id="'servingsInput'"
 							:min="1"
-							v-model="modifiedServings"
+							v-model="recipe.modifiedServings"
 						/>
 						<ul class="ingredients-list">
 							<li v-for="ingredient in ingredientsToShow" :key="ingredient._id">
@@ -165,7 +165,12 @@ import Rating from '@/shared/Rating.vue';
 import { Ingredient, Recipe } from 'cooklens-types';
 
 import { isMobile } from '@/helpers/media';
-import { RecipeStateKey, UserStateKey } from '@/injectionKeys';
+import {
+	LoadingStateKey,
+	RecipeServiceKey,
+	RecipeStateKey,
+	UserStateKey,
+} from '@/injectionKeys';
 
 export function getFormattedTitle(recipe: Recipe): string {
 	return recipe.title.toLowerCase().replaceAll(' ', '-');
@@ -192,17 +197,12 @@ export default defineComponent({
 
 	setup(props, { emit }) {
 		const recipeState = inject(RecipeStateKey)!;
-		const {
-			isLoading,
-			canModifyServings,
-			modifiedServings,
-			isFavoriteRecipe,
-			isOwnRecipe,
-			getRecipe,
-			recipe,
-			editRating,
-			getRandomRecipe: getRandomRecipeState,
-		} = recipeState;
+		const { isFavoriteRecipe, recipe, editRating } = recipeState;
+
+		const loadingState = inject(LoadingStateKey)!;
+		const { isLoadingRecipes } = loadingState;
+
+		const recipeService = inject(RecipeServiceKey)!;
 
 		const userState = inject(UserStateKey)!;
 		const { toggleFavRecipe } = userState;
@@ -215,12 +215,9 @@ export default defineComponent({
 		const showTab = ref<Tab>('introduction');
 
 		const data = {
-			isLoading,
+			isLoadingRecipes,
 			recipe,
-			canModifyServings,
-			modifiedServings,
 			isFavoriteRecipe,
-			isOwnRecipe,
 			toggleFavRecipe,
 			gallery,
 			showTab,
@@ -242,7 +239,7 @@ export default defineComponent({
 		});
 
 		const ingredientsToShow = computed(() => {
-			if (canModifyServings.value) {
+			if (recipe.value.canModifyServings) {
 				const clonedIngredients: Ingredient[] = JSON.parse(
 					JSON.stringify(recipe.value.ingredients)
 				);
@@ -250,7 +247,7 @@ export default defineComponent({
 					if (ingredient.quantity) {
 						ingredient.quantity =
 							(ingredient.quantity / recipe.value.servings) *
-							modifiedServings.value!;
+							recipe.value.modifiedServings!;
 					}
 
 					return ingredient;
@@ -285,7 +282,7 @@ export default defineComponent({
 				return;
 			}
 
-			getRecipe(id).catch((err) => {
+			recipeService.getRecipe(id).catch((err) => {
 				console.error(err);
 				// TODO: show custom error page && display error on floating modal
 				router.push({
@@ -295,7 +292,8 @@ export default defineComponent({
 		}
 
 		function getRandomRecipe() {
-			getRandomRecipeState()
+			recipeService
+				.getRandomRecipe()
 				.then(() => {
 					const formattedTitle = recipe.value.title
 						.toLowerCase()
