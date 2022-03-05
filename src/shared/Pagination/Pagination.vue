@@ -1,39 +1,8 @@
 <template>
 	<div class="pagination-container">
-		<div class="pagination-inner-container">
-			<Button
-				v-if="currentPage > 1"
-				@click="previousPage"
-				class="mr-05"
-				title="previous page"
-			>
-				<i class="las la-angle-left"></i>
-			</Button>
-			<div
-				v-if="currentPage"
-				class="numbers"
-				:class="{
-					'empty-left': currentPage <= 1,
-					'empty-right': !nextPageExists,
-				}"
-			>
-				<span v-if="currentPage > 1" class="previous">
-					{{ currentPage - 1 }}
-				</span>
-				<span class="current">{{ currentPage }}</span>
-				<span v-if="nextPageExists" class="next">
-					{{ currentPage + 1 }}
-				</span>
-			</div>
-			<Button
-				v-if="nextPageExists"
-				@click="nextPage"
-				class="ml-05"
-				title="next page"
-			>
-				<i class="las la-angle-right"></i>
-			</Button>
-		</div>
+		<Button v-if="nextPageExists" @click="nextPage" title="load more">
+			<i class="las la-plus-circle"></i>
+		</Button>
 	</div>
 </template>
 
@@ -113,5 +82,9 @@ i {
 .empty-right {
 	margin-right: calc(0.5rem + 16px);
 	text-align: left;
+}
+
+.la-plus-circle {
+	font-size: 2rem;
 }
 </style>
