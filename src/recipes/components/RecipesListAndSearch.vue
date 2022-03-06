@@ -1,11 +1,7 @@
 <template>
 	<div :class="{ embedded }">
 		<div class="search">
-			<SearchRecipe
-				@doSearch="doSearch($event.page, $event.searchQuery)"
-				@back="$emit('back')"
-				:embedded="embedded"
-			/>
+			<SearchRecipe @back="$emit('back')" :embedded="embedded" />
 		</div>
 		<LoadingSpinner v-if="isLoadingRecipes" />
 		<template v-else>
@@ -113,7 +109,7 @@ export default defineComponent({
 
 				recipeService.searchRecipes(currentPage.value);
 			},
-			{ immediate: true }
+			{ immediate: true, deep: true }
 		);
 
 		function updateQueryString() {
