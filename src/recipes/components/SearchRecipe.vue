@@ -4,6 +4,7 @@
 			<i class="las la-angle-left"></i>
 		</Button>
 		<input
+			@input="changeSearchText()"
 			@focus="isFocus = true"
 			@blur="isFocus = false"
 			ref="searchInput"
@@ -54,9 +55,9 @@ export default defineComponent({
 		embedded: Boolean,
 	},
 
-	emits: ['back'],
+	emits: ['search', 'back'],
 
-	setup() {
+	setup(_, { emit }) {
 		const recipeState = inject(RecipeStateKey)!;
 		const { setSearch, searchQuery } = recipeState;
 
@@ -77,9 +78,7 @@ export default defineComponent({
 				'keydown'
 			) as Observable<KeyboardEvent>;
 
-			searchInputTyping
-				.pipe(debounceTime(200))
-				.subscribe(() => changeSearchText());
+			searchInputTyping.pipe(debounceTime(200)).subscribe(() => emit('search'));
 		});
 
 		function changeSearchType(type: SearchType) {

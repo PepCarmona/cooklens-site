@@ -1,7 +1,11 @@
 <template>
 	<div :class="{ embedded }">
 		<div class="search">
-			<SearchRecipe @back="$emit('back')" :embedded="embedded" />
+			<SearchRecipe
+				@search="doSearch()"
+				@back="$emit('back')"
+				:embedded="embedded"
+			/>
 		</div>
 		<LoadingSpinner v-if="isLoadingRecipes" />
 		<template v-else>
@@ -26,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref, watch } from 'vue';
+import { defineComponent, inject, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
@@ -73,8 +77,6 @@ export default defineComponent({
 		const router = useRouter();
 		const route = useRoute();
 
-		const mounted = ref(false);
-
 		// const cachedRecipes = ref<Recipe[]>([]);
 
 		const data = {
@@ -95,22 +97,8 @@ export default defineComponent({
 			}
 
 			currentPage.value = parseInt(route.query.page?.toString() ?? '1');
-			mounted.value = true;
+			doSearch();
 		});
-
-		watch(
-			[currentPage, searchQuery, mounted],
-			() => {
-				if (!mounted.value) {
-					return;
-				}
-
-				updateQueryString();
-
-				recipeService.searchRecipes(currentPage.value);
-			},
-			{ immediate: true, deep: true }
-		);
 
 		function updateQueryString() {
 			if (props.embedded) {
@@ -143,6 +131,7 @@ export default defineComponent({
 		function loadMore() {
 			window.scrollTo({ top: 0 });
 			currentPage.value++;
+			doSearch();
 		}
 
 		return {
