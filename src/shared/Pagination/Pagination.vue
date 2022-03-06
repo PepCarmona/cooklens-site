@@ -17,7 +17,7 @@ export default defineComponent({
 		nextPageExists: Boolean,
 	},
 
-	emits: ['previousPage', 'nextPage'],
+	emits: ['nextPage'],
 
 	setup(_, { emit }) {
 		const paginationState = inject(PaginationStatekey)!;
@@ -25,9 +25,6 @@ export default defineComponent({
 
 		return {
 			currentPage,
-			previousPage() {
-				emit('previousPage');
-			},
 			nextPage() {
 				emit('nextPage');
 			},

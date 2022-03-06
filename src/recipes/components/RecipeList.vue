@@ -17,7 +17,6 @@
 			v-if="!(currentPage === 1 && !nextPageExists) && !isLoadingRecipes"
 			class="mt-2"
 			:nextPageExists="nextPageExists"
-			@previousPage="goToPreviousPage"
 			@nextPage="goToNextPage"
 		/>
 	</div>
@@ -61,10 +60,6 @@ export default defineComponent({
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
 
-		function goToPreviousPage() {
-			emit('goToPage', currentPage.value - 1);
-		}
-
 		function goToNextPage() {
 			emit('goToPage', currentPage.value + 1);
 		}
@@ -73,7 +68,6 @@ export default defineComponent({
 			currentPage,
 			nextPageExists,
 			isLoadingRecipes,
-			goToPreviousPage,
 			goToNextPage,
 		};
 	},

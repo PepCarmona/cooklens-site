@@ -4,14 +4,6 @@ export default function createPaginationState() {
 	const currentPage = ref(1);
 	const nextPageExists = ref(false);
 
-	function goToPreviousPage() {
-		currentPage.value -= 1;
-	}
-
-	function goToNextPage() {
-		currentPage.value += 1;
-	}
-
 	function goToPage(page: number) {
 		currentPage.value = page;
 	}
@@ -24,8 +16,6 @@ export default function createPaginationState() {
 		currentPage,
 		nextPageExists,
 
-		goToPreviousPage,
-		goToNextPage,
 		goToPage,
 		checkIfNextPageExists,
 	};
