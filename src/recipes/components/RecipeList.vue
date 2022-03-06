@@ -14,7 +14,7 @@
 		</div>
 		<div v-if="recipes.length === 0">No recipes match this search</div>
 		<Pagination
-			v-if="!(currentPage === 1 && !hasNextPage) && !isLoadingRecipes"
+			v-if="hasNextPage && !isLoadingRecipes"
 			class="mt-2"
 			:hasNextPage="hasNextPage"
 			@loadMore="loadMore"
@@ -53,7 +53,7 @@ export default defineComponent({
 
 	emits: ['loadMore', 'select-recipe', 'see-more-info'],
 
-	setup(_, { emit }) {
+	setup() {
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage, hasNextPage } = paginationState;
 
@@ -61,11 +61,11 @@ export default defineComponent({
 		const { isLoadingRecipes } = loadingState;
 
 		function loadMore() {
-			emit('loadMore');
+			window.scrollTo({ top: 0 });
+			currentPage.value++;
 		}
 
 		return {
-			currentPage,
 			hasNextPage,
 			isLoadingRecipes,
 			loadMore,

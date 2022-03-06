@@ -15,7 +15,6 @@
 			</Button>
 			<RecipeList
 				:recipes="recipes"
-				@loadMore="loadMore"
 				:embedded="embedded"
 				:showActions="showActions"
 				@see-more-info="$emit('see-more-info', $event)"
@@ -140,17 +139,11 @@ export default defineComponent({
 			recipeService.searchRecipes(currentPage.value);
 		}
 
-		function loadMore() {
-			window.scrollTo({ top: 0 });
-			currentPage.value++;
-		}
-
 		return {
 			...data,
 			doSearch,
 			recipes,
 			searchQuery,
-			loadMore,
 		};
 	},
 });
