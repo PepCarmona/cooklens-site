@@ -30,14 +30,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from 'vue';
+import { defineComponent, inject, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
 import RecipeList from '@/recipes/components/RecipeList.vue';
 import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
-import { SearchType, SearchQuery } from 'cooklens-types';
+import { SearchType } from 'cooklens-types';
 import {
 	LoadingStateKey,
 	PaginationStatekey,
@@ -64,7 +64,7 @@ export default defineComponent({
 
 	setup(props) {
 		const recipeState = inject(RecipeStateKey)!;
-		const { recipes, setSearch, searchQuery } = recipeState;
+		const { recipes, setSearch, resetSearch, searchQuery } = recipeState;
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
@@ -77,18 +77,17 @@ export default defineComponent({
 		const router = useRouter();
 		const route = useRoute();
 
-		const showFilteredRecipes = ref(false);
+		const mounted = ref(false);
 
 		// const cachedRecipes = ref<Recipe[]>([]);
 
 		const data = {
 			isLoadingRecipes,
-			showFilteredRecipes,
 		};
 
 		onMounted(() => {
 			if (props.embedded) {
-				showAllRecipes();
+				resetSearch();
 				return;
 			}
 
@@ -97,17 +96,27 @@ export default defineComponent({
 					route.query.searchBy.toString() as SearchType,
 					route.query.searchText.toString()
 				);
-
-				doSearch(
-					parseInt(route.query.page?.toString() ?? '1'),
-					searchQuery.value
-				);
 			}
 
-			doSearch(parseInt(route.query.page?.toString() ?? '1'));
+			currentPage.value = parseInt(route.query.page?.toString() ?? '1');
+			mounted.value = true;
 		});
 
-		function updateQueryString(page?: number, searchQuery?: SearchQuery) {
+		watch(
+			[currentPage, searchQuery, mounted],
+			() => {
+				if (!mounted.value) {
+					return;
+				}
+
+				updateQueryString();
+
+				recipeService.searchRecipes(currentPage.value);
+			},
+			{ immediate: true }
+		);
+
+		function updateQueryString() {
 			if (props.embedded) {
 				return;
 			}
@@ -117,42 +126,27 @@ export default defineComponent({
 				query: {
 					...route.query,
 					searchBy:
-						searchQuery && searchQuery.text !== ''
-							? searchQuery.type
+						searchQuery && searchQuery.value.text !== ''
+							? searchQuery.value.type
 							: undefined,
 					searchText:
-						searchQuery && searchQuery.text !== ''
-							? searchQuery.text
+						searchQuery && searchQuery.value.text !== ''
+							? searchQuery.value.text
 							: undefined,
-					page: page && page > 1 ? page : undefined,
+					page: currentPage.value > 1 ? currentPage.value : undefined,
 				},
 			});
 		}
 
-		function doSearch(page?: number, searchQuery?: SearchQuery) {
-			showFilteredRecipes.value = !!searchQuery && searchQuery.text.length > 0;
-
-			updateQueryString(page, searchQuery);
-
-			recipeService.searchRecipes(page);
-		}
-
-		function showAllRecipes() {
+		function doSearch() {
 			updateQueryString();
 
-			setSearch('title', '');
-
-			doSearch();
+			recipeService.searchRecipes(currentPage.value);
 		}
 
 		function loadMore() {
 			window.scrollTo({ top: 0 });
 			currentPage.value++;
-			if (showFilteredRecipes.value) {
-				doSearch(currentPage.value, searchQuery.value);
-				return;
-			}
-			doSearch(currentPage.value);
 		}
 
 		return {
