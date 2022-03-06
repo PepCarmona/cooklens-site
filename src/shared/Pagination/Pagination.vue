@@ -1,6 +1,6 @@
 <template>
 	<div class="pagination-container">
-		<Button v-if="nextPageExists" @click="nextPage" title="load more">
+		<Button v-if="nextPageExists" @click="loadMore" title="load more">
 			<i class="las la-plus-circle"></i>
 		</Button>
 	</div>
@@ -17,7 +17,7 @@ export default defineComponent({
 		nextPageExists: Boolean,
 	},
 
-	emits: ['nextPage'],
+	emits: ['loadMore'],
 
 	setup(_, { emit }) {
 		const paginationState = inject(PaginationStatekey)!;
@@ -25,8 +25,8 @@ export default defineComponent({
 
 		return {
 			currentPage,
-			nextPage() {
-				emit('nextPage');
+			loadMore() {
+				emit('loadMore');
 			},
 		};
 	},

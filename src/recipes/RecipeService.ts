@@ -13,6 +13,8 @@ export default function createRecipeService(
 	paginationState: PaginationState
 ) {
 	const { isLoadingRecipes } = loadingState;
+	const { currentPage, nextPageExists } = paginationState;
+
 	function addRecipe(recipe: Recipe): Promise<Recipe> {
 		isLoadingRecipes.value = true;
 
@@ -55,9 +57,9 @@ export default function createRecipeService(
 				recipeState.searchQuery.value.text
 			)
 			.then((paginatedRecipes) => {
-				paginationState.goToPage(page);
+				currentPage.value = page;
 
-				paginationState.checkIfNextPageExists(paginatedRecipes.next);
+				nextPageExists.value = paginatedRecipes.next;
 
 				recipeState.recipes.value = paginatedRecipes.result.map(computeRecipe);
 			})

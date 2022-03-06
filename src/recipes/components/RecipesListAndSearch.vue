@@ -19,7 +19,7 @@
 			</Button>
 			<RecipeList
 				:recipes="recipes"
-				@goToPage="goToPage"
+				@loadMore="loadMore"
 				:embedded="embedded"
 				:showActions="showActions"
 				@see-more-info="$emit('see-more-info', $event)"
@@ -40,6 +40,7 @@ import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 import { SearchType, SearchQuery } from 'cooklens-types';
 import {
 	LoadingStateKey,
+	PaginationStatekey,
 	RecipeServiceKey,
 	RecipeStateKey,
 } from '@/injectionKeys';
@@ -67,6 +68,9 @@ export default defineComponent({
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
+
+		const paginationState = inject(PaginationStatekey)!;
+		const { currentPage } = paginationState;
 
 		const recipeService = inject(RecipeServiceKey)!;
 
@@ -141,13 +145,14 @@ export default defineComponent({
 			doSearch();
 		}
 
-		function goToPage(page: number) {
+		function loadMore() {
 			window.scrollTo({ top: 0 });
+			currentPage.value++;
 			if (showFilteredRecipes.value) {
-				doSearch(page, searchQuery.value);
+				doSearch(currentPage.value, searchQuery.value);
 				return;
 			}
-			doSearch(page);
+			doSearch(currentPage.value);
 		}
 
 		return {
@@ -155,7 +160,7 @@ export default defineComponent({
 			doSearch,
 			recipes,
 			searchQuery,
-			goToPage,
+			loadMore,
 		};
 	},
 });

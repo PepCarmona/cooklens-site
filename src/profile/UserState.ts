@@ -18,7 +18,7 @@ export default function createUserState(
 
 	const { isLoadingUser } = loadingState;
 
-	const { checkIfNextPageExists, goToPage } = paginationState;
+	const { currentPage, nextPageExists } = paginationState;
 
 	const user = authState.authenticatedUser;
 
@@ -42,9 +42,9 @@ export default function createUserState(
 		return userService
 			.getFavRecipes(page, limit)
 			.then((paginatedRecipes) => {
-				goToPage(page);
+				currentPage.value = page;
 
-				checkIfNextPageExists(paginatedRecipes.next);
+				nextPageExists.value = paginatedRecipes.next;
 
 				favRecipes.value = paginatedRecipes.result;
 			})
@@ -57,9 +57,9 @@ export default function createUserState(
 		return recipeService
 			.getRecipesByUser(user.value!._id!, page, limit)
 			.then((paginatedRecipes) => {
-				goToPage(page);
+				currentPage.value = page;
 
-				checkIfNextPageExists(paginatedRecipes.next);
+				nextPageExists.value = paginatedRecipes.next;
 
 				myRecipes.value = paginatedRecipes.result;
 			})
