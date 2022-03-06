@@ -66,6 +66,28 @@ export default function createRecipeService(
 			.finally(() => (isLoadingRecipes.value = false));
 	}
 
+	function loadMoreRecipes(page = 1, limit = 10) {
+		isLoadingRecipes.value = true;
+
+		return recipesEndpoint
+			.searchRecipes(
+				page,
+				limit,
+				recipeState.searchQuery.value.type,
+				recipeState.searchQuery.value.text
+			)
+			.then((paginatedRecipes) => {
+				currentPage.value = page;
+
+				hasNextPage.value = paginatedRecipes.next;
+
+				recipeState.recipes.value.push(
+					...paginatedRecipes.result.map(computeRecipe)
+				);
+			})
+			.finally(() => (isLoadingRecipes.value = false));
+	}
+
 	function getRecipe(id: string) {
 		isLoadingRecipes.value = true;
 
@@ -124,6 +146,7 @@ export default function createRecipeService(
 		editRecipe,
 		importRecipe,
 		searchRecipes,
+		loadMoreRecipes,
 		getRecipe,
 		getRandomRecipe,
 		deleteRecipe,

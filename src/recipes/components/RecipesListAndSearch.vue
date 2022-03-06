@@ -7,25 +7,22 @@
 				:embedded="embedded"
 			/>
 		</div>
-		<LoadingSpinner v-if="isLoadingRecipes" />
-		<template v-else>
-			<Button
-				v-if="showCreateRecipe"
-				class="create-recipe"
-				@click="$emit('create-recipe')"
-			>
-				<span>Create new recipe</span>
-				<i class="las la-arrow-right"></i>
-			</Button>
-			<RecipeList
-				:recipes="recipes"
-				@loadMore="loadMore"
-				:embedded="embedded"
-				:showActions="showActions"
-				@see-more-info="$emit('see-more-info', $event)"
-				@select-recipe="$emit('select-recipe', $event)"
-			/>
-		</template>
+		<Button
+			v-if="showCreateRecipe"
+			class="create-recipe"
+			@click="$emit('create-recipe')"
+		>
+			<span>Create new recipe</span>
+			<i class="las la-arrow-right"></i>
+		</Button>
+		<RecipeList
+			:recipes="recipes"
+			@loadMore="loadMore"
+			:embedded="embedded"
+			:showActions="showActions"
+			@see-more-info="$emit('see-more-info', $event)"
+			@select-recipe="$emit('select-recipe', $event)"
+		/>
 	</div>
 </template>
 
@@ -35,11 +32,9 @@ import { useRoute, useRouter } from 'vue-router';
 
 import SearchRecipe from '@/recipes/components/SearchRecipe.vue';
 import RecipeList from '@/recipes/components/RecipeList.vue';
-import LoadingSpinner from '@/shared/LoadingSpinner.vue';
 
 import { SearchType } from 'cooklens-types';
 import {
-	LoadingStateKey,
 	PaginationStatekey,
 	RecipeServiceKey,
 	RecipeStateKey,
@@ -57,7 +52,6 @@ export default defineComponent({
 	components: {
 		SearchRecipe,
 		RecipeList,
-		LoadingSpinner,
 	},
 
 	emits: ['back', 'select-recipe', 'see-more-info', 'create-recipe'],
@@ -65,9 +59,6 @@ export default defineComponent({
 	setup(props) {
 		const recipeState = inject(RecipeStateKey)!;
 		const { recipes, setSearch, resetSearch, searchQuery } = recipeState;
-
-		const loadingState = inject(LoadingStateKey)!;
-		const { isLoadingRecipes } = loadingState;
 
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage } = paginationState;
@@ -78,10 +69,6 @@ export default defineComponent({
 		const route = useRoute();
 
 		// const cachedRecipes = ref<Recipe[]>([]);
-
-		const data = {
-			isLoadingRecipes,
-		};
 
 		onMounted(() => {
 			if (props.embedded) {
@@ -129,13 +116,14 @@ export default defineComponent({
 		}
 
 		function loadMore() {
-			window.scrollTo({ top: 0 });
 			currentPage.value++;
-			doSearch();
+
+			updateQueryString();
+
+			recipeService.loadMoreRecipes(currentPage.value);
 		}
 
 		return {
-			...data,
 			doSearch,
 			recipes,
 			searchQuery,

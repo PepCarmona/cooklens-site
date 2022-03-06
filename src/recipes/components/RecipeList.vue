@@ -1,7 +1,6 @@
 <template>
 	<div class="card-container" :class="{ embedded, thin, 'pb-3': !embedded }">
-		<LoadingSpinner v-if="isLoadingRecipes" class="loadingCard" />
-		<div class="grid" v-else>
+		<div class="grid">
 			<RecipeCard
 				v-for="recipe in recipes"
 				:key="recipe._id"
@@ -12,13 +11,16 @@
 				@select-recipe="$emit('select-recipe', $event)"
 			/>
 		</div>
-		<div v-if="recipes.length === 0">No recipes match this search</div>
-		<Pagination
-			v-if="!(currentPage === 1 && !hasNextPage) && !isLoadingRecipes"
-			class="mt-2"
-			:hasNextPage="hasNextPage"
-			@loadMore="loadMore"
-		/>
+		<LoadingSpinner v-if="isLoadingRecipes" class="loadingCard" />
+		<template v-else>
+			<div v-if="recipes.length === 0">No recipes match this search</div>
+			<Pagination
+				v-if="!(currentPage === 1 && !hasNextPage) && !isLoadingRecipes"
+				class="mt-2"
+				:hasNextPage="hasNextPage"
+				@loadMore="loadMore"
+			/>
+		</template>
 	</div>
 </template>
 
