@@ -118,8 +118,6 @@ export default defineComponent({
 		function loadMore() {
 			currentPage.value++;
 
-			updateQueryString();
-
 			recipeService.loadMoreRecipes(currentPage.value);
 		}
 
