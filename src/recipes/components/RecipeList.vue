@@ -11,7 +11,9 @@
 				@select-recipe="$emit('select-recipe', $event)"
 			/>
 		</div>
-		<LoadingSpinner v-if="isLoadingRecipes" class="loadingCard" />
+		<div v-if="isLoadingRecipes" class="loadingCard">
+			<LoadingSpinner />
+		</div>
 		<template v-else>
 			<div v-if="recipes.length === 0">No recipes match this search</div>
 			<Pagination
@@ -114,9 +116,12 @@ export default defineComponent({
 }
 
 .loadingCard {
-	width: 400px;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	width: 100%;
+	margin-top: 2rem;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 @media only screen and (min-width: 900px) {

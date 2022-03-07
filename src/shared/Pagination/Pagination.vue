@@ -1,7 +1,12 @@
 <template>
 	<div class="pagination-container">
-		<Button v-if="hasNextPage" @click="loadMore" title="load more">
-			<i class="las la-plus-circle"></i>
+		<Button
+			v-if="hasNextPage"
+			@click="loadMore"
+			title="load more"
+			class="loadMore"
+		>
+			load more
 		</Button>
 	</div>
 </template>
@@ -81,7 +86,9 @@ i {
 	text-align: left;
 }
 
-.la-plus-circle {
-	font-size: 2rem;
+.loadMore {
+	color: var(--accent-color);
+	text-decoration: underline;
+	height: 50px;
 }
 </style>
