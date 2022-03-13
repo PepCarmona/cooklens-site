@@ -20,7 +20,7 @@
 				v-if="!(currentPage === 1 && !hasNextPage) && !isLoadingRecipes"
 				class="mt-2"
 				:hasNextPage="hasNextPage"
-				@loadMore="loadMore"
+				@load-more="$emit('load-more')"
 			/>
 		</template>
 	</div>
@@ -55,24 +55,19 @@ export default defineComponent({
 		LoadingSpinner,
 	},
 
-	emits: ['loadMore', 'select-recipe', 'see-more-info'],
+	emits: ['load-more', 'select-recipe', 'see-more-info'],
 
-	setup(_, { emit }) {
+	setup() {
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage, hasNextPage } = paginationState;
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
 
-		function loadMore() {
-			emit('loadMore');
-		}
-
 		return {
 			currentPage,
 			hasNextPage,
 			isLoadingRecipes,
-			loadMore,
 		};
 	},
 });

@@ -17,7 +17,7 @@
 		</Button>
 		<RecipeList
 			:recipes="recipes"
-			@loadMore="loadMore"
+			@load-more="loadMore"
 			:embedded="embedded"
 			:showActions="showActions"
 			@see-more-info="$emit('see-more-info', $event)"

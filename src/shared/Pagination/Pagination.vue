@@ -2,7 +2,7 @@
 	<div class="pagination-container">
 		<Button
 			v-if="hasNextPage"
-			@click="loadMore"
+			@click="$emit('load-more')"
 			title="load more"
 			class="loadMore"
 		>
@@ -22,17 +22,14 @@ export default defineComponent({
 		hasNextPage: Boolean,
 	},
 
-	emits: ['loadMore'],
+	emits: ['load-more'],
 
-	setup(_, { emit }) {
+	setup() {
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage } = paginationState;
 
 		return {
 			currentPage,
-			loadMore() {
-				emit('loadMore');
-			},
 		};
 	},
 });
