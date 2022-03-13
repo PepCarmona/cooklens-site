@@ -1,11 +1,13 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export default function createPaginationState() {
 	const currentPage = ref(1);
-	const hasNextPage = ref(false);
+	const nextPage = ref<string>();
+	const hasNextPage = computed(() => !!nextPage.value);
 
 	return {
 		currentPage,
+		nextPage,
 		hasNextPage,
 	};
 }

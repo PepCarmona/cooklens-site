@@ -13,7 +13,7 @@ export default function createRecipeService(
 	paginationState: PaginationState
 ) {
 	const { isLoadingRecipes } = loadingState;
-	const { currentPage, hasNextPage } = paginationState;
+	const { currentPage, nextPage } = paginationState;
 
 	function addRecipe(recipe: Recipe): Promise<Recipe> {
 		isLoadingRecipes.value = true;
@@ -59,7 +59,7 @@ export default function createRecipeService(
 			.then((paginatedRecipes) => {
 				currentPage.value = page;
 
-				hasNextPage.value = paginatedRecipes.next;
+				nextPage.value = paginatedRecipes.next;
 
 				recipeState.recipes.value = paginatedRecipes.result.map(computeRecipe);
 			})
@@ -79,7 +79,7 @@ export default function createRecipeService(
 			.then((paginatedRecipes) => {
 				currentPage.value = page;
 
-				hasNextPage.value = paginatedRecipes.next;
+				nextPage.value = paginatedRecipes.next;
 
 				recipeState.recipes.value.push(
 					...paginatedRecipes.result.map(computeRecipe)
@@ -137,7 +137,10 @@ export default function createRecipeService(
 			...recipe,
 			isOwnRecipe,
 			canModifyServings,
-			modifiedServings: canModifyServings ? recipe.servings : null,
+			modifiedServings: canModifyServings
+				? // ? recipe.servings
+				  4
+				: null,
 		};
 	}
 
