@@ -66,18 +66,17 @@ export default function createRecipeService(
 			.finally(() => (isLoadingRecipes.value = false));
 	}
 
-	function loadMoreRecipes(page = 1, limit = 10) {
+	function loadMoreRecipes() {
+		if (!nextPage.value) {
+			return;
+		}
+
 		isLoadingRecipes.value = true;
 
 		return recipesEndpoint
-			.searchRecipes(
-				page,
-				limit,
-				recipeState.searchQuery.value.type,
-				recipeState.searchQuery.value.text
-			)
+			.get(nextPage.value)
 			.then((paginatedRecipes) => {
-				currentPage.value = page;
+				currentPage.value++;
 
 				nextPage.value = paginatedRecipes.next;
 
@@ -138,7 +137,7 @@ export default function createRecipeService(
 			isOwnRecipe,
 			canModifyServings,
 			modifiedServings: canModifyServings
-				? // ? recipe.servings
+				? //TODO:  ? recipe.servings
 				  4
 				: null,
 		};

@@ -115,17 +115,11 @@ export default defineComponent({
 			recipeService.searchRecipes(currentPage.value);
 		}
 
-		function loadMore() {
-			currentPage.value++;
-
-			recipeService.loadMoreRecipes(currentPage.value);
-		}
-
 		return {
 			doSearch,
 			recipes,
 			searchQuery,
-			loadMore,
+			loadMore: recipeService.loadMoreRecipes,
 		};
 	},
 });

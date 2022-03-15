@@ -18,7 +18,7 @@ export default function createUserState(
 
 	const { isLoadingUser } = loadingState;
 
-	const { currentPage, hasNextPage } = paginationState;
+	const { currentPage, nextPage } = paginationState;
 
 	const user = authState.authenticatedUser;
 
@@ -44,7 +44,7 @@ export default function createUserState(
 			.then((paginatedRecipes) => {
 				currentPage.value = page;
 
-				hasNextPage.value = paginatedRecipes.next;
+				nextPage.value = paginatedRecipes.next;
 
 				favRecipes.value = paginatedRecipes.result;
 			})
@@ -59,7 +59,7 @@ export default function createUserState(
 			.then((paginatedRecipes) => {
 				currentPage.value = page;
 
-				hasNextPage.value = paginatedRecipes.next;
+				nextPage.value = paginatedRecipes.next;
 
 				myRecipes.value = paginatedRecipes.result;
 			})
