@@ -4,7 +4,7 @@
 			<i class="las la-angle-left"></i>
 		</Button>
 		<input
-			@input="changeSearchText"
+			@input="changeSearchText()"
 			@focus="isFocus = true"
 			@blur="isFocus = false"
 			ref="searchInput"
@@ -15,7 +15,7 @@
 			:value="searchQuery.text"
 			autocomplete="off"
 		/>
-		<Button @click="doSearch()" class="searchButton">
+		<Button class="searchButton">
 			<i class="las la-search"></i>
 		</Button>
 	</div>
@@ -46,8 +46,7 @@ import { SearchType } from 'cooklens-types';
 
 import { fromEvent, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { isMobile } from '@/helpers/media';
-import { RecipeStateKey } from '@/injectionKeys';
+import { PaginationStatekey, RecipeStateKey } from '@/injectionKeys';
 
 export default defineComponent({
 	name: 'SearchRecipe',
@@ -56,11 +55,14 @@ export default defineComponent({
 		embedded: Boolean,
 	},
 
-	emits: ['doSearch', 'back'],
+	emits: ['search', 'back'],
 
 	setup(_, { emit }) {
 		const recipeState = inject(RecipeStateKey)!;
 		const { setSearch, searchQuery } = recipeState;
+
+		const paginationState = inject(PaginationStatekey)!;
+		const { currentPage } = paginationState;
 
 		const searchInput = ref<HTMLInputElement>();
 
@@ -71,34 +73,21 @@ export default defineComponent({
 				return;
 			}
 
-			if (!isMobile) {
-				searchInput.value.focus();
-			}
-
 			const searchInputTyping = fromEvent(
 				searchInput.value,
 				'keydown'
 			) as Observable<KeyboardEvent>;
 
-			searchInputTyping.pipe(debounceTime(200)).subscribe(() => doSearch());
+			searchInputTyping.pipe(debounceTime(200)).subscribe(() => emit('search'));
 		});
-
-		function doSearch(page?: number) {
-			emit('doSearch', {
-				page,
-				searchQuery: searchQuery.value,
-			});
-		}
 
 		function changeSearchType(type: SearchType) {
 			setSearch(type, searchQuery.value.text);
-
-			if (searchQuery.value.text.length > 0) {
-				doSearch();
-			}
 		}
 
 		function changeSearchText() {
+			currentPage.value = 1;
+
 			const searchBy = searchQuery.value.type;
 			const searchText =
 				searchInput.value!.value.length > 0
@@ -109,7 +98,6 @@ export default defineComponent({
 		}
 
 		return {
-			doSearch,
 			changeSearchType,
 			searchInput,
 			isFocus,

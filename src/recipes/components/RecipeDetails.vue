@@ -246,7 +246,7 @@ export default defineComponent({
 				return clonedIngredients.map((ingredient) => {
 					if (ingredient.quantity) {
 						ingredient.quantity =
-							(ingredient.quantity / recipe.value.servings) *
+							(ingredient.quantity / /*TODO: recipe.value.servings*/ 4) *
 							recipe.value.modifiedServings!;
 					}
 

@@ -146,7 +146,7 @@ export default defineComponent({
 	background-color: var(--background-contrast-color);
 	border: 1px solid var(--border-color);
 	border-radius: 1rem;
-	height: fit-content;
+	height: 100%;
 	overflow: hidden;
 	cursor: pointer;
 	display: flex;

@@ -1,39 +1,13 @@
 <template>
 	<div class="pagination-container">
-		<div class="pagination-inner-container">
-			<Button
-				v-if="currentPage > 1"
-				@click="previousPage"
-				class="mr-05"
-				title="previous page"
-			>
-				<i class="las la-angle-left"></i>
-			</Button>
-			<div
-				v-if="currentPage"
-				class="numbers"
-				:class="{
-					'empty-left': currentPage <= 1,
-					'empty-right': !nextPageExists,
-				}"
-			>
-				<span v-if="currentPage > 1" class="previous">
-					{{ currentPage - 1 }}
-				</span>
-				<span class="current">{{ currentPage }}</span>
-				<span v-if="nextPageExists" class="next">
-					{{ currentPage + 1 }}
-				</span>
-			</div>
-			<Button
-				v-if="nextPageExists"
-				@click="nextPage"
-				class="ml-05"
-				title="next page"
-			>
-				<i class="las la-angle-right"></i>
-			</Button>
-		</div>
+		<Button
+			v-if="hasNextPage"
+			@click="$emit('load-more')"
+			title="load more"
+			class="loadMore"
+		>
+			load more
+		</Button>
 	</div>
 </template>
 
@@ -45,23 +19,17 @@ export default defineComponent({
 	name: 'Pagination',
 
 	props: {
-		nextPageExists: Boolean,
+		hasNextPage: Boolean,
 	},
 
-	emits: ['previousPage', 'nextPage'],
+	emits: ['load-more'],
 
-	setup(_, { emit }) {
+	setup() {
 		const paginationState = inject(PaginationStatekey)!;
 		const { currentPage } = paginationState;
 
 		return {
 			currentPage,
-			previousPage() {
-				emit('previousPage');
-			},
-			nextPage() {
-				emit('nextPage');
-			},
 		};
 	},
 });
@@ -113,5 +81,11 @@ i {
 .empty-right {
 	margin-right: calc(0.5rem + 16px);
 	text-align: left;
+}
+
+.loadMore {
+	color: var(--accent-color);
+	text-decoration: underline;
+	height: 50px;
 }
 </style>

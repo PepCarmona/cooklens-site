@@ -43,6 +43,10 @@ export default function createRecipeState(authState: AuthenticationState) {
 		searchQuery.value.text = text;
 	}
 
+	function resetSearch() {
+		setSearch('title', '');
+	}
+
 	function getMainImageUrl(recipe: Recipe | undefined): string {
 		return recipe && recipe.images && recipe.images?.length > 0
 			? recipe.images[0]
@@ -57,6 +61,7 @@ export default function createRecipeState(authState: AuthenticationState) {
 		isFavoriteRecipe,
 		editRating,
 		setSearch,
+		resetSearch,
 		getMainImageUrl,
 	};
 }

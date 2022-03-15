@@ -1,7 +1,6 @@
 <template>
 	<div class="card-container" :class="{ embedded, thin, 'pb-3': !embedded }">
-		<LoadingSpinner v-if="isLoadingRecipes" class="loadingCard" />
-		<div class="grid" v-else>
+		<div class="grid">
 			<RecipeCard
 				v-for="recipe in recipes"
 				:key="recipe._id"
@@ -12,14 +11,18 @@
 				@select-recipe="$emit('select-recipe', $event)"
 			/>
 		</div>
-		<div v-if="recipes.length === 0">No recipes match this search</div>
-		<Pagination
-			v-if="!(currentPage === 1 && !nextPageExists) && !isLoadingRecipes"
-			class="mt-2"
-			:nextPageExists="nextPageExists"
-			@previousPage="goToPreviousPage"
-			@nextPage="goToNextPage"
-		/>
+		<div v-if="isLoadingRecipes" class="loadingCard">
+			<LoadingSpinner />
+		</div>
+		<template v-else>
+			<div v-if="recipes.length === 0">No recipes match this search</div>
+			<Pagination
+				v-if="!(currentPage === 1 && !hasNextPage) && !isLoadingRecipes"
+				class="mt-2"
+				:hasNextPage="hasNextPage"
+				@load-more="$emit('load-more')"
+			/>
+		</template>
 	</div>
 </template>
 
@@ -52,29 +55,19 @@ export default defineComponent({
 		LoadingSpinner,
 	},
 
-	emits: ['goToPage', 'select-recipe', 'see-more-info'],
+	emits: ['load-more', 'select-recipe', 'see-more-info'],
 
-	setup(_, { emit }) {
+	setup() {
 		const paginationState = inject(PaginationStatekey)!;
-		const { currentPage, nextPageExists } = paginationState;
+		const { currentPage, hasNextPage } = paginationState;
 
 		const loadingState = inject(LoadingStateKey)!;
 		const { isLoadingRecipes } = loadingState;
 
-		function goToPreviousPage() {
-			emit('goToPage', currentPage.value - 1);
-		}
-
-		function goToNextPage() {
-			emit('goToPage', currentPage.value + 1);
-		}
-
 		return {
 			currentPage,
-			nextPageExists,
+			hasNextPage,
 			isLoadingRecipes,
-			goToPreviousPage,
-			goToNextPage,
 		};
 	},
 });
@@ -118,9 +111,12 @@ export default defineComponent({
 }
 
 .loadingCard {
-	width: 400px;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	width: 100%;
+	margin-top: 2rem;
+	height: 50px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 @media only screen and (min-width: 900px) {

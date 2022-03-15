@@ -13,6 +13,8 @@ export default function createRecipeService(
 	paginationState: PaginationState
 ) {
 	const { isLoadingRecipes } = loadingState;
+	const { currentPage, nextPage } = paginationState;
+
 	function addRecipe(recipe: Recipe): Promise<Recipe> {
 		isLoadingRecipes.value = true;
 
@@ -55,11 +57,32 @@ export default function createRecipeService(
 				recipeState.searchQuery.value.text
 			)
 			.then((paginatedRecipes) => {
-				paginationState.goToPage(page);
+				currentPage.value = page;
 
-				paginationState.checkIfNextPageExists(paginatedRecipes.next);
+				nextPage.value = paginatedRecipes.next;
 
 				recipeState.recipes.value = paginatedRecipes.result.map(computeRecipe);
+			})
+			.finally(() => (isLoadingRecipes.value = false));
+	}
+
+	function loadMoreRecipes() {
+		if (!nextPage.value) {
+			return;
+		}
+
+		isLoadingRecipes.value = true;
+
+		return recipesEndpoint
+			.get(nextPage.value)
+			.then((paginatedRecipes) => {
+				currentPage.value++;
+
+				nextPage.value = paginatedRecipes.next;
+
+				recipeState.recipes.value.push(
+					...paginatedRecipes.result.map(computeRecipe)
+				);
 			})
 			.finally(() => (isLoadingRecipes.value = false));
 	}
@@ -113,7 +136,10 @@ export default function createRecipeService(
 			...recipe,
 			isOwnRecipe,
 			canModifyServings,
-			modifiedServings: canModifyServings ? recipe.servings : null,
+			modifiedServings: canModifyServings
+				? //TODO:  ? recipe.servings
+				  4
+				: null,
 		};
 	}
 
@@ -122,6 +148,7 @@ export default function createRecipeService(
 		editRecipe,
 		importRecipe,
 		searchRecipes,
+		loadMoreRecipes,
 		getRecipe,
 		getRandomRecipe,
 		deleteRecipe,
