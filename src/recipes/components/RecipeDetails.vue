@@ -116,6 +116,7 @@
 							:id="'servingsInput'"
 							:min="1"
 							v-model="recipe.modifiedServings"
+							showArrows
 						/>
 						<ul class="ingredients-list">
 							<li v-for="ingredient in ingredientsToShow" :key="ingredient._id">
@@ -246,7 +247,7 @@ export default defineComponent({
 				return clonedIngredients.map((ingredient) => {
 					if (ingredient.quantity) {
 						ingredient.quantity =
-							(ingredient.quantity / /*TODO: recipe.value.servings*/ 4) *
+							(ingredient.quantity / recipe.value.servings) *
 							recipe.value.modifiedServings!;
 					}
 

@@ -136,10 +136,7 @@ export default function createRecipeService(
 			...recipe,
 			isOwnRecipe,
 			canModifyServings,
-			modifiedServings: canModifyServings
-				? //TODO:  ? recipe.servings
-				  4
-				: null,
+			modifiedServings: canModifyServings ? recipe.servings : null,
 		};
 	}
 
